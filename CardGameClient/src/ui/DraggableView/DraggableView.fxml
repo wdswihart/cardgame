@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.shape.Rectangle?>
+<?import java.net.URL?>
+<VBox xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="ui.DraggableView.DraggableViewController"
+          fx:id="mMainPane"
+          prefHeight="800.0" prefWidth="1000.0">
+    <Button fx:id="mBackButton" text="Back"/>
+    <Pane>
+        <HBox spacing="100">
+            <GridPane fx:id="mPane1" styleClass="drag-pane" prefWidth="150" prefHeight="150"/>
+            <GridPane fx:id="mPane2" styleClass="drag-pane" prefWidth="150" prefHeight="150"/>
+            <GridPane fx:id="mPane3" styleClass="drag-pane" prefWidth="150" prefHeight="150"/>
+            <GridPane fx:id="mPane4" styleClass="drag-pane" prefWidth="150" prefHeight="150"/>
+        </HBox>
+        <Text fx:id="mDraggableText" text="Drag Me" x="490" y="400"/>
+        <Text textAlignment="CENTER" text="You should be able to drag the text onto any of the accepting areas." x="450" y="200"/>
+    </Pane>
+    <stylesheets>
+        <URL value="@DraggableViewStyle.css"/>
+    </stylesheets>
+</VBox>
