@@ -32,16 +32,6 @@ public class HomeViewController extends BaseViewController {
     }
 
     @Override
-    protected Map<String, Stage> getStageMap() {
-        Map<String, Stage> map = new HashMap<>();
-
-        map.put(CARD_DETAIL_STAGE_KEY, CardDetailController.getNewStage());
-        map.put(DRAGGABLE_STAGE_KEY, DraggableViewController.getNewStage());
-
-        return map;
-    }
-
-    @Override
     protected Map<String, String> getFxmlFileMap() {
         Map<String, String> map = new HashMap<>();
 

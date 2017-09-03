@@ -9,46 +9,50 @@ import java.io.IOException;
 import java.util.Map;
 
 public abstract class BaseViewController {
-    private Stage mCurrentStage;
-    private Stage mPreviousStage;
+    private Parent mCurrentRoot;
+    private Parent mPreviousRoot;
 
-    private Map<String, Stage> mStageMap;// = new HashMap<>();
-    private Map<String, String> mFxmlFileMap;// = new HashMap<>();
+    private Stage mStage;
 
-    public void setPreviousStage(Stage stage) {
-        mPreviousStage = stage;
+    private Map<String, String> mFxmlFileMap;
+
+    public void setPreviousRoot(Parent root) {
+        mPreviousRoot = root;
     }
-    public void setCurrentStage(Stage stage) {
-        mCurrentStage = stage;
+    public void setCurrentRoot(Parent root) {
+        mCurrentRoot = root;
+    }
+    public void setStage(Stage stage) {
+        mStage = stage;
     }
 
     protected void navigatePrevious() {
-        navigateTo(mPreviousStage);
+        if (mPreviousRoot == null) {
+            return;
+        }
+        mStage.getScene().setRoot(mPreviousRoot);
+        mCurrentRoot = mPreviousRoot;
+        mPreviousRoot = null;
     }
 
     protected void navigateTo(String stageKey) {
-        if (mStageMap == null) {
-            mStageMap = getStageMap();
-        }
         if (mFxmlFileMap == null) {
             mFxmlFileMap = getFxmlFileMap();
         }
-
-        if (!mStageMap.containsKey(stageKey) || !mFxmlFileMap.containsKey(stageKey)) {
+        if (mFxmlFileMap == null || !mFxmlFileMap.containsKey(stageKey)) {
             return;
         }
-        navigateTo(mStageMap.get(stageKey), mFxmlFileMap.get(stageKey));
+        navigateToFxmlView(mFxmlFileMap.get(stageKey));
     }
 
-    private void navigateTo(Stage stage, String fxmlFilePath) {
+    private void navigateToFxmlView(String fxmlFilePath) {
         Parent root = null;
+        BaseViewController controller = null;
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFilePath));
             root = (Parent)loader.load();
-            BaseViewController controller = loader.getController();
-            controller.setPreviousStage(mCurrentStage);
-            controller.setCurrentStage(stage);
+            controller = loader.getController();
         } catch (IOException e) {
             System.out.println("Error loading FXML file: " + fxmlFilePath);
             e.printStackTrace();
@@ -56,21 +60,13 @@ public abstract class BaseViewController {
             return;
         }
 
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
+        //Handles navigation data.
+        controller.setPreviousRoot(mCurrentRoot);
+        controller.setCurrentRoot(root);
+        controller.setStage(mStage);
 
-        navigateTo(stage);
+        mStage.getScene().setRoot(root);
     }
 
-    private void navigateTo(Stage stage) {
-        if (stage == null) {
-            return;
-        }
-
-        mCurrentStage.close();
-        stage.show();
-    }
-
-    protected abstract Map<String, Stage> getStageMap();
     protected abstract Map<String, String> getFxmlFileMap();
 }

@@ -15,10 +15,13 @@ public class Main extends Application {
         Parent root = (Parent)loader.load();
 
         BaseViewController controller = loader.getController();
-        controller.setCurrentStage(primaryStage);
+
+        controller.setStage(primaryStage);
+        controller.setCurrentRoot(root);
 
         primaryStage.setTitle("Home View");
         primaryStage.setScene(new Scene(root));
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 

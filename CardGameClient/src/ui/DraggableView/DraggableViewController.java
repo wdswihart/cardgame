@@ -4,6 +4,7 @@ import core.BaseViewController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
@@ -27,13 +28,6 @@ public class DraggableViewController extends BaseViewController {
     private Pane mPane3;
     @FXML
     private Pane mPane4;
-
-    public static Stage getNewStage() {
-        Stage stage = new Stage();
-        stage.setTitle("Draggable Demo");
-        return stage;
-    }
-
 
     public void initialize() {
         mBackButton.setOnMouseReleased(event -> {
@@ -75,15 +69,9 @@ public class DraggableViewController extends BaseViewController {
             if (event.getX() == 0 && event.getY() == 0) {
                 return;
             }
-
             mDraggableText.setX(event.getSceneX());
             mDraggableText.setY(event.getSceneY());
         }
-    }
-
-    @Override
-    protected Map<String, Stage> getStageMap() {
-        return new HashMap<>();
     }
 
     @Override

@@ -12,21 +12,10 @@ public class CardDetailController extends BaseViewController {
     @FXML
     private Button mBackButton;
 
-    public static Stage getNewStage() {
-        Stage stage = new Stage();
-        stage.setTitle("Detailed Card View");
-        return stage;
-    }
-
     public void initialize() {
         mBackButton.setOnMouseReleased(event -> {
             navigatePrevious();
         });
-    }
-
-    @Override
-    protected Map<String, Stage> getStageMap() {
-        return new HashMap<>();
     }
 
     @Override
