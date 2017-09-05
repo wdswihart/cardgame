@@ -42,7 +42,7 @@
         <SplitPane prefWidth="1000">
             <items>
                 <Button text="Card Pic Here" prefHeight="450" prefWidth="400"/>
-                <FlowPane orientation="VERTICAL" alignment="CENTER">
+                <FlowPane styleClass="root" orientation="VERTICAL" alignment="CENTER">
                     <TextArea text="description goes here" prefWidth="400" editable="false"/>
                     <TextArea text="stats go here" prefWidth="400" editable="false"/>
                 </FlowPane>
