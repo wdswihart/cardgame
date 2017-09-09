@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.VBox?>
+<VBox prefHeight="1000" prefWidth="1000"
+      xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/8.0.121"
+      fx:controller="ui.CardDetailView.CardDetailController"
+      stylesheets="@../../style.css"
+      styleClass="root">
+    <Button fx:id="mBackButton" text="Back"/>
+    <VBox>
+        <ScrollPane prefHeight="300" prefWidth="1000" maxWidth="Infinity">
+            <content>
+                <HBox>
+                    <children>
+                        <Button prefHeight="300" prefWidth="200" text="card 1" />
+                        <Button prefHeight="300" prefWidth="200" text="card 2" />
+                        <Button prefHeight="300" prefWidth="200" text="card 3" />
+                        <Button prefHeight="300" prefWidth="200" text="card 4" />
+                        <Button prefHeight="300" prefWidth="200" text="card 5" />
+                        <Button prefHeight="300" prefWidth="200" text="card 6" />
+                        <Button prefHeight="300" prefWidth="200" text="card 7" />
+                        <Button prefHeight="300" prefWidth="200" text="card 8" />
+                        <Button prefHeight="300" prefWidth="200" text="card 9" />
+                        <Button prefHeight="300" prefWidth="200" text="card 10" />
+                        <Button prefHeight="300" prefWidth="200" text="card 11" />
+                    </children>
+                </HBox>
+            </content>
+        </ScrollPane>
+        <!-- Single Card View -->
+        <SplitPane prefWidth="1000">
+            <items>
+                <Button text="Card Pic Here" prefHeight="450" prefWidth="400"/>
+                <FlowPane styleClass="root" orientation="VERTICAL" alignment="CENTER">
+                    <TextArea text="description goes here" prefWidth="400" editable="false"/>
+                    <TextArea text="stats go here" prefWidth="400" editable="false"/>
+                </FlowPane>
+            </items>
+        </SplitPane>
+    </VBox>
+</VBox>
