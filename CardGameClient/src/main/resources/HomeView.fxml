@@ -9,8 +9,8 @@
 <?import javafx.scene.text.Text?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="ui.HomeView.HomeViewController"
-            stylesheets="@../../style.css"
+            fx:controller="ui.HomeView.HomeView"
+            stylesheets="@style.css"
             styleClass="root">
     <HBox spacing="5" styleClass="menu" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"  maxWidth="Infinity">
         <Button fx:id="mCardDetailDemoButton" text="Card Details Demo"/>

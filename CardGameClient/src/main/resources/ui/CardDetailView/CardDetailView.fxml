@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ListCell?>
+<?import java.net.URL?>
+<VBox
+      xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/8.0.121"
+      fx:controller="ui.CardDetailView.CardDetailView"
+      styleClass="root">
+    <stylesheets>
+        <URL value="@../../style.css"/>
+        <URL value="@CardDetailView.css"/>
+    </stylesheets>
+
+    <Button fx:id="mBackButton" text="Back"/>
+    <VBox>
+        <ScrollPane fitToWidth="true">
+            <content>
+                <ListView styleClass="linear-card-view" fx:id="mCardListView" orientation="HORIZONTAL" maxWidth="Infinity" style="">
+                </ListView>
+            </content>
+        </ScrollPane>
+        <!-- Single Card View -->
+        <SplitPane prefWidth="1000">
+            <items>
+                <Button text="Card Pic Here" prefHeight="350" prefWidth="400"/>
+                <FlowPane styleClass="root" orientation="VERTICAL" alignment="CENTER">
+                    <TextArea text="description goes here" prefWidth="400" editable="false"/>
+                    <TextArea text="stats go here" prefWidth="400" editable="false"/>
+                </FlowPane>
+            </items>
+        </SplitPane>
+    </VBox>
+</VBox>

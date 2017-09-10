@@ -11,13 +11,12 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         //Parent root = FXMLLoader.load(getClass().getResource("./ui/ui.ui.HomeView/ui.ui.HomeView.fxml"));
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/HomeView/HomeView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("HomeView.fxml"));
         Parent root = (Parent)loader.load();
 
         BaseViewController controller = loader.getController();
 
         controller.setStage(primaryStage);
-        controller.setCurrentRoot(root);
 
         primaryStage.setTitle("Home View");
         primaryStage.setScene(new Scene(root));

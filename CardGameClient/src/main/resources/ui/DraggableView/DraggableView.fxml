@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.shape.Rectangle?>
 <?import java.net.URL?>
 <VBox xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           styleClass="root"
-          fx:controller="ui.DraggableView.DraggableViewController"
-          fx:id="mMainPane">
+            fx:controller="ui.DraggableView.DraggableView"
+            fx:id="mMainPane">
     <Button fx:id="mBackButton" text="Back"/>
     <Pane>
         <HBox spacing="100">
@@ -26,7 +22,7 @@
         <Text styleClass="label" textAlignment="CENTER" text="You should be able to drag the text onto any of the accepting areas." x="450" y="200"/>
     </Pane>
     <stylesheets>
-        <URL value="@../../style.css"/>
         <URL value="@DraggableViewStyle.css"/>
+        <URL value="@../../style.css"/>
     </stylesheets>
 </VBox>

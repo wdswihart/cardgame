@@ -1,19 +1,20 @@
 package ui.DraggableView;
 
 import core.BaseViewController;
+import de.saxsys.mvvmfx.FxmlView;
+import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class DraggableViewController extends BaseViewController {
+public class DraggableView extends BaseViewController implements FxmlView<DraggableViewModel>, Initializable {
     @FXML
     private Button mBackButton;
 
@@ -29,7 +30,12 @@ public class DraggableViewController extends BaseViewController {
     @FXML
     private Pane mPane4;
 
-    public void initialize() {
+    @InjectViewModel
+    private DraggableViewModel mViewModel;
+
+    @Override
+    public void initialize(URL url, ResourceBundle bundle) {
+        mDraggableText.textProperty().bind(mViewModel.draggableTextProperty());
         mBackButton.setOnMouseReleased(event -> {
             navigatePrevious();
         });
@@ -72,10 +78,5 @@ public class DraggableViewController extends BaseViewController {
             mDraggableText.setX(event.getSceneX());
             mDraggableText.setY(event.getSceneY());
         }
-    }
-
-    @Override
-    protected Map<String, String> getFxmlFileMap() {
-        return new HashMap<>();
     }
 }

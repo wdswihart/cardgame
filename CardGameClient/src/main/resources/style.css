@@ -22,3 +22,7 @@
 .menu {
     -fx-background-color: chartreuse;
 }
+
+.scroll-pane {
+    -fx-pref-width: 100%;
+}
