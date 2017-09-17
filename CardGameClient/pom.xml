@@ -20,6 +20,12 @@
         </plugins>
     </build>
 
+    <properties>
+        <junit.jupiter.version>5.0.0-M6</junit.jupiter.version>
+        <junit.vintage.version>4.12.0-M6</junit.vintage.version>
+        <junit.platform.version>1.0.0</junit.platform.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>de.saxsys</groupId>
@@ -30,6 +36,24 @@
             <groupId>de.saxsys</groupId>
             <artifactId>mvvmfx-guice</artifactId>
             <version>1.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-runner</artifactId>
+            <version>${junit.platform.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit.vintage.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
