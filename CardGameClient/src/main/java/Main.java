@@ -1,31 +1,34 @@
-import core.BaseViewController;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import com.google.inject.Module;
+import core.di.NavigationModule;
+import core.navigation.NavigationProvider;
+import de.saxsys.mvvmfx.guice.MvvmfxGuiceApplication;
 import javafx.stage.Stage;
+import ui.HomeView.HomeView;
 
-public class Main extends Application {
+import java.util.ArrayList;
+import java.util.List;
 
-    @Override
-    public void start(Stage primaryStage) throws Exception{
-        //Parent root = FXMLLoader.load(getClass().getResource("./ui/ui.ui.HomeView/ui.ui.HomeView.fxml"));
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("HomeView.fxml"));
-        Parent root = (Parent)loader.load();
-
-        BaseViewController controller = loader.getController();
-
-        controller.setStage(primaryStage);
-
-        primaryStage.setTitle("Home View");
-        primaryStage.setScene(new Scene(root));
-        primaryStage.setMaximized(true);
-        primaryStage.show();
-    }
-
+public class Main extends MvvmfxGuiceApplication {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    @Override
+    public void initGuiceModules(List<Module> modules) throws Exception {
+        //Init DI modules. Wow there is no documentation that says to override this.
+        modules.add(new NavigationModule());
+    }
+
+    @Override
+    public void startMvvmfx(Stage stage) throws Exception {
+        //We have to get control over a stage somehow, this seems okay to me.
+        NavigationProvider.setStage(stage);
+
+        stage.setTitle("Card Game");
+        stage.setMaximized(true);
+
+        NavigationProvider.getInstance().navigateTo(HomeView.class);
+        stage.show();
     }
 }

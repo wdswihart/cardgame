@@ -1,6 +1,5 @@
 package ui.DraggableView;
 
-import core.BaseViewController;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.event.EventHandler;
@@ -14,7 +13,7 @@ import javafx.scene.text.Text;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class DraggableView extends BaseViewController implements FxmlView<DraggableViewModel>, Initializable {
+public class DraggableView implements FxmlView<DraggableViewModel>, Initializable {
     @FXML
     private Button mBackButton;
 
@@ -36,9 +35,6 @@ public class DraggableView extends BaseViewController implements FxmlView<Dragga
     @Override
     public void initialize(URL url, ResourceBundle bundle) {
         mDraggableText.textProperty().bind(mViewModel.draggableTextProperty());
-        mBackButton.setOnMouseReleased(event -> {
-            navigatePrevious();
-        });
 
         mDraggableText.setOnDragDetected(event -> {
             Dragboard db = mDraggableText.startDragAndDrop(TransferMode.MOVE);
@@ -61,6 +57,11 @@ public class DraggableView extends BaseViewController implements FxmlView<Dragga
         mPane2.setOnDragDropped(new AcceptDragDroppedEventHandler());
         mPane3.setOnDragDropped(new AcceptDragDroppedEventHandler());
         mPane4.setOnDragDropped(new AcceptDragDroppedEventHandler());
+    }
+
+    @FXML
+    public void navigatePreviousAction() {
+        mViewModel.getNavigatePreviousCommand().execute();
     }
 
     class AcceptDragOverEventHandler implements EventHandler<DragEvent> {

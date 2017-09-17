@@ -1,11 +1,12 @@
 package ui.DraggableView;
 
+import core.BaseViewModel;
 import de.saxsys.mvvmfx.ViewModel;
 import javafx.beans.property.SimpleStringProperty;
 
-public class DraggableViewModel implements ViewModel {
-    private SimpleStringProperty draggableText = new SimpleStringProperty("Drag Me");
+public class DraggableViewModel extends BaseViewModel {
 
+    private SimpleStringProperty draggableText = new SimpleStringProperty("Drag Me");
 
     public SimpleStringProperty draggableTextProperty() {
         return draggableText;

@@ -24,7 +24,7 @@
         <URL value="@CardDetailView.css"/>
     </stylesheets>
 
-    <Button fx:id="mBackButton" text="Back"/>
+    <Button onAction="#navigatePreviousAction" text="Back"/>
     <VBox>
         <ScrollPane fitToWidth="true">
             <content>

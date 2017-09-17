@@ -10,7 +10,7 @@
           styleClass="root"
             fx:controller="ui.DraggableView.DraggableView"
             fx:id="mMainPane">
-    <Button fx:id="mBackButton" text="Back"/>
+    <Button onAction="#navigatePreviousAction" text="Back"/>
     <Pane>
         <HBox spacing="100">
             <GridPane fx:id="mPane1" styleClass="drag-pane" prefWidth="150" prefHeight="150"/>

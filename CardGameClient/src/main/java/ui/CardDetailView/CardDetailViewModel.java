@@ -1,12 +1,14 @@
 package ui.CardDetailView;
 
+import core.BaseViewModel;
 import de.saxsys.mvvmfx.ViewModel;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class CardDetailViewModel implements ViewModel {
+public class CardDetailViewModel extends BaseViewModel {
     private ObservableList<String> cardListProperty = FXCollections.observableArrayList();
+
 
     public CardDetailViewModel() {
         cardListProperty.add("Test1");
