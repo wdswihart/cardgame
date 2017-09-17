@@ -26,10 +26,6 @@ using a substantial amount of effects that allow players to draw cards.
   - All cards will be usable for their effect, or as a resource.
 - Involve a lot of deck searching and card drawing mechanics
 
-## Progress
-
-- 8/26/17: Idea is being processed.
-
 ## License
 
 This program is free software: you can redistribute it and/or modify  
