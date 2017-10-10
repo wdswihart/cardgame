@@ -5,11 +5,12 @@ import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
-
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameServer {
     private SocketIOServer mServer;
+    private List<User> mUsers = new ArrayList<User>();
 
     public class Events {
         public static final String START_GAME_CLIENT = "StartGameClient";
@@ -29,6 +30,18 @@ public class GameServer {
 
         public static final String RESPOND_CLIENT = "RespondClient";
         public static final String RESPOND_SERVER = "RespondServer";
+    }
+
+    public class User {
+        public SocketIOClient client;
+
+        public User(SocketIOClient client) {
+            this.client = client;
+        }
+
+        public void shout() {
+            System.out.println("I'm gay!");
+        }
     }
 
     public GameServer(String hostname, int port) {
@@ -53,10 +66,12 @@ public class GameServer {
     }
 
     private void setEventListeners() {
-        mServer.addEventListener(Events.START_GAME_SERVER, String.class, (client, data, ackRequest) -> {
-            mServer.getBroadcastOperations().sendEvent("chatevent", data);
+        mServer.addConnectListener(client -> {
+            System.out.println("[DEBUG] Client connected to server");
         });
 
-
+        mServer.addEventListener(Events.START_GAME_CLIENT, String.class, (client, data, ackRequest) -> {
+            mUsers.add(new User(client));
+        });
     }
 }

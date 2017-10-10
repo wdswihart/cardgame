@@ -1,2 +1,3 @@
 rootProject.name = 'cardgame-server'
+include 'cardgame-server_test'
 
