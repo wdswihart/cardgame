@@ -4,6 +4,8 @@ import com.github.oxo42.stateless4j.StateMachine;
 import com.github.oxo42.stateless4j.StateMachineConfig;
 
 public class GameStateMachine {
+    // FIELDS:
+
     private StateMachine<State, Trigger> mStateMachine;
     public enum State {
         Refresh,
@@ -26,6 +28,8 @@ public class GameStateMachine {
         Refresh
     }
 
+    // CONSTRUCTORS:
+
     public GameStateMachine() {
         StateMachineConfig<State, Trigger> config = new StateMachineConfig<>();
         config.configure(State.Refresh)
@@ -45,6 +49,8 @@ public class GameStateMachine {
                 .permit(Trigger.Damage, State.Main);
         mStateMachine = new StateMachine<State, Trigger>(State.Draw, config);
     }
+
+    // METHODS:
 
     public State getState() {
         return mStateMachine.getState();

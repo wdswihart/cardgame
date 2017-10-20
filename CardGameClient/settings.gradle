@@ -1,0 +1,2 @@
+rootProject.name = 'cardgame-client'
+include 'cardgame-client_test'

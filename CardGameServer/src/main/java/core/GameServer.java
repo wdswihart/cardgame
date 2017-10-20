@@ -9,8 +9,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameServer {
+    // FIELDS:
+
     private SocketIOServer mServer;
-    private List<User> mUsers = new ArrayList<User>();
+    private List<User> mUsers = new ArrayList<>();
+
+    // CONSTRUCTORS:
+
+    public GameServer(String hostname, int port) {
+        Configuration config = new Configuration();
+        config.setHostname(hostname);
+        config.setPort(port);
+
+        mServer = new SocketIOServer(config);
+        setEventListeners();
+    }
+
+    // CLASSES:
 
     public class Events {
         public static final String START_GAME_CLIENT = "StartGameClient";
@@ -33,27 +48,37 @@ public class GameServer {
     }
 
     public class User {
+        // FIELDS:
+
         public SocketIOClient client;
 
+        // CONSTRUCTORS:
         public User(SocketIOClient client) {
             this.client = client;
         }
 
+        // METHODS:
+
         public void shout() {
-            System.out.println("I'm gay!");
+            System.out.println("Hooray!");
         }
     }
 
-    public GameServer(String hostname, int port) {
-        Configuration config = new Configuration();
-        config.setHostname(hostname);
-        config.setPort(port);
-        mServer = new SocketIOServer(config);
+    // METHODS:
+
+    // setEventListeners sets the listeners for the SocketIO server.
+    private void setEventListeners() {
+        mServer.addConnectListener(client -> {
+            System.out.println("[DEBUG] Client connected to server");
+        });
+
+        mServer.addEventListener(Events.START_GAME_CLIENT, String.class, (client, data, ackRequest) -> {
+            mUsers.add(new User(client));
+        });
     }
 
+    // startServer starts up the SocketIO server.
     public void startServer() {
-        setEventListeners();
-
         mServer.start();
 
         try {
@@ -65,13 +90,9 @@ public class GameServer {
         mServer.stop();
     }
 
-    private void setEventListeners() {
-        mServer.addConnectListener(client -> {
-            System.out.println("[DEBUG] Client connected to server");
-        });
+    // MAIN:
 
-        mServer.addEventListener(Events.START_GAME_CLIENT, String.class, (client, data, ackRequest) -> {
-            mUsers.add(new User(client));
-        });
+    public static void main(String[] args) {
+        (new GameServer("127.0.0.1", 8087)).startServer();
     }
 }
