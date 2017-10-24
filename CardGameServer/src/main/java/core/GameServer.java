@@ -1,10 +1,8 @@
 package core;
 
-import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
-import com.corundumstudio.socketio.listener.DataListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,6 +91,6 @@ public class GameServer {
     // MAIN:
 
     public static void main(String[] args) {
-        (new GameServer("127.0.0.1", 8087)).startServer();
+        (new GameServer("127.0.0.1", 8300)).startServer();
     }
 }
