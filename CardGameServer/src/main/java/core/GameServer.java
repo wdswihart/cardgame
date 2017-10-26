@@ -3,7 +3,13 @@ package core;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
+import io.netty.channel.ChannelHandlerContext;
+import org.w3c.dom.events.Event;
+
+import java.beans.ExceptionListener;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
 
 public class GameServer {
@@ -68,6 +74,32 @@ public class GameServer {
     private void setEventListeners() {
         mServer.addConnectListener(client -> {
             System.out.println("[DEBUG] Client connected to server");
+        });
+
+        mServer.addDisconnectListener(client -> {
+            System.out.print("[DEBUG] Client disconnected.");
+        });
+
+        mServer.addListeners(new com.corundumstudio.socketio.listener.ExceptionListener() {
+            @Override
+            public void onEventException(Exception e, List<Object> args, SocketIOClient client) {
+
+            }
+
+            @Override
+            public void onDisconnectException(Exception e, SocketIOClient client) {
+                System.err.println("[ERROR] Connection forcibly closed by remote host.");
+            }
+
+            @Override
+            public void onConnectException(Exception e, SocketIOClient client) {
+
+            }
+
+            @Override
+            public boolean exceptionCaught(ChannelHandlerContext ctx, Throwable e) throws Exception {
+                return false;
+            }
         });
 
         mServer.addEventListener(Events.START_GAME_CLIENT, String.class, (client, data, ackRequest) -> {

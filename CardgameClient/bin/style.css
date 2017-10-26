@@ -1,0 +1,28 @@
+.button {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-border-color: black;
+    -fx-border-width: 2;
+}
+
+.button:hover {
+    -fx-background-color: #333333;
+    -fx-border-color: lime;
+}
+
+.root {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+}
+
+.label {
+    -fx-fill: white;
+}
+
+.menu {
+    -fx-background-color: chartreuse;
+}
+
+.scroll-pane {
+    -fx-pref-width: 100%;
+}

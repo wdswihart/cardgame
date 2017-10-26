@@ -2,15 +2,14 @@ package core;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
 
-import javax.print.URIException;
+import java.net.URI;
 import java.net.URISyntaxException;
 
 public class ConnectionProvider {
     // FIELDS:
 
-    private static Socket mClient;
+    private static Socket mSocket;
 
     // CONSTRUCTORS:
 
@@ -18,17 +17,13 @@ public class ConnectionProvider {
         IO.Options opts = new IO.Options();
         opts.host = hostname;
         opts.port = port;
+        
+        opts.forceNew = true; //DEBUG
+        opts.reconnection = false; //DEBUG
 
         try {
-            mClient = IO.socket(hostname, opts);
-            mClient.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    mClient.send("hallo");
-                    mClient.disconnect();
-                }
-            });
-            mClient.open();
+            mSocket = IO.socket("http://" + hostname + ':' + Integer.toString(port));
+            mSocket.connect();
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
