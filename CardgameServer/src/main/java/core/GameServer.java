@@ -27,11 +27,16 @@ public class GameServer {
 
         mServer = new SocketIOServer(config);
         setEventListeners();
+
+
     }
 
     // CLASSES:
 
     public class Events {
+        public static final String LOGIN = "Login";
+        public static final String PLAYER_JOINED = "PlayerJoined";
+
         public static final String START_GAME_CLIENT = "StartGameClient";
         public static final String START_GAME_SERVER = "StartGameServer";
 
@@ -74,36 +79,20 @@ public class GameServer {
     private void setEventListeners() {
         mServer.addConnectListener(client -> {
             System.out.println("[DEBUG] Client connected to server");
+
+            User user = new User(client);
+            mUsers.add(user);
+
+            client.joinRoom("lobby");
+
+            mServer.getRoomOperations("lobby").sendEvent(Events.PLAYER_JOINED, client.getRemoteAddress() + " joined the lobby.");
         });
 
         mServer.addDisconnectListener(client -> {
             System.out.print("[DEBUG] Client disconnected.");
         });
 
-        mServer.addListeners(new com.corundumstudio.socketio.listener.ExceptionListener() {
-            @Override
-            public void onEventException(Exception e, List<Object> args, SocketIOClient client) {
-
-            }
-
-            @Override
-            public void onDisconnectException(Exception e, SocketIOClient client) {
-                System.err.println("[ERROR] Connection forcibly closed by remote host.");
-            }
-
-            @Override
-            public void onConnectException(Exception e, SocketIOClient client) {
-
-            }
-
-            @Override
-            public boolean exceptionCaught(ChannelHandlerContext ctx, Throwable e) throws Exception {
-                return false;
-            }
-        });
-
         mServer.addEventListener(Events.START_GAME_CLIENT, String.class, (client, data, ackRequest) -> {
-            mUsers.add(new User(client));
         });
     }
 

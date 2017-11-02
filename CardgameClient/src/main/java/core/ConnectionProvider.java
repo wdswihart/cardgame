@@ -6,10 +6,21 @@ import io.socket.client.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
+
+import java.util.Scanner;
+
 public class ConnectionProvider {
     // FIELDS:
 
     private static Socket mSocket;
+
+    // CLASSES:
+
+    public class Events {
+        public static final String PLAYER_JOINED = "PlayerJoined";
+        public static final String CHAT = "Chat";
+    }
 
     // CONSTRUCTORS:
 
@@ -23,7 +34,12 @@ public class ConnectionProvider {
 
         try {
             mSocket = IO.socket("http://" + hostname + ':' + Integer.toString(port));
-            mSocket.connect();
+            mSocket.on(Events.PLAYER_JOINED, (obj) -> {
+                System.out.println(obj.toString());
+            }).on(Events.CHAT, (obj) -> {
+                System.out.println(obj.toString());
+            });
+            mSocket.connect();            
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -33,5 +49,11 @@ public class ConnectionProvider {
 
     public static void main(String[] args) {
         ConnectionProvider connectionProvider = new ConnectionProvider("127.0.0.1", 8300);
+
+        Scanner cin = new Scanner(System.in);        
+
+        while (1 == 1) {
+            mSocket.emit(Events.CHAT, "Will: " + cin.nextLine());
+        }
     }
 }
