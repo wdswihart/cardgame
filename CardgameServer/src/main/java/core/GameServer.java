@@ -112,6 +112,6 @@ public class GameServer {
     // MAIN:
 
     public static void main(String[] args) {
-        (new GameServer("127.0.0.1", 8300)).startServer();
+        (new GameServer("127.0.0.1", 55555)).startServer();
     }
 }

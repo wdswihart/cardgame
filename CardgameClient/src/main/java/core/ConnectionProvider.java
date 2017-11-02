@@ -48,12 +48,6 @@ public class ConnectionProvider {
     // MAIN:
 
     public static void main(String[] args) {
-        ConnectionProvider connectionProvider = new ConnectionProvider("127.0.0.1", 8300);
-
-        Scanner cin = new Scanner(System.in);        
-
-        while (1 == 1) {
-            mSocket.emit(Events.CHAT, "Will: " + cin.nextLine());
-        }
+        ConnectionProvider connectionProvider = new ConnectionProvider("127.0.0.1", 55555);
     }
 }
