@@ -1,6 +1,6 @@
 package di;
 
-import core.navigation.INavigationProvider;
+import client.core.navigation.INavigationProvider;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,7 +2,7 @@ package di;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
-import core.navigation.INavigationProvider;
+import client.core.navigation.INavigationProvider;
 
 public class TestNavigationModule implements Module {
     @Override

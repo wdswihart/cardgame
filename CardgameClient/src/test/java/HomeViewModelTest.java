@@ -1,13 +1,12 @@
 import di.TestNavigationProvider;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
-import ui.CardDetailView.CardDetailView;
-import ui.DraggableView.DraggableView;
-import ui.HomeView.HomeViewModel;
+import client.ui.CardDetailView.CardDetailView;
+import client.ui.DraggableView.DraggableView;
+import client.ui.HomeView.HomeViewModel;
 
 import static org.junit.Assert.assertEquals;
 

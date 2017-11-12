@@ -92,8 +92,7 @@ public class GameServer {
             System.out.print("[DEBUG] Client disconnected.");
         });
 
-        mServer.addEventListener(Events.START_GAME_CLIENT, String.class, (client, data, ackRequest) -> {
-        });
+        mServer.addEventListener(Events.LOGIN, LoginData);
     }
 
     // startServer starts up the SocketIO server.

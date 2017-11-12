@@ -25,7 +25,7 @@ JavaFX uses the MVC architecture, which has a Model, a View, and a Controller.
 MvvmFX takes the JavaFX MVC architecture and wraps MVVM around it. 
 
 ### Model
-The model holds all of the data. This would be the Card, Deck, etc.
+The client.model holds all of the data. This would be the Card, Deck, etc.
 These have not been implemented yet.
 
 ### View
@@ -73,18 +73,18 @@ class ExampleView implements FxmlView<ExampleViewModel> {
 ```
 
 There is really one main take away from the controller
- - Its purpose is to forward everything to the view model via bindings.
+ - Its purpose is to forward everything to the view client.model via bindings.
 
 Looking at what the controller does currently:
 
   ``` class View implements FxmlView<ExampleViewModel> ```
-  - This tells the MvvmFx framework to associate this code-behind to the view model named ViewModel.
+  - This tells the MvvmFx framework to associate this code-behind to the view client.model named ViewModel.
     
   ``` java 
   @InjectViewModel
   private ExampleViewModel viewModel;
   ```
-  - This tells the MvvmFx framework the field that the view model should be injected into. (Just think of this as magic at this point. It takes care of creating the ExampleViewModel and placing it in the field so it is available to use after the ExampleView controller is created.)
+  - This tells the MvvmFx framework the field that the view client.model should be injected into. (Just think of this as magic at this point. It takes care of creating the ExampleViewModel and placing it in the field so it is available to use after the ExampleView controller is created.)
 
 
   ``` java
@@ -99,13 +99,13 @@ Looking at what the controller does currently:
 
 ### ViewModel
 
-The purpose of the view model is to model the view. Crazy right? 
+The purpose of the view client.model is to client.model the view. Crazy right?
 
 Essentially, it should hold a data object (not a gui component) that can represent the data being displayed on the view. 
 
 It also handles the business logic such as navigation or interacting with an api.
 
-A view model to continue our previous view+controller example would look like this:
+A view client.model to continue our previous view+controller example would look like this:
 
 ```java
 
@@ -117,7 +117,7 @@ class ExampleViewModel implements ViewModel {
 
 That's it. Of course its not very useful at this point, but it will be injected into the ExampleView controller when the view is created.
 
-For a useful example, lets bind a button to some object in the view model so we can interact with it there, away from GUI components. 
+For a useful example, lets bind a button to some object in the view client.model so we can interact with it there, away from GUI components.
 
 There is an object in the MvvmFx framework called ``` Command ``` that was created for this purpose. It allows you to see if a task is currently running or able to be executed via properties. (Great for loading indicators/Disabling UI elements)
 
@@ -150,7 +150,7 @@ A simple getter is also included to access our command from the ExampleView cont
 
 ---
 
-Now we have everything in place to bind our button to this view model. This will require changes only in the ExampleView controller.
+Now we have everything in place to bind our button to this view client.model. This will require changes only in the ExampleView controller.
 
 ```java
 
@@ -169,7 +169,7 @@ class ExampleView implements FxmlView<ExampleViewModel> {
 
 ```
 
-Simply call the execute method on the Command property you exposed on your view model.
+Simply call the execute method on the Command property you exposed on your view client.model.
 
 ---
 
