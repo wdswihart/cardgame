@@ -10,13 +10,16 @@ public class LoginView implements FxmlView<LoginViewModel> {
     @InjectViewModel
     public LoginViewModel mViewModel;
 
+    @FXML
     public TextField mUsernameField;
+    @FXML
     public TextField mPasswordField;
+    @FXML
     public Button mLoginButton;
 
-    public void instantiate() {
-        mUsernameField.textProperty().bind(mViewModel.getUsernameProperty());
-        mPasswordField.textProperty().bind(mViewModel.getPasswordProperty());
+    public void initialize() {
+        mUsernameField.textProperty().bindBidirectional(mViewModel.getUsernameProperty());
+        mPasswordField.textProperty().bindBidirectional(mViewModel.getPasswordProperty());
     }
 
     @FXML

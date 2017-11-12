@@ -1,8 +1,10 @@
 package client.model;
 
-public class User extends ModelBase {
-    // FIELDS:
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.io.Serializable;
+
+public class User extends ModelBase {
     private String mUsername = "";
     private String mPassword = "";
 
@@ -13,8 +15,6 @@ public class User extends ModelBase {
 
     public User() {
     }
-
-    // SETTERS & GETTERS:
 
     public String getUsername() {
         return mUsername;
@@ -33,7 +33,8 @@ public class User extends ModelBase {
     }
 
     @Override
-    public boolean isNull() {
+    @JsonIgnore
+    public boolean isDefault() {
         return mUsername.isEmpty();
     }
 }

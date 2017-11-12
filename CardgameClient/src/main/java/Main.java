@@ -34,5 +34,9 @@ public class Main extends MvvmfxGuiceApplication {
 
         NavigationProvider.getInstance().navigateTo(LoginView.class);
         stage.show();
+
+        new Thread(() -> {
+            new server.GameServer("127.0.0.1", 8087).startServer();
+        }).run();
     }
 }

@@ -9,17 +9,15 @@ import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 
 import java.util.Observable;
 import java.util.Observer;
-import java.util.concurrent.Executor;
 
 public class LoginViewModel extends BaseViewModel implements Observer {
     // METHODS:
 
-    private SimpleStringProperty mUsernameProperty = new SimpleStringProperty();
-    private SimpleStringProperty mPasswordProperty = new SimpleStringProperty();
+    private SimpleStringProperty mUsernameProperty = new SimpleStringProperty("");
+    private SimpleStringProperty mPasswordProperty = new SimpleStringProperty("");
 
     private Command mLoginCommand;
 
@@ -34,7 +32,7 @@ public class LoginViewModel extends BaseViewModel implements Observer {
         mLoginCommand = new DelegateCommand(() -> new Action() {
             @Override
             protected void action() throws Exception {
-                mConnectionProvider.loginUser(mUsernameProperty.toString(), mPasswordProperty.toString());
+                mConnectionProvider.loginUser(mUsernameProperty.getValue(), mPasswordProperty.getValue());
             }
         });
     }
@@ -43,7 +41,7 @@ public class LoginViewModel extends BaseViewModel implements Observer {
     public void update(Observable o, Object arg) {
         User user = (User)o;
 
-        if (!user.isNull()) {
+        if (!user.isDefault()) {
             mNavigationProvider.navigateTo(HomeView.class);
         }
     }

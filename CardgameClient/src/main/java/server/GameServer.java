@@ -5,6 +5,7 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import io.netty.channel.ChannelHandlerContext;
 import org.w3c.dom.events.Event;
+import util.JSONUtils;
 
 import java.beans.ExceptionListener;
 import java.io.IOException;
@@ -27,8 +28,6 @@ public class GameServer {
 
         mServer = new SocketIOServer(config);
         setEventListeners();
-
-
     }
 
     // CLASSES:
@@ -92,16 +91,17 @@ public class GameServer {
             System.out.print("[DEBUG] Client disconnected.");
         });
 
-        mServer.addEventListener(Events.LOGIN, client.model.User.class, (client, data, sender) -> {
-            client.model.User user = new client.model.User();
+        mServer.addEventListener(Events.LOGIN, String.class, (client, data, sender) -> {
+            client.model.User user = JSONUtils.fromJson(data, client.model.User.class);
 
-            if (data.getUsername().equals("tester") && data.getPassword().equals("test")) {
+            if (user.getUsername().equals("tester") && user.getPassword().equals("test")) {
                 System.out.println("tester logged in!");
-                user = data;
+            }
+            else {
+                user = new client.model.User();
             }
 
             client.sendEvent(Events.LOGIN, user);
-            System.out.println("Sending response.");
         });
     }
 
@@ -109,13 +109,13 @@ public class GameServer {
     public void startServer() {
         mServer.start();
 
-        try {
-            Thread.sleep(Integer.MAX_VALUE);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        mServer.stop();
+//        try {
+////            Thread.sleep(Integer.MAX_VALUE);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        mServer.stop();
     }
 
     // MAIN:

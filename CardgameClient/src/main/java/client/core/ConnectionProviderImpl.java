@@ -3,7 +3,7 @@ package client.core;
 import client.core.socketio.SocketIOProvider;
 
 import client.model.User;
-import com.corundumstudio.socketio.SocketIOServer;
+import util.JSONUtils;
 
 import javax.inject.Inject;
 import java.util.Observable;
@@ -29,7 +29,8 @@ public class ConnectionProviderImpl implements ConnectionProvider {
     public ConnectionProviderImpl(SocketIOProvider socketIOProvider) {
         mSocketIOProvider = socketIOProvider;
         mSocketIOProvider.getClient().on(Events.LOGIN, params -> {
-            User user = (User)params[0];
+            User user = JSONUtils.fromJson(params[0], User.class);
+            System.out.println("[LOGIN] Server notified user: " + user.getUsername() + " " + user.getPassword());
             user = (user == null) ? new User() : user;
 
             mUser.notifyObservers(user);
@@ -45,6 +46,7 @@ public class ConnectionProviderImpl implements ConnectionProvider {
 
     @Override
     public void loginUser(String username, String password) {
-        mSocketIOProvider.getClient().emit(Events.LOGIN, new User(username, password));
+        System.out.println("Logging in as [" + username + "] with password [" + password + "]");
+        mSocketIOProvider.getClient().emit(Events.LOGIN, JSONUtils.toJson(new User(username, password)));
     }
 }
