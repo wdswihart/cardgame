@@ -21,4 +21,7 @@ public class HomeView implements FxmlView<HomeViewModel> {
     public void showDraggableViewAction() {
         mHomeViewModel.getShowDraggableViewCommand().execute();
     }
+
+    @FXML
+    public void logoutAction() { mHomeViewModel.getLogoutCommand().execute(); }
 }

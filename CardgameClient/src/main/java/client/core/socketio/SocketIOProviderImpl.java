@@ -33,4 +33,9 @@ public class SocketIOProviderImpl implements SocketIOProvider {
 
         return sSocketIOClient;
     }
+
+    @Override
+    public void finalize() {
+        sSocketIOClient.disconnect();
+    }
 }

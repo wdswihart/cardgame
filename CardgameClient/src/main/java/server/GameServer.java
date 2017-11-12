@@ -30,6 +30,11 @@ public class GameServer {
         setEventListeners();
     }
 
+    @Override
+    public void finalize() {
+        mServer.stop();
+    }
+
     // CLASSES:
 
     public class Events {

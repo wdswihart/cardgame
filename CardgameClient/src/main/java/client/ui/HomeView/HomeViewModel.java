@@ -1,5 +1,6 @@
 package client.ui.HomeView;
 
+import client.core.ConnectionProvider;
 import com.google.inject.Inject;
 import client.ui.BaseViewModel;
 import client.core.navigation.INavigationProvider;
@@ -12,8 +13,12 @@ import client.ui.DraggableView.DraggableView;
 public class HomeViewModel extends BaseViewModel {
     private Command mShowDraggableViewCommand;
     private Command mShowCardDetailViewCommand;
+    private Command mLogoutCommand;
 
-    public HomeViewModel() {
+    @Inject
+    public HomeViewModel(ConnectionProvider connectionProvider, INavigationProvider navigationProvider) {
+        super(connectionProvider, navigationProvider);
+
         mShowCardDetailViewCommand = new DelegateCommand(() -> new Action() {
             @Override
             public void action() {
@@ -27,6 +32,13 @@ public class HomeViewModel extends BaseViewModel {
                 mNavigationProvider.navigateTo(DraggableView.class);
             }
         });
+
+        mLogoutCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                mConnectionProvider.logoutUser();
+            }
+        });
     }
 
     public Command getShowDraggableViewCommand(){
@@ -36,4 +48,6 @@ public class HomeViewModel extends BaseViewModel {
     public Command getShowCardDetailViewCommand() {
         return mShowCardDetailViewCommand;
     }
+
+    public Command getLogoutCommand() { return mLogoutCommand; }
 }

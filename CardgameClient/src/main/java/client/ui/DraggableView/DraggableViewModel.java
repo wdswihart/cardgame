@@ -1,6 +1,9 @@
 package client.ui.DraggableView;
 
+import client.core.ConnectionProvider;
+import client.core.navigation.INavigationProvider;
 import client.ui.BaseViewModel;
+import com.google.inject.Inject;
 import javafx.beans.property.SimpleStringProperty;
 
 public class DraggableViewModel extends BaseViewModel {
@@ -9,6 +12,11 @@ public class DraggableViewModel extends BaseViewModel {
 
     public SimpleStringProperty draggableTextProperty() {
         return draggableText;
+    }
+
+    @Inject
+    public DraggableViewModel(ConnectionProvider connectionProvider, INavigationProvider navigationProvider) {
+        super(connectionProvider, navigationProvider);
     }
 
     public String getDraggableText() {

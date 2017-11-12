@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<VBox xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="client.ui.login.LoginView"
-            prefHeight="400.0" prefWidth="600.0">
-    <TextField fx:id="mUsernameField" />
-    <TextField fx:id="mPasswordField" />
-    <Button fx:id="mLoginButton" text="Login" onAction="#loginAction" />
-</VBox>
+<GridPane alignment="CENTER" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.login.LoginView">
+    <VBox prefWidth="400">
+        <Text fx:id="mErrorText" />
+        <TextField fx:id="mUsernameField" />
+        <TextField fx:id="mPasswordField" />
+        <HBox>
+            <Button fx:id="mLoginButton" onAction="#loginAction" prefWidth="200" text="Login" />
+            <Button fx:id="mCreateAccountButton" onAction="#createAccountAction" prefWidth="200" text="Create Account" />
+        </HBox>
+    </VBox>
+   <columnConstraints>
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+   </rowConstraints>
+</GridPane>

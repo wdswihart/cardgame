@@ -15,6 +15,7 @@ public interface ConnectionProvider {
 
     //Attempts to log the user in and notifies via the property returned by getCurrentUser();
     void loginUser(String username, String password);
+    void logoutUser();
 
     /*
     //Messages

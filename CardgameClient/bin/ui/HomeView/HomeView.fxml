@@ -15,5 +15,6 @@
     <HBox spacing="5" styleClass="menu" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"  maxWidth="Infinity">
         <Button onAction="#showCardDetailViewAction" text="Card Details Demo"/>
         <Button onAction="#showDraggableViewAction" text="Draggable Demo"/>
+        <Button text="Logout" onAction="#logoutAction"/>
     </HBox>
 </AnchorPane>

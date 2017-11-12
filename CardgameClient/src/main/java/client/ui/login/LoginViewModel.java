@@ -1,6 +1,7 @@
 package client.ui.login;
 
 import client.core.ConnectionProvider;
+import client.core.navigation.INavigationProvider;
 import client.model.User;
 import client.ui.BaseViewModel;
 import client.ui.HomeView.HomeView;
@@ -21,22 +22,23 @@ public class LoginViewModel extends BaseViewModel {
 
     private Command mLoginCommand;
 
-    private ConnectionProvider mConnectionProvider;
-
     // CONSTRUCTORS:
 
     @Inject
-    public LoginViewModel(ConnectionProvider connectionProvider) {
-        mConnectionProvider = connectionProvider;
+    public LoginViewModel(ConnectionProvider connectionProvider, INavigationProvider navigationProvider) {
+        super(connectionProvider, navigationProvider);
         mConnectionProvider.getCurrentUser().addListener((obs, oldVal, newVal) -> {
             if (!newVal.isDefault()) {
                 mNavigationProvider.navigateTo(HomeView.class);
+                mErrorProperty.setValue("");
             }
-            else if (oldVal != null && oldVal.isDefault() && newVal.isDefault()) {
-                //TODO: Error message.
+            else if ((oldVal == null || oldVal.isDefault()) && newVal.isDefault()) {
+                //If we are returned a default user, and our old user is default or null, show error.
+                mErrorProperty.setValue("Invalid username or password.");
             }
             else {
-                //TODO: Logout.
+                //TODO: Logout, it doesn't go here actually, but somewhere else. Maybe the BaseViewModel.
+                mErrorProperty.setValue("");
             }
         });
         mLoginCommand = new DelegateCommand(() -> new Action() {

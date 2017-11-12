@@ -47,4 +47,10 @@ public class ConnectionProviderImpl implements ConnectionProvider {
         System.out.println("Logging in as [" + username + "] with password [" + password + "]");
         mSocketIOProvider.getClient().emit(Events.LOGIN, JSONUtils.toJson(new User(username, password)));
     }
+
+    @Override
+    public void logoutUser() {
+        System.out.println("Logging out user: " + mUserProperty.get().getUsername());
+        mSocketIOProvider.getClient().emit(Events.LOGIN, JSONUtils.toJson(new User()));
+    }
 }
