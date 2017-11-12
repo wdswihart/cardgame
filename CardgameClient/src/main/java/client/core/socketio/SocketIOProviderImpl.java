@@ -24,7 +24,7 @@ public class SocketIOProviderImpl implements SocketIOProvider {
             mIsConnected = true;
 
             try {
-                sSocketIOClient = IO.socket("192.168.2.8");
+                sSocketIOClient = IO.socket("http://192.168.2.8");
                 sSocketIOClient.connect();
             } catch (URISyntaxException e) {
                 e.printStackTrace();

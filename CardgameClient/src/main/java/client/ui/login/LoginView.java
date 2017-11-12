@@ -8,7 +8,7 @@ import javafx.scene.control.TextField;
 
 public class LoginView implements FxmlView<LoginViewModel> {
     @InjectViewModel
-    private LoginViewModel mViewModel;
+    public LoginViewModel mViewModel;
 
     public TextField mUsernameField;
     public TextField mPasswordField;

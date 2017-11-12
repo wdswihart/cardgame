@@ -23,12 +23,13 @@ public class LoginViewModel extends BaseViewModel implements Observer {
 
     private Command mLoginCommand;
 
-    @Inject
     private ConnectionProvider mConnectionProvider;
 
     // CONSTRUCTORS:
 
-    public LoginViewModel() {
+    @Inject
+    public LoginViewModel(ConnectionProvider connectionProvider) {
+        mConnectionProvider = connectionProvider;
         mConnectionProvider.getCurrentUser().addObserver(this);
         mLoginCommand = new DelegateCommand(() -> new Action() {
             @Override

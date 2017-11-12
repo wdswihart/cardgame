@@ -3,6 +3,7 @@ package client.core;
 import client.core.socketio.SocketIOProvider;
 
 import client.model.User;
+import com.corundumstudio.socketio.SocketIOServer;
 
 import javax.inject.Inject;
 import java.util.Observable;
@@ -12,7 +13,6 @@ public class ConnectionProviderImpl implements ConnectionProvider {
 
     private Observable mUser = new User("tester", "test");
 
-    @Inject
     private SocketIOProvider mSocketIOProvider;
 
     // CLASSES:
@@ -25,7 +25,9 @@ public class ConnectionProviderImpl implements ConnectionProvider {
 
     // CONSTRUCTORS:
 
-    public ConnectionProviderImpl() {
+    @Inject
+    public ConnectionProviderImpl(SocketIOProvider socketIOProvider) {
+        mSocketIOProvider = socketIOProvider;
         mSocketIOProvider.getClient().on(Events.LOGIN, params -> {
             User user = (User)params[0];
             user = (user == null) ? new User() : user;
