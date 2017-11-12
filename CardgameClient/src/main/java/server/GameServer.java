@@ -1,5 +1,7 @@
 package server;
 
+import client.model.User;
+import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -9,15 +11,15 @@ import util.JSONUtils;
 
 import java.beans.ExceptionListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.List;
+import java.util.*;
 
 public class GameServer {
     // FIELDS:
 
     private SocketIOServer mServer;
     private List<User> mUsers = new ArrayList<>();
+
+    private Map<String, client.model.User> mRegisteredUsers = new HashMap();
 
     // CONSTRUCTORS:
 
@@ -39,6 +41,7 @@ public class GameServer {
 
     public class Events {
         public static final String LOGIN = "Login";
+        public static final String CREATE_ACCOUNT = "CreateAccount";
         public static final String PLAYER_JOINED = "PlayerJoined";
 
         public static final String START_GAME_CLIENT = "StartGameClient";
@@ -62,7 +65,6 @@ public class GameServer {
 
     public class User {
         // FIELDS:
-
         public SocketIOClient client;
 
         // CONSTRUCTORS:
@@ -70,11 +72,6 @@ public class GameServer {
             this.client = client;
         }
 
-        // METHODS:
-
-        public void shout() {
-            System.out.println("Hooray!");
-        }
     }
 
     // METHODS:
@@ -96,36 +93,38 @@ public class GameServer {
             System.out.print("[DEBUG] Client disconnected.");
         });
 
-        mServer.addEventListener(Events.LOGIN, String.class, (client, data, sender) -> {
-            client.model.User user = JSONUtils.fromJson(data, client.model.User.class);
-
-            if (user.getUsername().equals("tester") && user.getPassword().equals("test")) {
-                System.out.println("tester logged in!");
-            }
-            else {
-                user = new client.model.User();
-            }
-
-            client.sendEvent(Events.LOGIN, user);
-        });
+        mServer.addEventListener(Events.LOGIN, String.class, this::handleLoginEvent);
+        mServer.addEventListener(Events.CREATE_ACCOUNT, String.class, this::handleCreateAccountEvent);
     }
 
     // startServer starts up the SocketIO server.
     public void startServer() {
         mServer.start();
-
-//        try {
-////            Thread.sleep(Integer.MAX_VALUE);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//
-//        mServer.stop();
     }
 
-    // MAIN:
+    private void handleLoginEvent(SocketIOClient client, String data, AckRequest ack) {
+        client.model.User user = JSONUtils.fromJson(data, client.model.User.class);
+        user = (user == null) ? new client.model.User() : user;
 
-    public static void main(String[] args) {
-        (new GameServer("127.0.0.1", 55555)).startServer();
+        if (!mRegisteredUsers.containsKey(user.getUsername()) ||
+                !mRegisteredUsers.get(user.getUsername()).getPassword().equals(user.getPassword())) {
+            client.sendEvent(Events.LOGIN, new client.model.User());
+            return;
+        }
+
+        client.sendEvent(Events.LOGIN, user);
+    }
+
+    private void handleCreateAccountEvent(SocketIOClient client, String data, AckRequest ack) {
+        client.model.User user = JSONUtils.fromJson(data, client.model.User.class);
+
+        if (mRegisteredUsers.containsKey(user.getUsername())) {
+            //Error existing user.
+            client.sendEvent(Events.CREATE_ACCOUNT, new client.model.User());
+            return;
+        }
+
+        mRegisteredUsers.put(user.getUsername(), user);
+        client.sendEvent(Events.CREATE_ACCOUNT, user);
     }
 }

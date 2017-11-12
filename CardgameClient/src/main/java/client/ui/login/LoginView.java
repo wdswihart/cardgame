@@ -32,5 +32,7 @@ public class LoginView implements FxmlView<LoginViewModel> {
     }
 
     @FXML
-    private void createAccountAction() {}
+    private void createAccountAction() {
+        mViewModel.getShowCreateAccountViewCommand().execute();
+    }
 }

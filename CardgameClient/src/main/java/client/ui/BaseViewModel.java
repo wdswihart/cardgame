@@ -46,17 +46,5 @@ public class BaseViewModel implements ViewModel {
                 mNavigationProvider.navigatePrevious();
             }
         });
-
-        //Logout if we get notified an empty user.
-        mConnectionProvider.getCurrentUser().addListener(this::logoutListener);
-    }
-
-    private void logoutListener(Observable observable, User oldUser, User newUser) {
-        if (newUser.isDefault()) {
-            mNavigationProvider.navigateTo(LoginView.class);
-
-            //Remove the listener if we ever do actually logout.
-            mConnectionProvider.getCurrentUser().removeListener(this::logoutListener);
-        }
     }
 }

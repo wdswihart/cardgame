@@ -11,11 +11,13 @@ public interface ConnectionProvider {
     //Thoughts are if you are notified a valid user, you are authenticated.
     //If you are notified an empty user, that would be logged out if authenticated.
     //If you are notified an empty user and you were not logged in, you failed to validate your credentials.
-    ObjectProperty<User> getCurrentUser();
+    ObjectProperty<User> getAuthenticatedUser();
+    ObjectProperty<User> getCreatedUser();
 
-    //Attempts to log the user in and notifies via the property returned by getCurrentUser();
+    //Attempts to log the user in and notifies via the property returned by getAuthenticatedUser();
     void loginUser(String username, String password);
     void logoutUser();
+    void createAccount(String username, String password);
 
     /*
     //Messages

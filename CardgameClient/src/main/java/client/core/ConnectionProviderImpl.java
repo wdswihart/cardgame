@@ -13,13 +13,16 @@ import javax.inject.Singleton;
 @Singleton
 public class ConnectionProviderImpl implements ConnectionProvider {
 
-    private ObjectProperty<User> mUserProperty = new SimpleObjectProperty<>();
+    private ObjectProperty<User> mAuthenticatedUserProperty = new SimpleObjectProperty<>();
+    private ObjectProperty<User> mCreatedUserProperty = new SimpleObjectProperty<>();
+
     private SocketIOProvider mSocketIOProvider;
 
     public class Events {
         public static final String PLAYER_JOINED = "PlayerJoined";
         public static final String CHAT = "Chat";
         public static final String LOGIN = "Login";
+        public static final String CREATE_ACCOUNT = "CreateAccount";
     }
 
     // CONSTRUCTORS:
@@ -27,19 +30,34 @@ public class ConnectionProviderImpl implements ConnectionProvider {
     @Inject
     public ConnectionProviderImpl(SocketIOProvider socketIOProvider) {
         mSocketIOProvider = socketIOProvider;
+
         mSocketIOProvider.getClient().on(Events.LOGIN, params -> {
             User user = JSONUtils.fromJson(params[0], User.class);
-            System.out.println("[LOGIN] Server notified user: " + user.getUsername() + " " + user.getPassword());
             user = (user == null) ? new User() : user;
-            mUserProperty.setValue(user);
+
+            System.out.println("[LOGIN] Server notified user: " + user.getUsername() + " " + user.getPassword());
+            mAuthenticatedUserProperty.setValue(user);
+        });
+
+        mSocketIOProvider.getClient().on(Events.CREATE_ACCOUNT, params -> {
+            User user = JSONUtils.fromJson(params[0], User.class);
+            user = (user == null) ? new User() : user;
+
+            System.out.println("[CREATE_ACCOUNT] Server notified user: " + user.getUsername() + " " + user.getPassword());
+            mCreatedUserProperty.setValue(user);
         });
     }
 
     // METHODS:
 
     @Override
-    public ObjectProperty<User> getCurrentUser() {
-        return mUserProperty;
+    public ObjectProperty<User> getAuthenticatedUser() {
+        return mAuthenticatedUserProperty;
+    }
+
+    @Override
+    public ObjectProperty<User> getCreatedUser() {
+        return mCreatedUserProperty;
     }
 
     @Override
@@ -50,7 +68,13 @@ public class ConnectionProviderImpl implements ConnectionProvider {
 
     @Override
     public void logoutUser() {
-        System.out.println("Logging out user: " + mUserProperty.get().getUsername());
+        System.out.println("Logging out user: " + mAuthenticatedUserProperty.get().getUsername());
         mSocketIOProvider.getClient().emit(Events.LOGIN, JSONUtils.toJson(new User()));
+    }
+
+    @Override
+    public void createAccount(String username, String password) {
+        System.out.println("Creating account for: " + username);
+        mSocketIOProvider.getClient().emit(Events.CREATE_ACCOUNT, JSONUtils.toJson(new User(username, password)));
     }
 }
