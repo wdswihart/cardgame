@@ -3,19 +3,18 @@ package client.core;
 import client.core.socketio.SocketIOProvider;
 
 import client.model.User;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import util.JSONUtils;
 
 import javax.inject.Inject;
-import java.util.Observable;
+import javax.inject.Singleton;
 
+@Singleton
 public class ConnectionProviderImpl implements ConnectionProvider {
-    // FIELDS:
 
-    private Observable mUser = new User("tester", "test");
-
+    private ObjectProperty<User> mUserProperty = new SimpleObjectProperty<>();
     private SocketIOProvider mSocketIOProvider;
-
-    // CLASSES:
 
     public class Events {
         public static final String PLAYER_JOINED = "PlayerJoined";
@@ -32,16 +31,15 @@ public class ConnectionProviderImpl implements ConnectionProvider {
             User user = JSONUtils.fromJson(params[0], User.class);
             System.out.println("[LOGIN] Server notified user: " + user.getUsername() + " " + user.getPassword());
             user = (user == null) ? new User() : user;
-
-            mUser.notifyObservers(user);
+            mUserProperty.setValue(user);
         });
     }
 
     // METHODS:
 
     @Override
-    public Observable getCurrentUser() {
-        return mUser;
+    public ObjectProperty<User> getCurrentUser() {
+        return mUserProperty;
     }
 
     @Override

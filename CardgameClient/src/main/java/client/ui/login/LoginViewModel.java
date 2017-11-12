@@ -13,7 +13,7 @@ import javafx.beans.property.SimpleStringProperty;
 import java.util.Observable;
 import java.util.Observer;
 
-public class LoginViewModel extends BaseViewModel implements Observer {
+public class LoginViewModel extends BaseViewModel {
     // METHODS:
 
     private SimpleStringProperty mUsernameProperty = new SimpleStringProperty("");
@@ -28,22 +28,23 @@ public class LoginViewModel extends BaseViewModel implements Observer {
     @Inject
     public LoginViewModel(ConnectionProvider connectionProvider) {
         mConnectionProvider = connectionProvider;
-        mConnectionProvider.getCurrentUser().addObserver(this);
+        mConnectionProvider.getCurrentUser().addListener((obs, oldVal, newVal) -> {
+            if (!newVal.isDefault()) {
+                mNavigationProvider.navigateTo(HomeView.class);
+            }
+            else if (oldVal != null && oldVal.isDefault() && newVal.isDefault()) {
+                //TODO: Error message.
+            }
+            else {
+                //TODO: Logout.
+            }
+        });
         mLoginCommand = new DelegateCommand(() -> new Action() {
             @Override
             protected void action() throws Exception {
                 mConnectionProvider.loginUser(mUsernameProperty.getValue(), mPasswordProperty.getValue());
             }
         });
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        User user = (User)o;
-
-        if (!user.isDefault()) {
-            mNavigationProvider.navigateTo(HomeView.class);
-        }
     }
 
     public SimpleStringProperty getUsernameProperty() {

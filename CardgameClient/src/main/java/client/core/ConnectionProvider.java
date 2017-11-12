@@ -1,5 +1,9 @@
 package client.core;
 
+import client.model.User;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.ObservableObjectValue;
+
 import java.util.Observable;
 
 public interface ConnectionProvider {
@@ -7,7 +11,7 @@ public interface ConnectionProvider {
     //Thoughts are if you are notified a valid user, you are authenticated.
     //If you are notified an empty user, that would be logged out if authenticated.
     //If you are notified an empty user and you were not logged in, you failed to validate your credentials.
-    Observable getCurrentUser();
+    ObjectProperty<User> getCurrentUser();
 
     //Attempts to log the user in and notifies via the property returned by getCurrentUser();
     void loginUser(String username, String password);
