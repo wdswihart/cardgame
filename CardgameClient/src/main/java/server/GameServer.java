@@ -5,8 +5,11 @@ import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
+import com.google.inject.Inject;
 import io.netty.channel.ChannelHandlerContext;
 import org.w3c.dom.events.Event;
+import server.configuration.ConfigurationProvider;
+import storage.StorageProvider;
 import util.JSONUtils;
 
 import java.beans.ExceptionListener;
@@ -14,19 +17,19 @@ import java.io.IOException;
 import java.util.*;
 
 public class GameServer {
-    // FIELDS:
+    private StorageProvider mStorageProvider;
+    private ConfigurationProvider mConfigurationProvider;
 
     private SocketIOServer mServer;
-    private List<User> mUsers = new ArrayList<>();
 
-    private Map<String, client.model.User> mRegisteredUsers = new HashMap();
+    @Inject
+    public GameServer(StorageProvider storageProvider, ConfigurationProvider configurationProvider) {
+        mStorageProvider = storageProvider;
+        mConfigurationProvider = configurationProvider;
 
-    // CONSTRUCTORS:
-
-    public GameServer(String hostname, int port) {
         Configuration config = new Configuration();
-        config.setHostname(hostname);
-        config.setPort(port);
+        config.setHostname(mConfigurationProvider.getHost());
+        config.setPort(mConfigurationProvider.getPort());
 
         mServer = new SocketIOServer(config);
         setEventListeners();
@@ -36,8 +39,6 @@ public class GameServer {
     public void finalize() {
         mServer.stop();
     }
-
-    // CLASSES:
 
     public class Events {
         public static final String LOGIN = "Login";
@@ -81,9 +82,6 @@ public class GameServer {
         mServer.addConnectListener(client -> {
             System.out.println("[DEBUG] Client connected to server");
 
-            User user = new User(client);
-            mUsers.add(user);
-
             client.joinRoom("lobby");
 
             mServer.getRoomOperations("lobby").sendEvent(Events.PLAYER_JOINED, client.getRemoteAddress() + " joined the lobby.");
@@ -106,8 +104,11 @@ public class GameServer {
         client.model.User user = JSONUtils.fromJson(data, client.model.User.class);
         user = (user == null) ? new client.model.User() : user;
 
-        if (!mRegisteredUsers.containsKey(user.getUsername()) ||
-                !mRegisteredUsers.get(user.getUsername()).getPassword().equals(user.getPassword())) {
+        Map<String, client.model.User> registeredUsers = mStorageProvider.getRegisteredUsers();
+
+        if (user.isDefault() ||
+                !registeredUsers.containsKey(user.getUsername()) ||
+                !registeredUsers.get(user.getUsername()).getPassword().equals(user.getPassword())) {
             client.sendEvent(Events.LOGIN, new client.model.User());
             return;
         }
@@ -118,13 +119,15 @@ public class GameServer {
     private void handleCreateAccountEvent(SocketIOClient client, String data, AckRequest ack) {
         client.model.User user = JSONUtils.fromJson(data, client.model.User.class);
 
-        if (mRegisteredUsers.containsKey(user.getUsername())) {
+        Map<String, client.model.User> registeredUsers = mStorageProvider.getRegisteredUsers();
+
+        if (registeredUsers.containsKey(user.getUsername())) {
             //Error existing user.
             client.sendEvent(Events.CREATE_ACCOUNT, new client.model.User());
             return;
         }
 
-        mRegisteredUsers.put(user.getUsername(), user);
+        mStorageProvider.addRegisteredUser(user);
         client.sendEvent(Events.CREATE_ACCOUNT, user);
     }
 }

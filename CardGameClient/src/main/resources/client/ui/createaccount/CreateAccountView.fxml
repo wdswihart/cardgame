@@ -16,8 +16,11 @@
     <VBox prefWidth="400">
         <Text fx:id="mErrorText" />
 
+        <Text text="Username"/>
         <TextField fx:id="mUsernameField"/>
+        <Text text="Password"/>
         <TextField fx:id="mPasswordField"/>
+        <Text text="Re-enter Password"/>
         <TextField fx:id="mPasswordAgainField"/>
 
         <HBox>
