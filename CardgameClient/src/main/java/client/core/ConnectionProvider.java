@@ -2,9 +2,7 @@ package client.core;
 
 import client.model.User;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.value.ObservableObjectValue;
-
-import java.util.Observable;
+import javafx.collections.ObservableList;
 
 public interface ConnectionProvider {
     //Returns an observable User.
@@ -13,11 +11,13 @@ public interface ConnectionProvider {
     //If you are notified an empty user and you were not logged in, you failed to validate your credentials.
     ObjectProperty<User> getAuthenticatedUser();
     ObjectProperty<User> getCreatedUser();
+    ObjectProperty<ObservableList<User>> getActiveUsers();
 
     //Attempts to log the user in and notifies via the property returned by getAuthenticatedUser();
     void loginUser(String username, String password);
     void logoutUser();
     void createAccount(String username, String password);
+
 
     /*
     //Messages

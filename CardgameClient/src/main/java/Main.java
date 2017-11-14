@@ -7,13 +7,19 @@ import javafx.stage.Stage;
 import server.GameServer;
 import util.GuiceUtils;
 
+import java.io.IOException;
 import java.util.List;
 
 public class Main extends MvvmfxGuiceApplication {
 
     public static void main(String[] args) {
         new Thread(() -> {
-            GuiceUtils.getInjector().getInstance(GameServer.class).startServer();
+            try {
+                GuiceUtils.getInjector().getInstance(GameServer.class).startServer();
+            }
+            catch (Exception e) {
+                System.out.printf("Server failed to start.");
+            }
         }).run();
 
         launch(args);

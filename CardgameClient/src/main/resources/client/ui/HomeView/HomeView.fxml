@@ -1,15 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="client.ui.HomeView.HomeView"
-            styleClass="root">
-    <HBox spacing="5" styleClass="menu" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"  maxWidth="Infinity">
-        <Button onAction="#showCardDetailViewAction" text="Card Details Demo"/>
-        <Button onAction="#showDraggableViewAction" text="Draggable Demo"/>
+<GridPane styleClass="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.HomeView.HomeView">
+    <rowConstraints>
+        <RowConstraints percentHeight="5" />
+        <RowConstraints percentHeight="95" />
+    </rowConstraints>
+
+    <HBox maxWidth="Infinity" spacing="5" styleClass="menu" GridPane.rowIndex="0">
+        <Button onAction="#showCardDetailViewAction" text="Card Details Demo" />
+        <Button onAction="#showDraggableViewAction" text="Draggable Demo" />
         <Button onAction="#logoutAction" text="Logout" />
     </HBox>
-</AnchorPane>
+    <GridPane GridPane.rowIndex="1">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="20" />
+            <ColumnConstraints percentWidth="80" />
+        </columnConstraints>
+        <VBox GridPane.columnIndex="0">
+            <Text text="Active Users:" />
+            <ListView fx:id="mActiveUsersListView"/>
+        </VBox>
+        <VBox GridPane.columnIndex="1">
+            <Text text="Lobby Chat:" />
+            <ListView />
+            <GridPane>
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="90" />
+                    <ColumnConstraints percentWidth="10" />
+                </columnConstraints>
+                <TextField GridPane.columnIndex="0" />
+                <Button text="Send" GridPane.columnIndex="1" prefWidth="100" />
+            <rowConstraints>
+               <RowConstraints />
+            </rowConstraints>
+            </GridPane>
+        </VBox>
+      <rowConstraints>
+         <RowConstraints />
+      </rowConstraints>
+    </GridPane>
+   <columnConstraints>
+      <ColumnConstraints />
+   </columnConstraints>
+</GridPane>

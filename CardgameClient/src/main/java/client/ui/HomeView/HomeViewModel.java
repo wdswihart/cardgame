@@ -12,11 +12,16 @@ import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import client.ui.CardDetailView.CardDetailView;
 import client.ui.DraggableView.DraggableView;
 import javafx.beans.Observable;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ObservableList;
 
 public class HomeViewModel extends BaseViewModel {
     private Command mShowDraggableViewCommand;
     private Command mShowCardDetailViewCommand;
     private Command mLogoutCommand;
+
+    private ObjectProperty<ObservableList<User>> mActiveUserProperty = new SimpleObjectProperty<>();
 
     @Inject
     public HomeViewModel(ConnectionProvider connectionProvider, INavigationProvider navigationProvider) {
@@ -44,6 +49,12 @@ public class HomeViewModel extends BaseViewModel {
                 mConnectionProvider.logoutUser();
             }
         });
+
+        mActiveUserProperty = mConnectionProvider.getActiveUsers();
+    }
+
+    public ObjectProperty<ObservableList<User>> getActiveUserProperty() {
+        return mActiveUserProperty;
     }
 
     public Command getShowDraggableViewCommand(){
