@@ -18,6 +18,9 @@ public interface ConnectionProvider {
     void logoutUser();
     void createAccount(String username, String password);
 
+    //Connects to host.
+    void connectToHost(String host) throws Exception;
+
 
     /*
     //Messages

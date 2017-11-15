@@ -9,16 +9,20 @@ import com.google.inject.Inject;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 
 public class LoginViewModel extends BaseViewModel {
     // METHODS:
 
-    private SimpleStringProperty mUsernameProperty = new SimpleStringProperty("");
-    private SimpleStringProperty mPasswordProperty = new SimpleStringProperty("");
+    private Property<String> mUsernameProperty = new SimpleStringProperty("");
+    private Property<String> mPasswordProperty = new SimpleStringProperty("");
+    private Property<String> mServerAddressProperty = new SimpleStringProperty("http://127.0.0.1:8087");
 
     private Command mLoginCommand;
     private Command mShowCreateAccountViewCommand;
+
+    private String mLastServerAddress = "http://127.0.0.1:8087";
 
     // CONSTRUCTORS:
 
@@ -43,7 +47,21 @@ public class LoginViewModel extends BaseViewModel {
         mLoginCommand = new DelegateCommand(() -> new Action() {
             @Override
             protected void action() throws Exception {
-                mConnectionProvider.loginUser(mUsernameProperty.getValue(), mPasswordProperty.getValue());
+                if (mServerAddressProperty.getValue().isEmpty()) {
+                    mServerAddressProperty.setValue("http://127.0.0.1:8087");
+                }
+
+                try {
+                    if (!mLastServerAddress.equals(mServerAddressProperty.getValue())) {
+                        mConnectionProvider.connectToHost(mServerAddressProperty.getValue());
+                        mLastServerAddress = mServerAddressProperty.getValue();
+                    }
+
+                    mConnectionProvider.loginUser(mUsernameProperty.getValue(), mPasswordProperty.getValue());
+                }
+                catch (Exception e) {
+                    mErrorProperty.setValue("Error connecting to " + mServerAddressProperty.getValue());
+                }
             }
         });
 
@@ -55,12 +73,16 @@ public class LoginViewModel extends BaseViewModel {
         });
     }
 
-    public SimpleStringProperty getUsernameProperty() {
+    public Property<String> getUsernameProperty() {
         return mUsernameProperty;
     }
 
-    public SimpleStringProperty getPasswordProperty() {
+    public Property<String> getPasswordProperty() {
         return mPasswordProperty;
+    }
+
+    public Property<String> getServerAddressProperty() {
+        return mServerAddressProperty;
     }
 
     public Command getLoginCommand() {
@@ -68,4 +90,9 @@ public class LoginViewModel extends BaseViewModel {
     }
 
     public Command getShowCreateAccountViewCommand() { return mShowCreateAccountViewCommand; }
+
+
+    public void setmServerAddressProperty(Property<String> mServerAddressProperty) {
+        this.mServerAddressProperty = mServerAddressProperty;
+    }
 }

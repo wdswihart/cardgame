@@ -101,4 +101,9 @@ public class ConnectionProviderImpl implements ConnectionProvider {
         System.out.println("Creating account for: " + username);
         mSocketIOProvider.getClient().emit(Events.CREATE_ACCOUNT, JSONUtils.toJson(new User(username, password)));
     }
+
+    @Override
+    public void connectToHost(String host) throws Exception {
+        mSocketIOProvider.createNewClient(host);
+    }
 }

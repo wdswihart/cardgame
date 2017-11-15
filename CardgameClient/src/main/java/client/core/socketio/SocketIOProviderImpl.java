@@ -35,6 +35,18 @@ public class SocketIOProviderImpl implements SocketIOProvider {
     }
 
     @Override
+    public Socket createNewClient(String host) throws Exception {
+        if (mIsConnected) {
+            sSocketIOClient.disconnect();
+        }
+
+        sSocketIOClient = IO.socket(host);
+        sSocketIOClient.connect();
+
+        return sSocketIOClient;
+    }
+
+    @Override
     public void finalize() {
         sSocketIOClient.disconnect();
     }
