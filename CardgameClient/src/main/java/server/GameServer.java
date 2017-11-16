@@ -75,6 +75,7 @@ public class GameServer {
 
         mServer.addEventListener(Events.LOGIN, String.class, this::handleLoginEvent);
         mServer.addEventListener(Events.CREATE_ACCOUNT, String.class, this::handleCreateAccountEvent);
+        mServer.addEventListener(Events.CHAT, String.class, this::handleChatEvent);
     }
 
     // startServer starts up the SocketIO server.
@@ -115,6 +116,15 @@ public class GameServer {
 
         mStorageProvider.addRegisteredUser(user);
         client.sendEvent(Events.CREATE_ACCOUNT, user);
+    }
+
+    private void handleChatEvent(SocketIOClient client, String data, AckRequest ack) {
+        if (!mActiveUsers.containsKey(client.getSessionId().toString())) {
+            return;
+        }
+
+        User user = mActiveUsers.get(client.getSessionId().toString());
+        mServer.getBroadcastOperations().sendEvent(Events.CHAT, user.user.getUsername() + ": " + data);
     }
 
     //#region UserManagement

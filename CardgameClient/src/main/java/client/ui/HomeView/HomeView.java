@@ -1,17 +1,13 @@
 package client.ui.HomeView;
 
-import client.converters.UserToStringConverter;
 import client.model.User;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.util.Callback;
-import util.JSONUtils;
+import javafx.scene.control.TextField;
 
 public class HomeView implements FxmlView<HomeViewModel> {
     @InjectViewModel
@@ -19,6 +15,12 @@ public class HomeView implements FxmlView<HomeViewModel> {
 
     @FXML
     public ListView<User> mActiveUsersListView;
+
+    @FXML
+    public TextField mMessageField;
+
+    @FXML
+    public ListView mMessagesList;
 
     public void initialize() {
         mHomeViewModel.getActiveUserProperty().addListener((observable, oldValue, newValue) -> {
@@ -42,6 +44,9 @@ public class HomeView implements FxmlView<HomeViewModel> {
                 }
             };
         });
+
+        mMessageField.textProperty().bindBidirectional(mHomeViewModel.getMessageProperty());
+        mMessagesList.itemsProperty().bind(mHomeViewModel.getMessagesListProperty());
     }
 
     @FXML
@@ -56,4 +61,9 @@ public class HomeView implements FxmlView<HomeViewModel> {
 
     @FXML
     public void logoutAction() { mHomeViewModel.getLogoutCommand().execute(); }
+
+    @FXML
+    public void sendAction() {
+        mHomeViewModel.getSendCommand().execute();
+    }
 }

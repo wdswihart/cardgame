@@ -28,6 +28,9 @@ public class ConnectionProviderImpl implements ConnectionProvider {
     private List<User> mActiveUsers = new ArrayList<>();
     private ObjectProperty<ObservableList<User>> mActiveUsersProperty = new SimpleObjectProperty<>(FXCollections.observableList(mActiveUsers));
 
+    private List<String> mMessages = new ArrayList<>();
+    private ObjectProperty<ObservableList<String>> mMessagesProperty = new SimpleObjectProperty<>(FXCollections.observableList(mMessages));
+
     // CONSTRUCTORS:
 
     @Inject
@@ -58,6 +61,13 @@ public class ConnectionProviderImpl implements ConnectionProvider {
 
             System.out.println("[PLAYER_LIST] UserList: " + params[0].toString());
             mActiveUsersProperty.setValue(FXCollections.observableList(userList.getUsers()));
+        });
+
+        mSocketIOProvider.getClient().on(Events.CHAT, params -> {
+            String message = params[0].toString();
+
+            System.out.println("[CHAT] Message: " + message);
+            mMessagesProperty.getValue().add(message);
         });
     }
 
@@ -99,5 +109,15 @@ public class ConnectionProviderImpl implements ConnectionProvider {
     @Override
     public void connectToHost(String host) throws Exception {
         mSocketIOProvider.createNewClient(host);
+    }
+
+    @Override
+    public ObjectProperty<ObservableList<String>> getMessages() {
+        return mMessagesProperty;
+    }
+
+    @Override
+    public void sendMessage(String message) {
+        mSocketIOProvider.getClient().emit(Events.CHAT, message);
     }
 }

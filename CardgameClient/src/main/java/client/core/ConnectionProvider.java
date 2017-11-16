@@ -21,18 +21,11 @@ public interface ConnectionProvider {
     //Connects to host.
     void connectToHost(String host) throws Exception;
 
-
-    /*
-    //Messages
-    //You can get an observable String array that contains messages.
-    //When a message is added, we will be notified.
-    Observable<StringArray> getLobbyMessages();
-    Observable<StringArray> getGameMessages();
-    Observable<StringArray> getMessages(String room);
+    ObjectProperty<ObservableList<String>> getMessages();
+    void sendMessage(String message);
 
     //Returns a valid game if you successfully joined.
     //If you're the first or the invited user, you will actually play the game.
     //Any additional users are spectators.
-    Observable<IGameProvider> joinGame(User user);
-    */
+    //Observable<IGameProvider> joinGame(User user);
 }

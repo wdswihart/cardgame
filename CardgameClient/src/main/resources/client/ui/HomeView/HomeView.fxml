@@ -32,14 +32,14 @@
         </VBox>
         <VBox GridPane.columnIndex="1">
             <Text text="Lobby Chat:" />
-            <ListView />
+            <ListView fx:id="mMessagesList"/>
             <GridPane>
                 <columnConstraints>
                     <ColumnConstraints percentWidth="90" />
                     <ColumnConstraints percentWidth="10" />
                 </columnConstraints>
-                <TextField GridPane.columnIndex="0" />
-                <Button text="Send" GridPane.columnIndex="1" prefWidth="100" />
+                <TextField GridPane.columnIndex="0" fx:id="mMessageField"/>
+                <Button text="Send" onAction="#sendAction" GridPane.columnIndex="1" prefWidth="100" />
             <rowConstraints>
                <RowConstraints />
             </rowConstraints>

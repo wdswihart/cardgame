@@ -13,7 +13,10 @@ import client.ui.CardDetailView.CardDetailView;
 import client.ui.DraggableView.DraggableView;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 
 public class HomeViewModel extends BaseViewModel {
@@ -22,6 +25,10 @@ public class HomeViewModel extends BaseViewModel {
     private Command mLogoutCommand;
 
     private ObjectProperty<ObservableList<User>> mActiveUserProperty = new SimpleObjectProperty<>();
+    private Command mSendCommand;
+
+    private Property<String> mMessageProperty = new SimpleObjectProperty<>();
+    private ObjectProperty<ObservableList<String>> mMessagesListProperty = new SimpleObjectProperty<>();
 
     @Inject
     public HomeViewModel(ConnectionProvider connectionProvider, INavigationProvider navigationProvider) {
@@ -50,7 +57,18 @@ public class HomeViewModel extends BaseViewModel {
             }
         });
 
+        mSendCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                if (mMessageProperty.getValue().isEmpty()) {
+                    return;
+                }
+                mConnectionProvider.sendMessage(mMessageProperty.getValue());
+            }
+        });
+
         mActiveUserProperty = mConnectionProvider.getActiveUsers();
+        mMessagesListProperty = mConnectionProvider.getMessages();
     }
 
     public ObjectProperty<ObservableList<User>> getActiveUserProperty() {
@@ -74,5 +92,18 @@ public class HomeViewModel extends BaseViewModel {
             //Remove the listener if we ever do actually logout.
             mConnectionProvider.getAuthenticatedUser().removeListener(this::logoutListener);
         }
+    }
+
+    public Command getSendCommand() {
+        return mSendCommand;
+    }
+
+
+    public Property<String> getMessageProperty() {
+        return mMessageProperty;
+    }
+
+    public ObservableValue<ObservableList<String>> getMessagesListProperty() {
+        return mMessagesListProperty;
     }
 }
