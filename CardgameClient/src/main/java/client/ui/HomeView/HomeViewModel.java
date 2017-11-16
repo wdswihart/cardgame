@@ -64,6 +64,7 @@ public class HomeViewModel extends BaseViewModel {
                     return;
                 }
                 mConnectionProvider.sendMessage(mMessageProperty.getValue());
+                mMessageProperty.setValue("");
             }
         });
 

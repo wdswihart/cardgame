@@ -4,6 +4,7 @@ import client.model.User;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -45,8 +46,18 @@ public class HomeView implements FxmlView<HomeViewModel> {
             };
         });
 
+        mHomeViewModel.getMessagesListProperty().getValue().addListener(new ListChangeListener<String>() {
+            @Override
+            public void onChanged(Change<? extends String> c) {
+                Platform.runLater(() -> {
+                    if (c.next()) {
+                        mMessagesList.getItems().addAll(c.getAddedSubList());
+                    }
+                });
+            }
+        });
+
         mMessageField.textProperty().bindBidirectional(mHomeViewModel.getMessageProperty());
-        mMessagesList.itemsProperty().bind(mHomeViewModel.getMessagesListProperty());
     }
 
     @FXML
