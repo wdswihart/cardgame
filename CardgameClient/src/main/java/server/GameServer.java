@@ -8,6 +8,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.google.inject.Inject;
 import io.netty.channel.ChannelHandlerContext;
 import javafx.util.Pair;
+import models.Events;
 import org.w3c.dom.events.Event;
 import server.configuration.ConfigurationProvider;
 import storage.StorageProvider;
@@ -49,6 +50,7 @@ public class GameServer {
         Configuration config = new Configuration();
         config.setHostname(mConfigurationProvider.getHost());
         config.setPort(mConfigurationProvider.getPort());
+        config.getSocketConfig().setReuseAddress(true);
 
         mServer = new SocketIOServer(config);
         setEventListeners();
@@ -57,32 +59,6 @@ public class GameServer {
     @Override
     public void finalize() {
         mServer.stop();
-    }
-
-    public class Events {
-        public static final String PLAYER_JOINED = "PlayerJoined";
-        public static final String PLAYER_LIST = "PlayerList";
-
-        public static final String LOGIN = "Login";
-        public static final String CREATE_ACCOUNT = "CreateAccount";
-
-        public static final String START_GAME_CLIENT = "StartGameClient";
-        public static final String START_GAME_SERVER = "StartGameServer";
-
-        public static final String REFRESH_SERVER = "RefreshServer";
-        public static final String MAINTAIN_SERVER = "MaintainServer";
-        public static final String DRAW_SERVER = "DrawServer";
-
-        public static final String MAIN_SERVER = "MainServer";
-
-        public static final String ATTACK_CLIENT = "AttackClient";
-        public static final String DEFEND_CLIENT = "DefendClient";
-        public static final String DAMAGE_SERVER = "DamageClient";
-
-        public static final String PLAY_CLIENT = "PlayClient";
-
-        public static final String RESPOND_CLIENT = "RespondClient";
-        public static final String RESPOND_SERVER = "RespondServer";
     }
 
     // setEventListeners sets the listeners for the SocketIO server.

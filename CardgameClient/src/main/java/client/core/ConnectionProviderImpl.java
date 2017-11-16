@@ -8,6 +8,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import models.Events;
 import transportmodels.UserList;
 import util.JSONUtils;
 
@@ -26,13 +27,6 @@ public class ConnectionProviderImpl implements ConnectionProvider {
 
     private List<User> mActiveUsers = new ArrayList<>();
     private ObjectProperty<ObservableList<User>> mActiveUsersProperty = new SimpleObjectProperty<>(FXCollections.observableList(mActiveUsers));
-
-    public class Events {
-        public static final String PLAYER_LIST = "PlayerList";
-        public static final String CHAT = "Chat";
-        public static final String LOGIN = "Login";
-        public static final String CREATE_ACCOUNT = "CreateAccount";
-    }
 
     // CONSTRUCTORS:
 

@@ -4,12 +4,24 @@ import client.core.navigation.NavigationProvider;
 import de.saxsys.mvvmfx.guice.MvvmfxGuiceApplication;
 import di.DependencyModules;
 import javafx.stage.Stage;
+import server.GameServer;
+import util.GuiceUtils;
 
 import java.util.List;
 
 public class Main extends MvvmfxGuiceApplication {
 
     public static void main(String[] args) {
+        new Thread(() -> {
+            try {
+                GuiceUtils.getInjector().getInstance(GameServer.class).startServer();
+            }
+            catch (Exception e) {
+                System.out.printf("Server failed to start.");
+            }
+        }).run();
+
+
         launch(args);
     }
 
