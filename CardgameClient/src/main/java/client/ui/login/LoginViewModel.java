@@ -35,7 +35,7 @@ public class LoginViewModel extends BaseViewModel {
                 mErrorProperty.setValue("");
             }
             else if ((oldVal == null || (oldVal.isDefault()) && newVal.isDefault())) {
-                //If we are returned a default user, and our old user is default or null, show error.
+                //If we are returned a default player, and our old player is default or null, show error.
                 mErrorProperty.setValue("Invalid username or password.");
             }
             else {

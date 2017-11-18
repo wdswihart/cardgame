@@ -1,7 +1,7 @@
 package client.ui.HomeView;
 
 import client.core.ConnectionProvider;
-import client.model.User;
+import models.Player;
 import client.ui.login.LoginView;
 import com.google.inject.Inject;
 import client.ui.BaseViewModel;
@@ -14,7 +14,6 @@ import client.ui.DraggableView.DraggableView;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -24,7 +23,7 @@ public class HomeViewModel extends BaseViewModel {
     private Command mShowCardDetailViewCommand;
     private Command mLogoutCommand;
 
-    private ObjectProperty<ObservableList<User>> mActiveUserProperty = new SimpleObjectProperty<>();
+    private ObjectProperty<ObservableList<Player>> mActiveUserProperty = new SimpleObjectProperty<>();
     private Command mSendCommand;
 
     private Property<String> mMessageProperty = new SimpleObjectProperty<>();
@@ -48,7 +47,7 @@ public class HomeViewModel extends BaseViewModel {
             }
         });
 
-        //Logout if we get notified an empty user.
+        //Logout if we get notified an empty player.
         mConnectionProvider.getAuthenticatedUser().addListener(this::logoutListener);
         mLogoutCommand = new DelegateCommand(() -> new Action() {
             @Override
@@ -72,7 +71,7 @@ public class HomeViewModel extends BaseViewModel {
         mMessagesListProperty = mConnectionProvider.getMessages();
     }
 
-    public ObjectProperty<ObservableList<User>> getActiveUserProperty() {
+    public ObjectProperty<ObservableList<Player>> getActiveUserProperty() {
         return mActiveUserProperty;
     }
 
@@ -86,8 +85,8 @@ public class HomeViewModel extends BaseViewModel {
 
     public Command getLogoutCommand() { return mLogoutCommand; }
 
-    private void logoutListener(Observable observable, User oldUser, User newUser) {
-        if (newUser.isDefault()) {
+    private void logoutListener(Observable observable, Player oldPlayer, Player newPlayer) {
+        if (newPlayer.isDefault()) {
             mNavigationProvider.navigateTo(LoginView.class);
 
             //Remove the listener if we ever do actually logout.

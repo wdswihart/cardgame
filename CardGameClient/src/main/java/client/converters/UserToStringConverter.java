@@ -1,16 +1,16 @@
 package client.converters;
 
-import client.model.User;
+import models.Player;
 import javafx.util.StringConverter;
 
-public class UserToStringConverter extends StringConverter<User> {
+public class UserToStringConverter extends StringConverter<Player> {
     @Override
-    public String toString(User object) {
+    public String toString(Player object) {
         return object.getUsername();
     }
 
     @Override
-    public User fromString(String string) {
+    public Player fromString(String string) {
         return null;
     }
 }
