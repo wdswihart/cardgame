@@ -1,6 +1,6 @@
 package client.ui.HomeView;
 
-import client.model.User;
+import models.Player;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.application.Platform;
@@ -15,7 +15,7 @@ public class HomeView implements FxmlView<HomeViewModel> {
     private HomeViewModel mHomeViewModel;
 
     @FXML
-    public ListView<User> mActiveUsersListView;
+    public ListView<Player> mActiveUsersListView;
 
     @FXML
     public TextField mMessageField;
@@ -32,12 +32,12 @@ public class HomeView implements FxmlView<HomeViewModel> {
             });
         });
         mActiveUsersListView.setCellFactory(param -> {
-            return new ListCell<User>() {
+            return new ListCell<Player>() {
                 @Override
-                protected void updateItem(User user, boolean b) {
-                    super.updateItem(user, b);
-                    if (user != null) {
-                        setText(user.getUsername());
+                protected void updateItem(Player player, boolean b) {
+                    super.updateItem(player, b);
+                    if (player != null) {
+                        setText(player.getUsername());
                     }
                     else {
                         setText("");

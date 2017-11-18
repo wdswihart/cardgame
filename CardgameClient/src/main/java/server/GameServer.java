@@ -1,23 +1,17 @@
 package server;
 
-import client.model.User;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.google.inject.Inject;
-import io.netty.channel.ChannelHandlerContext;
-import javafx.util.Pair;
 import models.Events;
-import org.w3c.dom.events.Event;
+import models.Player;
 import server.configuration.ConfigurationProvider;
 import storage.StorageProvider;
-import transportmodels.UserList;
+import models.responses.PlayerList;
 import util.JSONUtils;
 
-import java.beans.ExceptionListener;
-import java.io.IOException;
-import java.net.Socket;
 import java.util.*;
 
 public class GameServer {
@@ -32,12 +26,12 @@ public class GameServer {
         // FIELDS:
         public SocketIOClient client;
 
-        public client.model.User user;
+        public Player player;
 
         // CONSTRUCTORS:
-        public User(SocketIOClient client, client.model.User user) {
+        public User(SocketIOClient client, Player player) {
             this.client = client;
-            this.user = user;
+            this.player = player;
         }
 
     }
@@ -84,38 +78,38 @@ public class GameServer {
     }
 
     private void handleLoginEvent(SocketIOClient client, String data, AckRequest ack) {
-        client.model.User user = JSONUtils.fromJson(data, client.model.User.class);
-        user = (user == null) ? new client.model.User() : user;
+        Player player = JSONUtils.fromJson(data, Player.class);
+        player = (player == null) ? new Player() : player;
 
-        Map<String, client.model.User> registeredUsers = mStorageProvider.getRegisteredUsers();
+        Map<String, Player> registeredUsers = mStorageProvider.getRegisteredUsers();
 
-        if (user.isDefault() ||
-                !registeredUsers.containsKey(user.getUsername()) ||
-                !registeredUsers.get(user.getUsername()).getPassword().equals(user.getPassword())) {
-            client.sendEvent(Events.LOGIN, new client.model.User());
+        if (player.isDefault() ||
+                !registeredUsers.containsKey(player.getUsername()) ||
+                !registeredUsers.get(player.getUsername()).getPassword().equals(player.getPassword())) {
+            client.sendEvent(Events.LOGIN, new Player());
             logoutUser(client);
             return;
         }
 
 
         client.joinRoom("lobby");
-        client.sendEvent(Events.LOGIN, user);
-        loginUser(client, user);
+        client.sendEvent(Events.LOGIN, player);
+        loginUser(client, player);
     }
 
     private void handleCreateAccountEvent(SocketIOClient client, String data, AckRequest ack) {
-        client.model.User user = JSONUtils.fromJson(data, client.model.User.class);
+        Player player = JSONUtils.fromJson(data, Player.class);
 
-        Map<String, client.model.User> registeredUsers = mStorageProvider.getRegisteredUsers();
+        Map<String, Player> registeredUsers = mStorageProvider.getRegisteredUsers();
 
-        if (registeredUsers.containsKey(user.getUsername())) {
-            //Error existing user.
-            client.sendEvent(Events.CREATE_ACCOUNT, new client.model.User());
+        if (registeredUsers.containsKey(player.getUsername())) {
+            //Error existing player.
+            client.sendEvent(Events.CREATE_ACCOUNT, new Player());
             return;
         }
 
-        mStorageProvider.addRegisteredUser(user);
-        client.sendEvent(Events.CREATE_ACCOUNT, user);
+        mStorageProvider.addRegisteredUser(player);
+        client.sendEvent(Events.CREATE_ACCOUNT, player);
     }
 
     private void handleChatEvent(SocketIOClient client, String data, AckRequest ack) {
@@ -124,7 +118,7 @@ public class GameServer {
         }
 
         User user = mActiveUsers.get(client.getSessionId().toString());
-        mServer.getBroadcastOperations().sendEvent(Events.CHAT, user.user.getUsername() + ": " + data);
+        mServer.getBroadcastOperations().sendEvent(Events.CHAT, user.player.getUsername() + ": " + data);
     }
 
     //#region UserManagement
@@ -137,19 +131,19 @@ public class GameServer {
     }
 
     //Add client to the active users map.
-    private void loginUser(SocketIOClient client, client.model.User user) {
+    private void loginUser(SocketIOClient client, Player player) {
         if (!mActiveUsers.containsKey(client.getSessionId().toString())) {
-            client.model.User userWithoutPass = new client.model.User(user.getUsername(), "");
-            mActiveUsers.put(client.getSessionId().toString(), new User(client, userWithoutPass));
+            Player playerWithoutPass = new Player(player.getUsername(), "");
+            mActiveUsers.put(client.getSessionId().toString(), new User(client, playerWithoutPass));
             mServer.getBroadcastOperations().sendEvent(Events.PLAYER_LIST, getActiveUsers());
         }
     }
 
-    private UserList getActiveUsers() {
-        UserList list = new UserList();
+    private PlayerList getActiveUsers() {
+        PlayerList list = new PlayerList();
 
         for (Map.Entry<String, User> pair : mActiveUsers.entrySet()) {
-            list.getUsers().add(pair.getValue().user);
+            list.getUsers().add(pair.getValue().player);
         }
 
         return list;

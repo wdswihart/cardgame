@@ -1,19 +1,17 @@
-package client.model;
+package models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.io.Serializable;
-
-public class User extends ModelBase {
+public class Player extends ModelBase {
     private String mUsername = "";
     private String mPassword = "";
 
-    public User(String username, String password) {
+    public Player(String username, String password) {
         mUsername = username;
         mPassword = password;
     }
 
-    public User() {
+    public Player() {
     }
 
     public String getUsername() {

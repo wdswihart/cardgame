@@ -1,6 +1,6 @@
 package storage;
 
-import client.model.User;
+import models.Player;
 import org.tmatesoft.sqljet.core.SqlJetException;
 import org.tmatesoft.sqljet.core.SqlJetTransactionMode;
 import org.tmatesoft.sqljet.core.table.ISqlJetCursor;
@@ -57,8 +57,8 @@ public class StorageProviderImpl implements StorageProvider {
     //#region inteface
 
     @Override
-    public Map<String, User> getRegisteredUsers() {
-        Map<String, User> users = new HashMap<>();
+    public Map<String, Player> getRegisteredUsers() {
+        Map<String, Player> users = new HashMap<>();
 
         try {
             ISqlJetTable table = getUsersTable();
@@ -69,7 +69,7 @@ public class StorageProviderImpl implements StorageProvider {
                 String username = cursor.getString("username");
                 String password = cursor.getString("password");
 
-                users.put(username, new User(username, password));
+                users.put(username, new Player(username, password));
                 cursor.next();
             }
 
@@ -83,17 +83,17 @@ public class StorageProviderImpl implements StorageProvider {
     }
 
     @Override
-    public Status addRegisteredUser(User user) {
-        if (user.isDefault()) {
+    public Status addRegisteredUser(Player player) {
+        if (player.isDefault()) {
             return Status.Error;
         }
 
         try {
             mDatabase.beginTransaction(SqlJetTransactionMode.WRITE);
-            ISqlJetCursor cursor = getUsersTable().lookup(getUsersTable().getPrimaryKeyIndexName(), user.getUsername());
+            ISqlJetCursor cursor = getUsersTable().lookup(getUsersTable().getPrimaryKeyIndexName(), player.getUsername());
 
             if (cursor.eof()) {
-                if (getUsersTable().insert(user.getUsername(), user.getPassword()) >= 0) {
+                if (getUsersTable().insert(player.getUsername(), player.getPassword()) >= 0) {
                     mDatabase.commit();
                     return Status.Ok;
                 }

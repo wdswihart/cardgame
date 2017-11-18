@@ -2,7 +2,7 @@ package client.ui.createaccount;
 
 import client.core.ConnectionProvider;
 import client.core.navigation.INavigationProvider;
-import client.model.User;
+import models.Player;
 import client.ui.BaseViewModel;
 import com.google.inject.Inject;
 import de.saxsys.mvvmfx.utils.commands.Action;
@@ -53,8 +53,8 @@ public class CreateAccountViewModel extends BaseViewModel {
         return mUsernameProperty;
     }
 
-    private void createdUserChanged(Observable observable, User oldUser, User newUser) {
-        if (!newUser.isDefault()) {
+    private void createdUserChanged(Observable observable, Player oldPlayer, Player newPlayer) {
+        if (!newPlayer.isDefault()) {
             //Success, navigate back to login screen.
             mNavigationProvider.navigatePrevious();
             mConnectionProvider.getCreatedUser().removeListener(this::createdUserChanged);

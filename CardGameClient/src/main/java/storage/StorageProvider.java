@@ -1,8 +1,7 @@
 package storage;
 
-import client.model.User;
+import models.Player;
 
-import java.util.List;
 import java.util.Map;
 
 public interface StorageProvider {
@@ -11,6 +10,6 @@ public interface StorageProvider {
         Error
     }
 
-    Map<String, User> getRegisteredUsers();
-    Status addRegisteredUser(User user);
+    Map<String, Player> getRegisteredUsers();
+    Status addRegisteredUser(Player player);
 }
