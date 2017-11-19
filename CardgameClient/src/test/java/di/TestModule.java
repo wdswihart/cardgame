@@ -1,12 +1,12 @@
 package di;
 
-import client.core.socketio.SocketIOProviderImpl;
+import client.core.socketio.SocketIOClientProviderImpl;
 import com.google.inject.AbstractModule;
-import client.core.socketio.SocketIOProvider;
+import client.core.socketio.SocketIOClientProvider;
 
 public class TestModule extends AbstractModule {
     @Override
     protected void configure() {
-        bind(SocketIOProvider.class).toInstance(SocketIOProviderImpl.getInstance());
+        bind(SocketIOClientProvider.class).toInstance(SocketIOClientProviderImpl.getInstance());
     }
 }

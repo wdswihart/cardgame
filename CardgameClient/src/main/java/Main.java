@@ -18,6 +18,7 @@ public class Main extends MvvmfxGuiceApplication {
             }
             catch (Exception e) {
                 System.out.printf("Server failed to start.");
+                e.printStackTrace();
             }
         }).run();
 
