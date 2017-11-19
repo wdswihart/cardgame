@@ -19,10 +19,8 @@ public class CreateAccountEventHandler extends BaseEventHandler<Player> {
     }
 
     @Override
-    protected Player deserialize(String data) {
-        Player player = JSONUtils.fromJson(data, Player.class);
-        player = (player == null) ? new Player() : player;
-        return player;
+    protected Class<Player> getDataClass() {
+        return Player.class;
     }
 
     @Override

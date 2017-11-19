@@ -19,9 +19,15 @@ public class ChatEventHandler extends BaseEventHandler<String> {
 
     }
 
+    //Since it is string data, we don't want it deserialized.
     @Override
     protected String deserialize(String data) {
         return data;
+    }
+
+    @Override
+    protected Class<String> getDataClass() {
+        return String.class;
     }
 
     @Override

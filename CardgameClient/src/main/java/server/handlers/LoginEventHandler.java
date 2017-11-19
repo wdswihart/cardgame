@@ -17,15 +17,9 @@ public class LoginEventHandler extends BaseEventHandler<Player> {
         return GuiceUtils.getInjector().getInstance(LoginEventHandler.class);
     }
 
-    public LoginEventHandler() {
-
-    }
-
     @Override
-    protected Player deserialize(String data) {
-        Player player = JSONUtils.fromJson(data, Player.class);
-        player = (player == null) ? new Player() : player;
-        return player;
+    protected Class<Player> getDataClass() {
+        return Player.class;
     }
 
     @Override
