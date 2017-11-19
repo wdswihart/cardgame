@@ -60,7 +60,7 @@ public class ConnectionProviderImpl implements ConnectionProvider {
             playerList = (playerList == null) ? new PlayerList() : playerList;
 
             System.out.println("[PLAYER_LIST] PlayerList: " + params[0].toString());
-            mActiveUsersProperty.setValue(FXCollections.observableList(playerList.getUsers()));
+            mActiveUsersProperty.setValue(FXCollections.observableList(playerList.getPlayers()));
         });
 
         mSocketIOProvider.getClient().on(Events.CHAT, params -> {

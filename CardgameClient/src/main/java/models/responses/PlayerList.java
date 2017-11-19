@@ -9,7 +9,7 @@ import java.util.List;
 public class PlayerList implements Serializable {
     private List<Player> mPlayers = new ArrayList<>();
 
-    public List<Player> getUsers() {
+    public List<Player> getPlayers() {
         return mPlayers;
     }
 }
