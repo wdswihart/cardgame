@@ -1,6 +1,6 @@
 package client.core;
 
-import client.core.socketio.SocketIOProvider;
+import client.core.socketio.SocketIOClientProvider;
 
 import models.Player;
 import com.sun.javafx.collections.ObservableListWrapper;
@@ -23,7 +23,7 @@ public class ConnectionProviderImpl implements ConnectionProvider {
     private ObjectProperty<Player> mAuthenticatedUserProperty = new SimpleObjectProperty<>();
     private ObjectProperty<Player> mCreatedUserProperty = new SimpleObjectProperty<>();
 
-    private SocketIOProvider mSocketIOProvider;
+    private SocketIOClientProvider mSocketIOProvider;
 
     private List<Player> mActivePlayers = new ArrayList<>();
     private ObjectProperty<ObservableList<Player>> mActiveUsersProperty = new SimpleObjectProperty<>(FXCollections.observableList(mActivePlayers));
@@ -34,7 +34,7 @@ public class ConnectionProviderImpl implements ConnectionProvider {
     // CONSTRUCTORS:
 
     @Inject
-    public ConnectionProviderImpl(SocketIOProvider socketIOProvider) {
+    public ConnectionProviderImpl(SocketIOClientProvider socketIOProvider) {
         mSocketIOProvider = socketIOProvider;
         mActiveUsersProperty.setValue(new ObservableListWrapper<>(mActivePlayers));
 

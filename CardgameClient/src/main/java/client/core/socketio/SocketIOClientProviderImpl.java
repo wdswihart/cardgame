@@ -5,16 +5,16 @@ import io.socket.client.Socket;
 
 import java.net.URISyntaxException;
 
-public class SocketIOProviderImpl implements SocketIOProvider {
+public class SocketIOClientProviderImpl implements SocketIOClientProvider {
     // FIELDS:
 
-    private static SocketIOProviderImpl sInstance = new SocketIOProviderImpl();
+    private static SocketIOClientProviderImpl sInstance = new SocketIOClientProviderImpl();
     private static Socket sSocketIOClient = null;
     private boolean mIsConnected;
 
     // METHODS:
 
-    public static SocketIOProviderImpl getInstance() {
+    public static SocketIOClientProviderImpl getInstance() {
         return sInstance;
     }
 
