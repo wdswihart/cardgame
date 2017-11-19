@@ -3,10 +3,12 @@ package server.core.users;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import models.Events;
 import models.Player;
 import models.requests.GameRequest;
 import models.responses.GameState;
 import server.GameServer;
+import server.core.socketio.SocketIOServerProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,8 +57,9 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         }
 
         createGame(client, gameRequest);
-        mPendingRequests.put(requestingPlayer.getUsername(), gameRequest);
-        //TODO: Send GameState to joined player.
+        mPendingRequests.put(requestingUser.getClient().getSessionId().toString(), gameRequest);
+        //Send GameState to joined player.
+        requestingUser.getClient().sendEvent(Events.START_GAME, mGameMap.get(requestingUser.getClient().getSessionId().toString()));
     }
 
     @Override
@@ -67,13 +70,15 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         Player requestedPlayer = gameRequest.getToPlayer();
         GameServer.User requestedUser = mActiveUserProvider.getUserByUsername(requestedPlayer.getUsername());
 
-        if (!mGameMap.containsKey(requestedUser.getClient().getSessionId().toString())) {
+        if (!mPendingRequests.containsKey(requestedUser.getClient().getSessionId().toString())) {
             //TODO: Invite no longer valid.
+            return;
         }
 
         GameState game = mGameMap.get(requestedUser.getClient().getSessionId().toString());
         mGameMap.put(requestingUser.getClient().getSessionId().toString(), game);
-        //TODO: Send GameState to joined player.
+        //Send GameState to joined player.
+        requestingUser.getClient().sendEvent(Events.START_GAME, game);
 
         mPendingRequests.remove(requestedUser.getClient().getSessionId().toString());
         mPendingRequests.remove(requestingUser.getClient().getSessionId().toString());
