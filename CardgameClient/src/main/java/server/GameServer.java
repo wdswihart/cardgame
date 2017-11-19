@@ -12,6 +12,7 @@ import server.core.users.ActiveUserProvider;
 import server.handlers.ChatEventHandler;
 import server.handlers.CreateAccountEventHandler;
 import server.handlers.LoginEventHandler;
+import server.handlers.StartGameEventHandler;
 import storage.StorageProvider;
 import models.responses.PlayerList;
 import util.JSONUtils;
@@ -78,6 +79,7 @@ public class GameServer {
         mServerProvider.on(Events.LOGIN, LoginEventHandler.getHandler());
         mServerProvider.on(Events.CREATE_ACCOUNT, CreateAccountEventHandler.getHandler());
         mServerProvider.on(Events.CHAT, new ChatEventHandler().getHandler());
+        mServerProvider.on(Events.START_GAME, new StartGameEventHandler().getHandler());
     }
 
     // startServer starts up the SocketIO server.

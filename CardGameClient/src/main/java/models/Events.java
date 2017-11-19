@@ -8,11 +8,7 @@ public class Events {
     public static final String CREATE_ACCOUNT = "CreateAccount";
     public static final String CHAT = "Chat";
 
-
-
-
-    public static final String START_GAME_CLIENT = "StartGameClient";
-    public static final String START_GAME_SERVER = "StartGameServer";
+    public static final String START_GAME = "StartGame";
 
     public static final String REFRESH_SERVER = "RefreshServer";
     public static final String MAINTAIN_SERVER = "MaintainServer";

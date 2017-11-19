@@ -30,6 +30,16 @@ public class ActiveUserProviderImpl implements ActiveUserProvider {
     }
 
     @Override
+    public GameServer.User getUserByUsername(String username) {
+        for (Map.Entry<String, GameServer.User> e : mActiveUsers.entrySet()) {
+            if (e.getValue().getPlayer().getUsername().equals(username)) {
+                return e.getValue();
+            }
+        }
+        return null;
+    }
+
+    @Override
     public void addUser(GameServer.User user) {
         if (!mActiveUsers.containsKey(user.getClient().getSessionId().toString())) {
             Player playerWithoutPass = new Player(user.getPlayer().getUsername(), "");
