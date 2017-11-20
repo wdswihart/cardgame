@@ -22,7 +22,7 @@ public class StartGameEventHandler extends BaseEventHandler<GameRequest>{
 
     @Override
     protected void handle(SocketIOClient client, GameRequest model) {
-        if (model.getRequestType() == GameRequest.RequestType.Play) {
+        if (model.getRequestType().equals(GameRequest.RequestType.Play.toString())) {
             if (!mMatchmakingProvider.isGameCreated(model)) {
                 mMatchmakingProvider.sendPlayRequest(client, model);
             }
@@ -30,7 +30,7 @@ public class StartGameEventHandler extends BaseEventHandler<GameRequest>{
                 mMatchmakingProvider.acceptPlayRequest(client, model);
             }
         }
-        else if (model.getRequestType() == GameRequest.RequestType.Spectate) {
+        else if (model.getRequestType().equals(GameRequest.RequestType.Spectate.toString())) {
             if (mMatchmakingProvider.isGameCreated(model)) {
                 mMatchmakingProvider.spectate(client, model);
             }

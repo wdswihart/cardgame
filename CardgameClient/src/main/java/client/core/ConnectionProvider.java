@@ -23,9 +23,4 @@ public interface ConnectionProvider {
 
     ObjectProperty<ObservableList<String>> getMessages();
     void sendMessage(String message);
-
-    //Returns a valid game if you successfully joined.
-    //If you're the first or the invited player, you will actually play the game.
-    //Any additional users are spectators.
-    //Observable<IGameProvider> joinGame(Player player);
 }

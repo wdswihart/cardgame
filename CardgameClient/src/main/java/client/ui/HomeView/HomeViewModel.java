@@ -1,6 +1,7 @@
 package client.ui.HomeView;
 
 import client.core.ConnectionProvider;
+import client.core.GameProvider;
 import models.Player;
 import client.ui.login.LoginView;
 import com.google.inject.Inject;
@@ -19,19 +20,28 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 
 public class HomeViewModel extends BaseViewModel {
+    private GameProvider mGameProvider;
+
     private Command mShowDraggableViewCommand;
     private Command mShowCardDetailViewCommand;
     private Command mLogoutCommand;
 
-    private ObjectProperty<ObservableList<Player>> mActiveUserProperty = new SimpleObjectProperty<>();
+    private Property<Player> mSelectedActiveUserProperty = new SimpleObjectProperty<>();
+    private ObjectProperty<ObservableList<Player>> mActiveUsersProperty = new SimpleObjectProperty<>();
     private Command mSendCommand;
+    private Command mInviteCommand;
 
     private Property<String> mMessageProperty = new SimpleObjectProperty<>();
     private ObjectProperty<ObservableList<String>> mMessagesListProperty = new SimpleObjectProperty<>();
 
+    private Property<ObservableList<Player>> mPendingInvitesProperty = new SimpleObjectProperty<>();
+
     @Inject
-    public HomeViewModel(ConnectionProvider connectionProvider, INavigationProvider navigationProvider) {
+    public HomeViewModel(ConnectionProvider connectionProvider,
+                         INavigationProvider navigationProvider,
+                         GameProvider gameProvider) {
         super(connectionProvider, navigationProvider);
+        mGameProvider = gameProvider;
 
         mShowCardDetailViewCommand = new DelegateCommand(() -> new Action() {
             @Override
@@ -67,12 +77,28 @@ public class HomeViewModel extends BaseViewModel {
             }
         });
 
-        mActiveUserProperty = mConnectionProvider.getActiveUsers();
+        mInviteCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                if (mSelectedActiveUserProperty.getValue().isDefault()) {
+                    return;
+                }
+
+                mGameProvider.joinGame(mSelectedActiveUserProperty.getValue());
+            }
+        });
+
+        mActiveUsersProperty = mConnectionProvider.getActiveUsers();
         mMessagesListProperty = mConnectionProvider.getMessages();
+        mPendingInvitesProperty = mGameProvider.getPendingInvitesProperty();
     }
 
     public ObjectProperty<ObservableList<Player>> getActiveUserProperty() {
-        return mActiveUserProperty;
+        return mActiveUsersProperty;
+    }
+
+    public Property<Player> getSelectedActiveUserProperty() {
+        return mSelectedActiveUserProperty;
     }
 
     public Command getShowDraggableViewCommand(){
@@ -98,6 +124,10 @@ public class HomeViewModel extends BaseViewModel {
         return mSendCommand;
     }
 
+    public Command getInviteCommand() {
+        return mInviteCommand;
+    }
+
 
     public Property<String> getMessageProperty() {
         return mMessageProperty;
@@ -105,5 +135,9 @@ public class HomeViewModel extends BaseViewModel {
 
     public ObservableValue<ObservableList<String>> getMessagesListProperty() {
         return mMessagesListProperty;
+    }
+
+    public ObservableValue<ObservableList<Player>> getPendingInvitesProperty() {
+        return mPendingInvitesProperty;
     }
 }

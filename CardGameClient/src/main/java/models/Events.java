@@ -10,6 +10,9 @@ public class Events {
 
     public static final String START_GAME = "StartGame";
 
+    //Used when someone invites you to a game.
+    public static final String INVITE_REQUEST = "InviteRequest";
+
     public static final String REFRESH_SERVER = "RefreshServer";
     public static final String MAINTAIN_SERVER = "MaintainServer";
     public static final String DRAW_SERVER = "DrawServer";
@@ -24,5 +27,4 @@ public class Events {
 
     public static final String RESPOND_CLIENT = "RespondClient";
     public static final String RESPOND_SERVER = "RespondServer";
-
 }

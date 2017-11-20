@@ -26,10 +26,21 @@
             <ColumnConstraints percentWidth="20" />
             <ColumnConstraints percentWidth="80" />
         </columnConstraints>
-        <VBox GridPane.columnIndex="0">
-            <Text text="Active Users:" />
-            <ListView fx:id="mActiveUsersListView"/>
-        </VBox>
+        <GridPane GridPane.columnIndex="0">
+            <rowConstraints>
+                <RowConstraints percentHeight="50"/>
+                <RowConstraints percentHeight="50"/>
+            </rowConstraints>
+            <VBox GridPane.rowIndex="0">
+                <Text text="Active Users:" />
+                <ListView fx:id="mActiveUsersListView"/>
+            </VBox>
+            <VBox GridPane.rowIndex="1">
+                <Text text="Pending Invites:" />
+                <ListView fx:id="mPendingInvitesListView"/>
+                <Button text="Invite User" onAction="#inviteUserAction"/>
+            </VBox>
+        </GridPane>
         <VBox GridPane.columnIndex="1">
             <Text text="Lobby Chat:" />
             <ListView fx:id="mMessagesList"/>

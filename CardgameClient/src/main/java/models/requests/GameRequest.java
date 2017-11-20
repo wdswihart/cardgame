@@ -1,14 +1,42 @@
 package models.requests;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonValue;
+import models.ModelBase;
 import models.Player;
 
-public class GameRequest {
-    private RequestType mRequestType = RequestType.Play;
-    private Player mFromPlayer;
-    private Player mToPlayer;
+import java.io.Serializable;
 
-    public RequestType getRequestType() {
+public class GameRequest implements Serializable {
+    public enum RequestType {
+        Play("Play"),
+        Spectate("Spectate");
+
+        private String mName;
+        RequestType(String name) {
+            mName = name;
+        }
+
+        @Override
+        public String toString() {
+            return mName;
+        }
+    }
+
+    private String mRequestType = RequestType.Play.toString();
+    private Player mFromPlayer = new Player();
+    private Player mToPlayer = new Player();
+
+    public GameRequest() {
+    }
+
+    public String getRequestType() {
         return mRequestType;
+    }
+
+    public void setRequestType(String type) {
+        mRequestType = type;
     }
 
     public Player getFromPlayer() {
@@ -19,5 +47,12 @@ public class GameRequest {
         return mToPlayer;
     }
 
-    public enum RequestType {Spectate, Play}
+    public void setFromPlayer(Player mFromPlayer) {
+        this.mFromPlayer = mFromPlayer;
+    }
+
+    public void setToPlayer(Player mToPlayer) {
+        this.mToPlayer = mToPlayer;
+    }
+
 }

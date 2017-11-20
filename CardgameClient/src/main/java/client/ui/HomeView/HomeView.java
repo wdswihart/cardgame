@@ -1,5 +1,6 @@
 package client.ui.HomeView;
 
+import javafx.event.ActionEvent;
 import models.Player;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
@@ -23,6 +24,9 @@ public class HomeView implements FxmlView<HomeViewModel> {
     @FXML
     public ListView mMessagesList;
 
+    @FXML
+    public ListView mPendingInvitesListView;
+
     public void initialize() {
         mHomeViewModel.getActiveUserProperty().addListener((observable, oldValue, newValue) -> {
             //Have to invoke setItems on the UI thread.
@@ -32,6 +36,29 @@ public class HomeView implements FxmlView<HomeViewModel> {
             });
         });
         mActiveUsersListView.setCellFactory(param -> {
+            return new ListCell<Player>() {
+                @Override
+                protected void updateItem(Player player, boolean b) {
+                    super.updateItem(player, b);
+                    if (player != null) {
+                        setText(player.getUsername());
+                    }
+                    else {
+                        setText("");
+                    }
+                }
+            };
+        });
+
+        mHomeViewModel.getSelectedActiveUserProperty().bind(mActiveUsersListView.getSelectionModel().selectedItemProperty());
+
+        mHomeViewModel.getPendingInvitesProperty().addListener((observable, oldValue, newValue) -> {
+            Platform.runLater(() -> {
+                mPendingInvitesListView.setItems(newValue);
+            });
+        });
+        //This is duplicated for right now, but the invites will change later.
+        mPendingInvitesListView.setCellFactory(param -> {
             return new ListCell<Player>() {
                 @Override
                 protected void updateItem(Player player, boolean b) {
@@ -76,5 +103,10 @@ public class HomeView implements FxmlView<HomeViewModel> {
     @FXML
     public void sendAction() {
         mHomeViewModel.getSendCommand().execute();
+    }
+
+    @FXML
+    public void inviteUserAction() {
+        mHomeViewModel.getInviteCommand().execute();
     }
 }
