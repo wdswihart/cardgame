@@ -38,7 +38,10 @@
             <VBox GridPane.rowIndex="1">
                 <Text text="Pending Invites:" />
                 <ListView fx:id="mPendingInvitesListView"/>
-                <Button text="Invite User" onAction="#inviteUserAction"/>
+                <HBox>
+                    <Button text="Invite User" onAction="#inviteUserAction"/>
+                    <Button text="Accept Invite" onAction="#acceptInviteAction"/>
+                </HBox>
             </VBox>
         </GridPane>
         <VBox GridPane.columnIndex="1">

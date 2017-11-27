@@ -49,6 +49,7 @@ public class HomeView implements FxmlView<HomeViewModel> {
             };
         });
 
+        mHomeViewModel.getSelectedInviteProperty().bind(mPendingInvitesListView.getSelectionModel().selectedItemProperty());
         mHomeViewModel.getSelectedActiveUserProperty().bind(mActiveUsersListView.getSelectionModel().selectedItemProperty());
 
         mHomeViewModel.getPendingInvitesProperty().addListener((observable, oldValue, newValue) -> {
@@ -108,4 +109,7 @@ public class HomeView implements FxmlView<HomeViewModel> {
     public void inviteUserAction() {
         mHomeViewModel.getInviteCommand().execute();
     }
+
+    @FXML
+    public void acceptInviteAction() { mHomeViewModel.getAcceptInviteCommand().execute(); }
 }

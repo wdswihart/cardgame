@@ -21,22 +21,29 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import models.responses.GameState;
 
+import java.util.concurrent.Executor;
+
 public class HomeViewModel extends BaseViewModel {
     private GameProvider mGameProvider;
 
+    //region CommandDeclarations
     private Command mShowDraggableViewCommand;
     private Command mShowCardDetailViewCommand;
     private Command mLogoutCommand;
+    private Command mAcceptInviteCommand;
+    private Command mSendCommand;
+    private Command mInviteCommand;
+    //endregion
 
     private Property<Player> mSelectedActiveUserProperty = new SimpleObjectProperty<>();
     private ObjectProperty<ObservableList<Player>> mActiveUsersProperty = new SimpleObjectProperty<>();
-    private Command mSendCommand;
-    private Command mInviteCommand;
+
 
     private Property<String> mMessageProperty = new SimpleObjectProperty<>();
     private ObjectProperty<ObservableList<String>> mMessagesListProperty = new SimpleObjectProperty<>();
 
     private Property<ObservableList<Player>> mPendingInvitesProperty = new SimpleObjectProperty<>();
+    private Property<Player> mSelectedInviteProperty = new SimpleObjectProperty<>();
 
     @Inject
     public HomeViewModel(ConnectionProvider connectionProvider,
@@ -108,6 +115,17 @@ public class HomeViewModel extends BaseViewModel {
                 mGameProvider.joinGame(mSelectedActiveUserProperty.getValue());
             }
         });
+
+        mAcceptInviteCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                if (mSelectedInviteProperty.getValue().isDefault()) {
+                    return;
+                }
+
+                mGameProvider.joinGame(mSelectedInviteProperty.getValue());
+            }
+        });
     }
 
     public ObjectProperty<ObservableList<Player>> getActiveUserProperty() {
@@ -165,5 +183,13 @@ public class HomeViewModel extends BaseViewModel {
             //Remove the listener if we do go into the GameView.
             mGameProvider.getGameStateProperty().removeListener(this::gameStateListener);
         }
+    }
+
+    public Property<Player> getSelectedInviteProperty() {
+        return mSelectedInviteProperty;
+    }
+
+    public Command getAcceptInviteCommand() {
+        return mAcceptInviteCommand;
     }
 }
