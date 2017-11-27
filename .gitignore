@@ -30,6 +30,11 @@ hs_err_pid*
 
 */target
 .idea/
+/build
+/out
+/storage
+/.gradle
+
 CardGameServer/.gradle/
 CardGameServer/build/
 CardgameClient/build/

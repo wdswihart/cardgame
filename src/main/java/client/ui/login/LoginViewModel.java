@@ -3,7 +3,7 @@ package client.ui.login;
 import client.core.ConnectionProvider;
 import client.core.navigation.INavigationProvider;
 import client.ui.BaseViewModel;
-import client.ui.HomeView.HomeView;
+import client.ui.home.HomeView;
 import client.ui.createaccount.CreateAccountView;
 import com.google.inject.Inject;
 import de.saxsys.mvvmfx.utils.commands.Action;

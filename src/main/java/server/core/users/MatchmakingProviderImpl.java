@@ -20,8 +20,8 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
     @Inject
     ActiveUserProvider mActiveUserProvider;
 
-    private Map<String, GameRequest> mInboundRequests = new HashMap<>();
-    private Map<String, List<GameRequest>> mOutboundRequests = new HashMap<>();
+    private Map<String, GameRequest> mPlayerSentRequests = new HashMap<>();
+    private Map<String, List<GameRequest>> mPlayerReceivedRequests = new HashMap<>();
     private Map<String, GameState> mGameMap = new HashMap<>();
 
     @Override
@@ -49,7 +49,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         Player requestedPlayer = gameRequest.getToPlayer();
         GameServer.User requestedUser = mActiveUserProvider.getUserByUsername(requestedPlayer.getUsername());
 
-        if (mInboundRequests.containsKey(requestingUser.getClient().getSessionId().toString())) {
+        if (mPlayerSentRequests.containsKey(requestingUser.getClient().getSessionId().toString())) {
             //TODO: Already have your one request out.
             return;
         }
@@ -72,7 +72,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         PlayerList playerList = new PlayerList();
         List<Player> list = playerList.getPlayers();
 
-        List<GameRequest> requests = mOutboundRequests.get(client.getSessionId().toString());
+        List<GameRequest> requests = mPlayerReceivedRequests.get(client.getSessionId().toString());
 
         if (requests != null) {
             for (GameRequest req : requests) {
@@ -84,13 +84,13 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
     }
 
     private void updateRequestsOnCreate(GameServer.User requestingUser, GameServer.User requestedUser, GameRequest request) {
-        mInboundRequests.put(requestingUser.getClient().getSessionId().toString(), request);
+        mPlayerSentRequests.put(requestingUser.getClient().getSessionId().toString(), request);
         clearOutboundRequests(requestingUser);
         //Add a pending request to the requested users invites.
-        if (!mOutboundRequests.containsKey(requestedUser.getClient().getSessionId().toString())) {
-            mOutboundRequests.put(requestedUser.getClient().getSessionId().toString(), new ArrayList<>());
+        if (!mPlayerReceivedRequests.containsKey(requestedUser.getClient().getSessionId().toString())) {
+            mPlayerReceivedRequests.put(requestedUser.getClient().getSessionId().toString(), new ArrayList<>());
         }
-        mOutboundRequests.get(requestedUser.getClient().getSessionId().toString()).add(request);
+        mPlayerReceivedRequests.get(requestedUser.getClient().getSessionId().toString()).add(request);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         Player requestedPlayer = gameRequest.getToPlayer();
         GameServer.User requestedUser = mActiveUserProvider.getUserByUsername(requestedPlayer.getUsername());
 
-        if (!mInboundRequests.containsKey(requestedUser.getClient().getSessionId().toString())) {
+        if (!mPlayerSentRequests.containsKey(requestedUser.getClient().getSessionId().toString())) {
             //TODO: Invite no longer valid.
             return;
         }
@@ -116,8 +116,8 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
     }
 
     private void updateRequestsOnJoin(GameServer.User requestingUser, GameServer.User requestedUser, GameRequest gameRequest) {
-        mInboundRequests.remove(requestedUser.getClient().getSessionId().toString());
-        mInboundRequests.remove(requestingUser.getClient().getSessionId().toString());
+        mPlayerSentRequests.remove(requestedUser.getClient().getSessionId().toString());
+        mPlayerSentRequests.remove(requestingUser.getClient().getSessionId().toString());
         clearOutboundRequests(requestingUser);
     }
 
@@ -128,8 +128,8 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
 
     private void clearOutboundRequests(GameServer.User user) {
         //If the requesting guy had some pending invites, cancel those.
-        if (mOutboundRequests.containsKey(user.getClient().getSessionId().toString())) {
-            List<GameRequest> requests = mOutboundRequests.get(user.getClient().getSessionId().toString());
+        if (mPlayerReceivedRequests.containsKey(user.getClient().getSessionId().toString())) {
+            List<GameRequest> requests = mPlayerReceivedRequests.get(user.getClient().getSessionId().toString());
 
             for (GameRequest req : requests) {
                 //All the people that are waiting on the requesting guy to join will be kicked back to the lobby.

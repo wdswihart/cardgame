@@ -31,6 +31,7 @@ public class GameProviderImpl implements GameProvider {
             GameState game = JSONUtils.fromJson(params[0], GameState.class);
             game = (game == null) ? new GameState() : game;
             mGameStateProperty.setValue(game);
+            System.out.println("[START_GAME] Starting game: " + params[0]);
         });
 
         mClientProvider.getClient().on(Events.INVITE_REQUEST, params -> {

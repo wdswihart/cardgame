@@ -6,7 +6,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import client.ui.CardDetailView.CardDetailView;
 import client.ui.DraggableView.DraggableView;
-import client.ui.HomeView.HomeViewModel;
+import client.ui.home.HomeViewModel;
 
 import static org.junit.Assert.assertEquals;
 
