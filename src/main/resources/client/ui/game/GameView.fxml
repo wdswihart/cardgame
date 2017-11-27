@@ -11,6 +11,15 @@
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="client.ui.game.GameView"
           prefHeight="400.0" prefWidth="600.0">
+    <rowConstraints>
+        <RowConstraints percentHeight="50"/>
+        <RowConstraints percentHeight="50"/>
+    </rowConstraints>
 
-    <Text text="This is the game view."/>
+    <ListView fx:id="mOpponentsHand" orientation="HORIZONTAL" GridPane.rowIndex="0">
+
+    </ListView>
+    <ListView fx:id="mPlayersHand" orientation="HORIZONTAL" GridPane.rowIndex="1">
+
+    </ListView>
 </GridPane>

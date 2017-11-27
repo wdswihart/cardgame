@@ -15,7 +15,7 @@ public class Events {
 
     public static final String REFRESH_SERVER = "RefreshServer";
     public static final String MAINTAIN_SERVER = "MaintainServer";
-    public static final String DRAW_SERVER = "DrawServer";
+    public static final String DRAW = "Draw";
 
     public static final String MAIN_SERVER = "MainServer";
 

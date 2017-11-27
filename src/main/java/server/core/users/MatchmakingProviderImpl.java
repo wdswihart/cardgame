@@ -9,6 +9,7 @@ import models.requests.GameRequest;
 import models.responses.GameState;
 import models.responses.PlayerList;
 import server.GameServer;
+import server.core.gameplay.GameStateMachine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
 
     private Map<String, GameRequest> mPlayerSentRequests = new HashMap<>();
     private Map<String, List<GameRequest>> mPlayerReceivedRequests = new HashMap<>();
-    private Map<String, GameState> mGameMap = new HashMap<>();
+    private Map<String, GameStateMachine> mGameMap = new HashMap<>();
 
     @Override
     public boolean isGameCreated(GameRequest gameRequest) {
@@ -38,7 +39,8 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
     }
 
     private void createGame(SocketIOClient client, GameRequest gameRequest) {
-        mGameMap.put(client.getSessionId().toString(), new GameState(gameRequest.getFromPlayer(), gameRequest.getToPlayer()));
+        GameState gameState = new GameState(gameRequest.getFromPlayer(), gameRequest.getToPlayer());
+        mGameMap.put(client.getSessionId().toString(), new GameStateMachine(gameState));
     }
 
     @Override
@@ -106,13 +108,14 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
             return;
         }
 
-        GameState game = mGameMap.get(requestedUser.getClient().getSessionId().toString());
+        GameStateMachine game = mGameMap.get(requestedUser.getClient().getSessionId().toString());
         mGameMap.put(requestingUser.getClient().getSessionId().toString(), game);
 
         updateRequestsOnJoin(requestingUser, requestedUser, gameRequest);
 
         //Send GameState to joined player.
         requestingUser.getClient().sendEvent(Events.START_GAME, game);
+        game.fire(GameStateMachine.Trigger.PlayersReady);
     }
 
     private void updateRequestsOnJoin(GameServer.User requestingUser, GameServer.User requestedUser, GameRequest gameRequest) {
