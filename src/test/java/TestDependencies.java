@@ -1,6 +1,6 @@
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import di.TestNavigationModule;
+import di.TestModule;
 
 class TestDependencies {
     //There is a better way to do this, but for the sake of showing a use of DI
@@ -10,7 +10,7 @@ class TestDependencies {
 
     public static Injector getInjector() {
         if (sInjector == null) {
-            sInjector = Guice.createInjector(new TestNavigationModule());
+            sInjector = Guice.createInjector(new TestModule());
         }
         return sInjector;
     }

@@ -9,34 +9,30 @@ import client.ui.DraggableView.DraggableView;
 import client.ui.home.HomeViewModel;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 
 @RunWith(JUnitPlatform.class)
-class HomeViewModelTest {
-    protected TestNavigationProvider navigationProvider = TestNavigationProvider.getInstance();
+class HomeViewModelTest extends BaseTest {
     protected HomeViewModel homeViewModel = TestDependencies.getInjector().getInstance(HomeViewModel.class);
 
     @AfterEach
     void tearDownEach() {
         //Reset the navigation provider. Bad practices but we can refactor later.
         //Tests shouldn't really affect the state of future tests.
-        TestNavigationProvider.resetInstance();
+//        TestNavigationProvider.resetInstance();
     }
 
     @Test
     @DisplayName("NavigateToCardDetailView")
     void verifyNavigation_toCardDetailView_onCardDetailViewAction() {
         homeViewModel.getShowCardDetailViewCommand().execute();
-
-        assertEquals(false, navigationProvider.getNavigationHistory().isEmpty());
-        assertEquals(CardDetailView.class, navigationProvider.getNavigationHistory().get(0));
+        verify(navigationProvider).navigateTo(CardDetailView.class);
     }
 
     @Test
     @DisplayName("NavigateToDraggableView")
     void verifyNavigation_toDraggableView_onDraggableViewCommand() {
         homeViewModel.getShowDraggableViewCommand().execute();
-
-        assertEquals(false, navigationProvider.getNavigationHistory().isEmpty());
-        assertEquals(DraggableView.class, navigationProvider.getNavigationHistory().get(0));
+        verify(navigationProvider).navigateTo(DraggableView.class);
     }
 }
