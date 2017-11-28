@@ -121,6 +121,10 @@ public class GameStateMachine {
         return mStateMachine.getState();
     }
 
+    public GameState getGameState() {
+        return mGameState;
+    }
+
     public void fire(Trigger t) {
         mStateMachine.fire(t);
     }

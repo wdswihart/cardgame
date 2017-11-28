@@ -154,6 +154,10 @@ public class HomeViewModel extends BaseViewModel {
         return mInviteCommand;
     }
 
+    public String getActiveUsername() {
+        return mConnectionProvider.getAuthenticatedUser().getValue().getUsername();
+    }
+
 
     public Property<String> getMessageProperty() {
         return mMessageProperty;

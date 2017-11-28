@@ -65,7 +65,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         updateRequestsOnCreate(requestingUser, requestedUser, gameRequest);
 
         //Send GameState to joined player.
-        requestingUser.getClient().sendEvent(Events.START_GAME, mGameMap.get(requestingUser.getClient().getSessionId().toString()));
+        requestingUser.getClient().sendEvent(Events.START_GAME, mGameMap.get(requestingUser.getClient().getSessionId().toString()).getGameState());
         //Update the requested players invites.
         requestedUser.getClient().sendEvent(Events.INVITE_REQUEST, getPendingRequestsForClient(requestedUser.getClient()));
     }
@@ -114,7 +114,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         updateRequestsOnJoin(requestingUser, requestedUser, gameRequest);
 
         //Send GameState to joined player.
-        requestingUser.getClient().sendEvent(Events.START_GAME, game);
+        requestingUser.getClient().sendEvent(Events.START_GAME, game.getGameState());
         game.fire(GameStateMachine.Trigger.PlayersReady);
     }
 
