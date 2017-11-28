@@ -16,5 +16,7 @@ public class GameView implements FxmlView<GameViewModel> {
     private GameViewModel mGameViewModel;
 
     public void initialize() {
+        mOpponentsHand.itemsProperty().bind(mGameViewModel.getPlayerOneHandProperty());
+        mPlayersHand.itemsProperty().bind(mGameViewModel.getPlayerTwoHandProperty());
     }
 }
