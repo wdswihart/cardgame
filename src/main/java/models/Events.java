@@ -9,6 +9,7 @@ public class Events {
     public static final String CHAT = "Chat";
 
     public static final String START_GAME = "StartGame";
+    public static final String UPDATE_GAME = "UpdateGame";
 
     //Used when someone invites you to a game.
     public static final String INVITE_REQUEST = "InviteRequest";

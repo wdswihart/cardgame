@@ -28,20 +28,28 @@ public class GameProviderImpl implements GameProvider {
         mConnectionProvider = connectionProvider;
 
         mClientProvider.getClient().on(Events.START_GAME, params -> {
+            System.out.println("[START_GAME] Starting game: " + params[0]);
+
             GameState game = JSONUtils.fromJson(params[0], GameState.class);
             game = (game == null) ? new GameState() : game;
             mGameStateProperty.setValue(game);
-            System.out.println("[START_GAME] Starting game: " + params[0]);
         });
 
         mClientProvider.getClient().on(Events.INVITE_REQUEST, params -> {
+            System.out.println("[INVITES] Invites: " + params[0]);
+
             PlayerList invites = JSONUtils.fromJson(params[0], PlayerList.class);
             invites = (invites == null) ? new PlayerList() : invites;
             mPendingInvitesProperty.setValue(FXCollections.observableList(invites.getPlayers()));
-            System.out.println("[INVITES] Invites: " + params[0]);
         });
 
-        //TODO: Add other game interactions.
+        mClientProvider.getClient().on(Events.UPDATE_GAME, params -> {
+            System.out.println("[UPDATE_GAME] GameState: " + params[0]);
+
+            GameState game = JSONUtils.fromJson(params[0], GameState.class);
+            game = (game == null) ? new GameState() : game;
+            mGameStateProperty.setValue(game);
+        });
     }
 
     @Override
