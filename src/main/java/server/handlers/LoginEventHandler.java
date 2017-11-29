@@ -1,14 +1,10 @@
 package server.handlers;
 
 import com.corundumstudio.socketio.SocketIOClient;
-import com.google.inject.Inject;
 import models.Events;
 import models.Player;
 import server.GameServer;
-import server.core.users.ActiveUserProvider;
-import storage.StorageProvider;
 import util.GuiceUtils;
-import util.JSONUtils;
 
 import java.util.Map;
 
@@ -31,13 +27,13 @@ public class LoginEventHandler extends BaseEventHandler<Player> {
                 !registeredUsers.get(model.getUsername()).getPassword().equals(model.getPassword())) {
             client.sendEvent(Events.LOGIN, new Player());
 
-            mActiveUserProvider.removeUser(new GameServer.User(client, new Player()));
+            mUsersProvider.removeUser(new GameServer.User(client, new Player()));
             return;
         }
 
 
         client.joinRoom("lobby");
         client.sendEvent(Events.LOGIN, model);
-        mActiveUserProvider.addUser(new GameServer.User(client, model));
+        mUsersProvider.addUser(new GameServer.User(client, model));
     }
 }

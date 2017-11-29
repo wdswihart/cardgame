@@ -37,10 +37,12 @@ public class GameViewModel extends BaseViewModel {
             return;
         }
 
+        // If second player's hand has changed:
         if (newGameState.getPlayerTwoHand().equals(oldGameState.getPlayerTwoHand())) {
             mPlayerTwoHandProperty.setValue(FXCollections.observableList(newGameState.getPlayerTwoHand()));
         }
 
+        // If first player's hand has changed:
         if (newGameState.getPlayerOneHand().equals(oldGameState.getPlayerOneHand())) {
             mPlayerOneHandProperty.setValue(FXCollections.observableList(newGameState.getPlayerOneHand()));
         }

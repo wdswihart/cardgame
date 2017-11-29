@@ -5,10 +5,9 @@ import com.github.oxo42.stateless4j.StateMachineConfig;
 import com.google.inject.Inject;
 import models.Card;
 import models.Events;
-import models.Player;
 import models.responses.GameState;
 import server.GameServer;
-import server.core.users.ActiveUserProvider;
+import server.core.users.UsersProvider;
 
 public class GameStateMachine {
     private GameState mGameState = new GameState();
@@ -45,11 +44,11 @@ public class GameStateMachine {
     //endregion
 
     @Inject
-    public GameStateMachine(GameState gameState, ActiveUserProvider activeUserProvider) {
+    public GameStateMachine(GameState gameState, UsersProvider usersProvider) {
         mGameState = gameState;
 
-        mUserOne = activeUserProvider.getUserByUsername(mGameState.getPlayerOne().getUsername());
-        mUserTwo = activeUserProvider.getUserByUsername(mGameState.getPlayerTwo().getUsername());
+        mUserOne = usersProvider.getUserByUsername(mGameState.getPlayerOne().getUsername());
+        mUserTwo = usersProvider.getUserByUsername(mGameState.getPlayerTwo().getUsername());
 
         StateMachineConfig<State, Trigger> config = new StateMachineConfig<>();
 
