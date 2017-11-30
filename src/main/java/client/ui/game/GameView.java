@@ -1,5 +1,6 @@
 package client.ui.game;
 
+import client.ui.controls.CardControl;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.application.Platform;
@@ -7,6 +8,9 @@ import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -14,6 +18,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import models.Card;
 import models.Player;
+
+import java.io.IOException;
 
 public class GameView implements FxmlView<GameViewModel> {
     @InjectViewModel
@@ -105,13 +111,27 @@ public class GameView implements FxmlView<GameViewModel> {
 
     private static ListCell<Card> cardCellFactory(ListView<Card> param) {
         return new ListCell<Card>() {
+            private CardControl controller;
+            Node graphic;
+
+            {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/controls/CardControl.fxml"));
+                    graphic = loader.load();
+                    controller = loader.getController();
+                } catch (IOException exc) {
+                    throw new RuntimeException(exc);
+                }
+            }
+
             @Override
             protected void updateItem(Card card, boolean b) {
                 super.updateItem(card, b);
                 if (card != null) {
-                    setText(card.getName());
+                    controller.setCard(card);
+                    setGraphic(graphic);
                 } else {
-                    setText("");
+                    setGraphic(null);
                 }
             }
         };
