@@ -6,8 +6,8 @@ import client.core.navigation.INavigationProvider;
 import client.ui.BaseViewModel;
 import com.google.inject.Inject;
 import javafx.beans.Observable;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,8 +27,16 @@ public class GameViewModel extends BaseViewModel {
     //Probably not going to expose this via a getter.
     private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>();
 
+    //region Player Infos
+
     private Property<ObservableList<Card>> mPlayerDeckProperty = new SimpleObjectProperty<>();
     private Property<ObservableList<Card>> mOpponentDeckProperty = new SimpleObjectProperty<>();
+
+    //endregion
+
+    //region UI State Visibility
+    private Property<Boolean> mDrawButtonVisibleProperty = new SimpleBooleanProperty(false);
+    //endregion
 
     @Inject
     public GameViewModel(ConnectionProvider connectionProvider, INavigationProvider navigationProvider, GameProvider gameProvider) {
@@ -54,6 +62,14 @@ public class GameViewModel extends BaseViewModel {
         mOpponentDeckProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerTwoDeck()));
         mPlayerDeckProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerOneDeck()));
 
+        //If we are the active player.
+        if (mConnectionProvider.getAuthenticatedUser().getValue().getUsername().equals(newVal.getActivePlayer().getUsername())) {
+            updateActiveView(newVal);
+        }
+    }
+
+    private void updateActiveView(GameState gameState) {
+        mDrawButtonVisibleProperty.setValue(gameState.getState() == GameState.State.Draw);
     }
 
     public Property<ObservableList<Card>> getPlayerHandProperty() {
@@ -79,5 +95,9 @@ public class GameViewModel extends BaseViewModel {
 
     public Property<ObservableList<Card>> getOpponentDeckProperty() {
         return mOpponentDeckProperty;
+    }
+
+    public Property<Boolean> getDrawButtonVisibleProperty() {
+        return mDrawButtonVisibleProperty;
     }
 }

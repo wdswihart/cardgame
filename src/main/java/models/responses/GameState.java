@@ -8,6 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameState extends ModelBase {
+    public enum State {
+        Waiting,
+        Draw,
+        Main,
+//        End,
+//        Refresh,
+//        Maintain,
+//        Attackers,
+//        Defenders,
+//        Damage,
+    }
+
+    private State mState = State.Waiting;
+
     private Player mPlayerOne = new Player();
     private Player mPlayerTwo = new Player();
 
@@ -88,6 +102,14 @@ public class GameState extends ModelBase {
 
     public void setPlayerOneDeck(List<Card> playerOneDeck) {
         this.mPlayerOneDeck = playerOneDeck;
+    }
+
+    public State getState() {
+        return mState;
+    }
+
+    public void setState(State state) {
+        this.mState = state;
     }
     //endregion
 }

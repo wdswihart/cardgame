@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
@@ -41,6 +42,12 @@ public class GameView implements FxmlView<GameViewModel> {
     public Text mOpponentDeckCountText;
     //endregion
 
+
+    //region Player Actions
+    @FXML
+    public Button mDrawButton;
+    //endregion
+
     public void initialize() {
         mPlayerHeaderPane.prefWidthProperty().bind(mRootPane.widthProperty());
 
@@ -55,6 +62,8 @@ public class GameView implements FxmlView<GameViewModel> {
 
         mGameViewModel.getPlayerDeckProperty().addListener(this::updatePlayerDeck);
         mGameViewModel.getOpponentDeckProperty().addListener(this::updateOpponentDeck);
+
+        mDrawButton.visibleProperty().bind(mGameViewModel.getDrawButtonVisibleProperty());
     }
 
     private void updatePlayerDeck(Observable observable, ObservableList<Card> oldVal, ObservableList<Card> newVal) {

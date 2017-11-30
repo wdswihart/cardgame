@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
 <GridPane fx:id="mRootPane" alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.game.GameView">
     <rowConstraints>
         <RowConstraints percentHeight="20"/>
@@ -36,6 +37,7 @@
                 <Text text="Deck Count:"/>
                 <Text fx:id="mPlayerDeckCountText" text="0"/>
             </HBox>
+            <Button fx:id="mDrawButton" text="Draw"/>
         </VBox>
         <VBox GridPane.columnIndex="1">
             <HBox>

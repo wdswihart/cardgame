@@ -9,6 +9,7 @@ import models.responses.GameState;
 import server.GameServer;
 import server.configuration.ConfigurationProvider;
 import server.core.users.UsersProvider;
+import models.responses.GameState.State;
 
 import java.util.List;
 import java.util.Random;
@@ -23,29 +24,12 @@ public class GameStateMachine {
 
     //region StateMachine States/Triggers
 
-    private StateMachine<State, Trigger> mStateMachine;
-    public enum State {
-        Waiting,
-        Draw,
-        Main,
-//        End,
-//        Refresh,
-//        Maintain,
-//        Attackers,
-//        Defenders,
-//        Damage,
-    }
+    private StateMachine<GameState.State, Trigger> mStateMachine;
     public enum Trigger {
         PlayersReady,
         Attack,
         Draw,
         MainPass,
-
-//        Refresh
-//        MainAttack,
-//        Damage,
-//        Defend,
-//        Maintain,
     }
     //endregion
 
@@ -57,7 +41,7 @@ public class GameStateMachine {
         mUserOne = usersProvider.getUserByUsername(mGameState.getPlayerOne().getUsername());
         mUserTwo = usersProvider.getUserByUsername(mGameState.getPlayerTwo().getUsername());
 
-        StateMachineConfig<State, Trigger> config = new StateMachineConfig<>();
+        StateMachineConfig<GameState.State, Trigger> config = new StateMachineConfig<>();
 
         //Initial state, only come here once.
         config.configure(State.Waiting)
@@ -66,33 +50,15 @@ public class GameStateMachine {
 
         config.configure(State.Draw)
                 .permit(Trigger.Draw, State.Main)
+                .onEntry(this::enterDraw)
                 .onExit(this::exitDraw);
 
         config.configure(State.Main)
                 .permit(Trigger.MainPass, State.Draw)
+                .onEntry(this::enterMain)
                 .onExit(this::exitMain);
 
-
-//TODO: Leaving the old to prevent losing it.
-//        config.configure(State.Refresh)
-//                .permit(Trigger.Refresh, State.Draw);
-//        config.configure(State.Maintain)
-//                .permit(Trigger.Maintain, State.Draw);
-//        config.configure(State.Draw)
-//                .permit(Trigger.Draw, State.Main);
-//        config.configure(State.Main)
-//                .permit(Trigger.MainAttack, State.Attackers)
-//                .permit(Trigger.MainPass, State.End);
-//        config.configure(State.Attackers)
-//                .permit(Trigger.Attack, State.Defenders);
-//        config.configure(State.Defenders)
-//                .permit(Trigger.Defend, State.Damage);
-//        config.configure(State.Damage)
-//                .permit(Trigger.Damage, State.Main);
-
-
-
-        mStateMachine = new StateMachine<State, Trigger>(State.Waiting, config);
+      mStateMachine = new StateMachine<State, Trigger>(State.Waiting, config);
     }
 
     private void exitWaiting() {
@@ -101,9 +67,6 @@ public class GameStateMachine {
         addCardsToDeck(mGameState.getPlayerTwoDeck(), 45);
 
         dealCards();
-
-        //Set the default active player to player 1.
-        mGameState.setActivePlayer(mGameState.getPlayerOne());
 
         broadcastToPlayers(Events.UPDATE_GAME, mGameState);
     }
@@ -114,10 +77,27 @@ public class GameStateMachine {
         }
     }
 
+    private void enterDraw() {
+        mGameState.setState(State.Draw);
+
+        //Set the default active player to player 1.
+        if (!mGameState.getActivePlayer().equals(mGameState.getPlayerOne())) {
+            mGameState.setActivePlayer(mGameState.getPlayerOne());
+        }
+        else {
+            mGameState.setActivePlayer(mGameState.getPlayerTwo());
+        }
+
+        broadcastToPlayers(Events.UPDATE_GAME, mGameState);
+    }
+
     private void exitDraw() {
 
     }
 
+    private void enterMain() {
+        mGameState.setState(State.Main);
+    }
     private void exitMain() {
 
     }
