@@ -17,6 +17,7 @@ public abstract class BaseEventHandler <T> implements DataListener<String>{
     @Override
     public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
         try {
+            System.out.println("[SERVER]: Received event :" + data);
             T model = deserialize(data);
             handle(client, model);
         }

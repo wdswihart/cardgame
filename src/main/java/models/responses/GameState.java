@@ -11,7 +11,7 @@ public class GameState extends ModelBase {
     public enum State {
         Waiting,
         Draw,
-        Main,
+        Main, PlayingCard,
 //        End,
 //        Refresh,
 //        Maintain,
@@ -32,6 +32,9 @@ public class GameState extends ModelBase {
 
     private List<Card> mPlayerOneDeck = new ArrayList<>();
     private List<Card> mPlayerTwoDeck = new ArrayList<>();
+
+    private List<Card> mPlayerOneField = new ArrayList<>();
+    private List<Card> mPlayerTwoField = new ArrayList<>();
 
     public GameState(Player playerOne, Player playerTwo) {
         mPlayerOne = playerOne;
@@ -111,5 +114,22 @@ public class GameState extends ModelBase {
     public void setState(State state) {
         this.mState = state;
     }
+
+    public List<Card> getPlayerOneField() {
+        return mPlayerOneField;
+    }
+
+    public void setPlayerOneField(List<Card> playerOneField) {
+        this.mPlayerOneField = playerOneField;
+    }
+
+    public List<Card> getPlayerTwoField() {
+        return mPlayerTwoField;
+    }
+
+    public void setPlayerTwoField(List<Card> playerTwoField) {
+        this.mPlayerTwoField = playerTwoField;
+    }
+
     //endregion
 }

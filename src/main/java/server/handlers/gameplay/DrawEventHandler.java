@@ -10,9 +10,7 @@ import server.core.users.MatchmakingProvider;
 import server.handlers.BaseEventHandler;
 import util.GuiceUtils;
 
-public class DrawEventHandler extends BaseEventHandler<DrawRequest> {
-    @Inject
-    private MatchmakingProvider mMatchmakingProvider;
+public class DrawEventHandler extends BaseGameplayEventHandler<DrawRequest> {
 
     @Override
     protected Class<DrawRequest> getDataClass() {
@@ -20,22 +18,13 @@ public class DrawEventHandler extends BaseEventHandler<DrawRequest> {
     }
 
     @Override
-    protected void handle(SocketIOClient client, DrawRequest model) {
-        GameStateMachine gsm = mMatchmakingProvider.getGameStateMachine(client.getSessionId().toString());
+    protected void handle(DrawRequest model) {
+        getGameStateMachine().fire(GameStateMachine.Trigger.Draw);
+    }
 
-        if (gsm == null || gsm.getState() != GameState.State.Draw) {
-            return;
-        }
-
-        Player activePlayer = gsm.getGameState().getActivePlayer();
-        Player playerForSocket = mUsersProvider.getUsers().get(client.getSessionId().toString()).getPlayer();
-
-        if (playerForSocket == null || !activePlayer.getUsername().equals(playerForSocket.getUsername())) {
-            //We don't care about this guy, its not his turn.
-            return;
-        }
-
-        gsm.fire(GameStateMachine.Trigger.Draw);
+    @Override
+    protected GameState.State getValidState() {
+        return GameState.State.Draw;
     }
 
     public static BaseEventHandler<?> getHandler() {

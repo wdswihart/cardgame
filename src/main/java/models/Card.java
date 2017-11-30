@@ -33,6 +33,21 @@ public class Card extends ModelBase {
         return mName.isEmpty();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        Card card = (Card) obj;
+
+        if (card == null ||
+                !card.getName().equals(mName) ||
+                !card.getDescription().equals(mDescription) ||
+                card.getPower() != mPower ||
+                card.getToughness() != mToughness) {
+            return false;
+        }
+
+        return true;
+    }
+
     public String getDescription() {
         return mDescription;
     }

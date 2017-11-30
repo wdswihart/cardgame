@@ -19,11 +19,12 @@
 
     <GridPane fx:id="mPlayerHeaderPane" alignment="CENTER">
         <columnConstraints>
-            <ColumnConstraints percentWidth="50"/>
-            <ColumnConstraints percentWidth="50" halignment="RIGHT"/>
+            <ColumnConstraints percentWidth="40"/>
+            <ColumnConstraints percentWidth="20"/>
+            <ColumnConstraints percentWidth="40" halignment="RIGHT"/>
         </columnConstraints>
 
-
+        <!--Player Info-->
         <VBox GridPane.columnIndex="0">
             <HBox>
                 <Text text="Player:"/>
@@ -37,9 +38,20 @@
                 <Text text="Deck Count:"/>
                 <Text fx:id="mPlayerDeckCountText" text="0"/>
             </HBox>
-            <Button fx:id="mDrawButton" onAction="#drawButtonAction" text="Draw"/>
+            <HBox fx:id="mGameControlBox">
+                <Button fx:id="mDrawButton" onAction="#drawButtonAction" text="Draw"/>
+                <Button fx:id="mPlayCardButton" onAction="#playCardButtonAction" text="Play Card"/>
+                <Button fx:id="mPassTurnButton" onAction="#passTurnAction" text="Pass Turn"/>
+            </HBox>
         </VBox>
+
+        <!--State Info-->
         <VBox GridPane.columnIndex="1">
+            <Text text="Phase: "/>
+            <Text fx:id="mPhaseText"/>
+        </VBox>
+        <!--Opponent Info-->
+        <VBox GridPane.columnIndex="2">
             <HBox>
                 <Text text="Opponent:"/>
                 <Text fx:id="mOpponentNameText" text="Opponent" />
@@ -55,6 +67,7 @@
         </VBox>
     </GridPane>
 
+    <!--PLayer/Opponent hands-->
     <VBox GridPane.rowIndex="1">
         <ListView fx:id="mOpponentsHandListView" orientation="HORIZONTAL"/>
     </VBox>

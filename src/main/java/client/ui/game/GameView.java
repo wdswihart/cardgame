@@ -6,15 +6,14 @@ import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import models.Card;
 import models.Player;
@@ -49,10 +48,18 @@ public class GameView implements FxmlView<GameViewModel> {
     public Text mOpponentDeckCountText;
     //endregion
 
+    @FXML
+    public Text mPhaseText;
 
     //region Player Actions
     @FXML
+    public HBox mGameControlBox;
+    @FXML
     public Button mDrawButton;
+    @FXML
+    public Button mPlayCardButton;
+    @FXML
+    public Button mPassTurnButton;
     //endregion
 
     public void initialize() {
@@ -62,6 +69,7 @@ public class GameView implements FxmlView<GameViewModel> {
         mGameViewModel.getPlayerProperty().addListener(this::updatePlayer);
 
         mGameViewModel.getPlayerHandProperty().addListener(this::updatePlayerHand);
+        mGameViewModel.getSelectedPlayerCardProperty().bind(mPlayersHandListView.getSelectionModel().selectedItemProperty());
         mPlayersHandListView.setCellFactory(GameView::cardCellFactory);
 
         mGameViewModel.getOpponentHandProperty().addListener(this::updateOpponentHand);
@@ -70,7 +78,11 @@ public class GameView implements FxmlView<GameViewModel> {
         mGameViewModel.getPlayerDeckProperty().addListener(this::updatePlayerDeck);
         mGameViewModel.getOpponentDeckProperty().addListener(this::updateOpponentDeck);
 
-        mDrawButton.visibleProperty().bind(mGameViewModel.getDrawButtonVisibleProperty());
+        mDrawButton.disableProperty().bind(mGameViewModel.getDrawButtonDisabledProperty());
+        mPlayCardButton.disableProperty().bind(mGameViewModel.getPlayCardButtonDisabledProperty());
+        mGameControlBox.visibleProperty().bind(mGameViewModel.getGameControlVisibleProperty());
+
+        mPhaseText.textProperty().bind(mGameViewModel.getPhaseProperty());
     }
 
     private void updatePlayerDeck(Observable observable, ObservableList<Card> oldVal, ObservableList<Card> newVal) {
@@ -141,5 +153,14 @@ public class GameView implements FxmlView<GameViewModel> {
     @FXML
     public void drawButtonAction() {
         mGameViewModel.getDrawCommand().execute();
+    }
+
+    @FXML
+    public void playCardButtonAction() {
+        mGameViewModel.getPlayCardCommand().execute();
+    }
+
+    public void passTurnAction() {
+        mGameViewModel.getPassTurnCommand().execute();
     }
 }

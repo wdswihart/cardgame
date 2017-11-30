@@ -12,11 +12,14 @@ import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import models.Card;
 import models.Player;
 import models.responses.GameState;
+
+import java.util.List;
 
 public class GameViewModel extends BaseViewModel {
     private GameProvider mGameProvider;
@@ -26,6 +29,8 @@ public class GameViewModel extends BaseViewModel {
 
     private Property<Player> mPlayerProperty = new SimpleObjectProperty<>();
     private Property<Player> mOpponentProperty = new SimpleObjectProperty<>();
+
+    private Property<String> mPhaseProperty = new SimpleStringProperty();
 
     //Probably not going to expose this via a getter.
     private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>();
@@ -37,11 +42,17 @@ public class GameViewModel extends BaseViewModel {
 
     //endregion
 
+    private Property<Card> mSelectedPlayerCardProperty = new SimpleObjectProperty<>();
+
     //region UI State Visibility
-    private Property<Boolean> mDrawButtonVisibleProperty = new SimpleBooleanProperty(false);
+    private Property<Boolean> mDrawButtonDisabledProperty = new SimpleBooleanProperty(false);
+    private Property<Boolean> mPlayCardButtonVisibleProperty = new SimpleBooleanProperty(false);
     //endregion
 
     private Command mDrawCommand;
+    private Command mPlayCardCommand;
+    private Property<Boolean> mGameControlVisibleProperty = new SimpleBooleanProperty(false);
+    private Command mPassTurnCommand;
 
     @Inject
     public GameViewModel(ConnectionProvider connectionProvider, INavigationProvider navigationProvider, GameProvider gameProvider) {
@@ -56,6 +67,25 @@ public class GameViewModel extends BaseViewModel {
                 mGameProvider.drawCard();
             }
         });
+
+        mPlayCardCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                if (mSelectedPlayerCardProperty.getValue().isDefault()) {
+                    return;
+                }
+
+                mGameProvider.playCard(mSelectedPlayerCardProperty.getValue());
+            }
+        });
+
+        mPassTurnCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                System.out.println("Passing turn.");
+                mGameProvider.passTurn();
+            }
+        });
     }
 
     private void onGameStateUpdated(Observable observable, GameState oldVal, GameState newVal) {
@@ -65,22 +95,40 @@ public class GameViewModel extends BaseViewModel {
         }
 
         //TODO: Handle setting player 1/2. Player should be the client. Opponent shoudl be the other guy.
-        mPlayerProperty.setValue(newVal.getPlayerOne());
-        mOpponentProperty.setValue(newVal.getPlayerTwo());
+        if (mConnectionProvider.getAuthenticatedUser().getValue().getUsername().equals(newVal.getPlayerOne().getUsername())) {
+            updatePlayer(newVal.getPlayerOne(), newVal.getPlayerOneHand(), newVal.getPlayerOneDeck());
+            updateOpponent(newVal.getPlayerTwo(), newVal.getPlayerTwoHand(), newVal.getPlayerTwoDeck());
+        }
+        else {
+            updateOpponent(newVal.getPlayerOne(), newVal.getPlayerOneHand(), newVal.getPlayerOneDeck());
+            updatePlayer(newVal.getPlayerTwo(), newVal.getPlayerTwoHand(), newVal.getPlayerTwoDeck());
+        }
 
-        mOpponentHandProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerTwoHand()));
-        mPlayerHandProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerOneHand()));
-
-        mOpponentDeckProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerTwoDeck()));
-        mPlayerDeckProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerOneDeck()));
+        mPhaseProperty.setValue(newVal.getState().toString());
 
         updateVisibleComponents(newVal);
     }
 
     private void updateVisibleComponents(GameState gameState) {
         boolean isDrawState = gameState.getState() == GameState.State.Draw;
+        boolean isMainState = gameState.getState() == GameState.State.Main;
         boolean isActivePlayer = gameState.getActivePlayer().getUsername().equals(mConnectionProvider.getAuthenticatedUser().getValue().getUsername());
-        mDrawButtonVisibleProperty.setValue(isActivePlayer && isDrawState);
+
+        mDrawButtonDisabledProperty.setValue(!isActivePlayer || !isDrawState);
+        mPlayCardButtonVisibleProperty.setValue(!isActivePlayer || !isMainState);
+        mGameControlVisibleProperty.setValue(isActivePlayer);
+    }
+
+    private void updatePlayer(Player player, List<Card> hand, List<Card> deck) {
+        mPlayerProperty.setValue(player);
+        mPlayerHandProperty.setValue(FXCollections.observableArrayList(hand));
+        mPlayerDeckProperty.setValue(FXCollections.observableArrayList(deck));
+    }
+
+    private void updateOpponent(Player player, List<Card> hand, List<Card> deck) {
+        mOpponentProperty.setValue(player);
+        mOpponentHandProperty.setValue(FXCollections.observableArrayList(hand));
+        mOpponentDeckProperty.setValue(FXCollections.observableArrayList(deck));
     }
 
     public Property<ObservableList<Card>> getPlayerHandProperty() {
@@ -108,11 +156,40 @@ public class GameViewModel extends BaseViewModel {
         return mOpponentDeckProperty;
     }
 
-    public Property<Boolean> getDrawButtonVisibleProperty() {
-        return mDrawButtonVisibleProperty;
+    public Property<Boolean> getDrawButtonDisabledProperty() {
+        return mDrawButtonDisabledProperty;
     }
+
+    public Property<String> getPhaseProperty() {
+        return mPhaseProperty;
+    }
+
 
     public Command getDrawCommand() {
         return mDrawCommand;
+    }
+
+    public Command getPlayCardCommand() {
+        return mPlayCardCommand;
+    }
+
+    public Property<Card> getSelectedPlayerCardProperty() {
+        return mSelectedPlayerCardProperty;
+    }
+
+    public Property<Boolean> getPlayCardButtonDisabledProperty() {
+        return mPlayCardButtonVisibleProperty;
+    }
+
+    public Property<Boolean> getGameControlVisibleProperty() {
+        return mGameControlVisibleProperty;
+    }
+
+    public Command getPassTurnCommand() {
+        return mPassTurnCommand;
+    }
+
+    public void setPassTurnCommand(Command passTurnCommand) {
+        this.mPassTurnCommand = passTurnCommand;
     }
 }

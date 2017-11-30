@@ -9,6 +9,8 @@ import server.core.socketio.SocketIOServerProvider;
 import server.core.users.UsersProvider;
 import server.handlers.*;
 import server.handlers.gameplay.DrawEventHandler;
+import server.handlers.gameplay.PassTurnEventHandler;
+import server.handlers.gameplay.PlayCardEventHandler;
 import storage.StorageProvider;
 
 public class GameServer {
@@ -75,6 +77,8 @@ public class GameServer {
 
         //Gameplay Events
         mServerProvider.on(Events.DRAW, DrawEventHandler.getHandler());
+        mServerProvider.on(Events.PLAY_CARD, PlayCardEventHandler.getHandler());
+        mServerProvider.on(Events.PASS_TURN, PassTurnEventHandler.getHandler());
     }
 
     // startServer starts up the SocketIO server.

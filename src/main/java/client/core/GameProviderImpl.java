@@ -7,10 +7,12 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import models.Card;
 import models.Events;
 import models.Player;
 import models.requests.DrawRequest;
 import models.requests.GameRequest;
+import models.requests.PlayCardRequest;
 import models.responses.GameState;
 import models.responses.PlayerList;
 import util.JSONUtils;
@@ -79,5 +81,15 @@ public class GameProviderImpl implements GameProvider {
     @Override
     public void drawCard() {
         mClientProvider.getClient().emit(Events.DRAW, JSONUtils.toJson(new DrawRequest()));
+    }
+
+    @Override
+    public void playCard(Card card) {
+        mClientProvider.getClient().emit(Events.PLAY_CARD, JSONUtils.toJson(new PlayCardRequest(card)));
+    }
+
+    @Override
+    public void passTurn() {
+        mClientProvider.getClient().emit(Events.PASS_TURN, "");
     }
 }
