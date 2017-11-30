@@ -42,6 +42,11 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         return false;
     }
 
+    @Override
+    public GameStateMachine getGameStateMachine(String userKey) {
+        return mGameMap.get(userKey);
+    }
+
     private void createGame(SocketIOClient client, GameRequest gameRequest) {
         GameState gameState = new GameState(gameRequest.getFromPlayer(), gameRequest.getToPlayer());
         mGameMap.put(client.getSessionId().toString(), new GameStateMachine(gameState, mUsersProvider, mConfigurationProvider));

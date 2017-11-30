@@ -8,6 +8,7 @@ import server.configuration.ConfigurationProvider;
 import server.core.socketio.SocketIOServerProvider;
 import server.core.users.UsersProvider;
 import server.handlers.*;
+import server.handlers.gameplay.DrawEventHandler;
 import storage.StorageProvider;
 
 public class GameServer {
@@ -69,9 +70,11 @@ public class GameServer {
 
         mServerProvider.on(Events.LOGIN, LoginEventHandler.getHandler());
         mServerProvider.on(Events.CREATE_ACCOUNT, CreateAccountEventHandler.getHandler());
-        mServerProvider.on(Events.CHAT, new ChatEventHandler().getHandler());
-        mServerProvider.on(Events.START_GAME, new StartGameEventHandler().getHandler());
-        mServerProvider.on(Events.DRAW, new DrawingHandler().getHandler());
+        mServerProvider.on(Events.CHAT, ChatEventHandler.getHandler());
+        mServerProvider.on(Events.START_GAME, StartGameEventHandler.getHandler());
+
+        //Gameplay Events
+        mServerProvider.on(Events.DRAW, DrawEventHandler.getHandler());
     }
 
     // startServer starts up the SocketIO server.

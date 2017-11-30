@@ -37,7 +37,7 @@
                 <Text text="Deck Count:"/>
                 <Text fx:id="mPlayerDeckCountText" text="0"/>
             </HBox>
-            <Button fx:id="mDrawButton" text="Draw"/>
+            <Button fx:id="mDrawButton" onAction="#drawButtonAction" text="Draw"/>
         </VBox>
         <VBox GridPane.columnIndex="1">
             <HBox>

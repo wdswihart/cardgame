@@ -5,6 +5,7 @@ import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
@@ -114,5 +115,11 @@ public class GameView implements FxmlView<GameViewModel> {
                 }
             }
         };
+    }
+
+
+    @FXML
+    public void drawButtonAction() {
+        mGameViewModel.getDrawCommand().execute();
     }
 }

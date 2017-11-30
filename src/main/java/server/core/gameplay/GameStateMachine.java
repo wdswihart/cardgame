@@ -3,8 +3,10 @@ package server.core.gameplay;
 import com.github.oxo42.stateless4j.StateMachine;
 import com.github.oxo42.stateless4j.StateMachineConfig;
 import com.google.inject.Inject;
+import javafx.collections.ObservableList;
 import models.Card;
 import models.Events;
+import models.Player;
 import models.responses.GameState;
 import server.GameServer;
 import server.configuration.ConfigurationProvider;
@@ -59,6 +61,12 @@ public class GameStateMachine {
                 .onExit(this::exitMain);
 
       mStateMachine = new StateMachine<State, Trigger>(State.Waiting, config);
+
+      setupSubscriptions();
+    }
+
+    private void setupSubscriptions() {
+
     }
 
     private void exitWaiting() {
@@ -92,11 +100,34 @@ public class GameStateMachine {
     }
 
     private void exitDraw() {
+        List<Card> deck = null;
+        List<Card> hand = null;
+        if (mGameState.getActivePlayer().equals(mGameState.getPlayerOne())) {
+            deck = mGameState.getPlayerOneDeck();
+            hand = mGameState.getPlayerOneHand();
+        }
+        else {
+            deck = mGameState.getPlayerTwoDeck();
+            hand = mGameState.getPlayerTwoHand();
+        }
 
+        int playerIdx = new Random().nextInt(deck.size());
+        hand.add(deck.get(playerIdx));
+        deck.remove(playerIdx);
+
+        broadcastToPlayers(Events.UPDATE_GAME, mGameState);
     }
 
     private void enterMain() {
         mGameState.setState(State.Main);
+
+        //For now, just wait a few seconds and pass.
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        fire(Trigger.MainPass);
     }
     private void exitMain() {
 

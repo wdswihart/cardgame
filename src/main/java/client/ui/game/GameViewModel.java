@@ -5,6 +5,9 @@ import client.core.GameProvider;
 import client.core.navigation.INavigationProvider;
 import client.ui.BaseViewModel;
 import com.google.inject.Inject;
+import de.saxsys.mvvmfx.utils.commands.Action;
+import de.saxsys.mvvmfx.utils.commands.Command;
+import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -38,12 +41,21 @@ public class GameViewModel extends BaseViewModel {
     private Property<Boolean> mDrawButtonVisibleProperty = new SimpleBooleanProperty(false);
     //endregion
 
+    private Command mDrawCommand;
+
     @Inject
     public GameViewModel(ConnectionProvider connectionProvider, INavigationProvider navigationProvider, GameProvider gameProvider) {
         super(connectionProvider, navigationProvider);
         mGameProvider = gameProvider;
         mGameStateProperty = mGameProvider.getGameStateProperty();
         mGameStateProperty.addListener(this::onGameStateUpdated);
+
+        mDrawCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                mGameProvider.drawCard();
+            }
+        });
     }
 
     private void onGameStateUpdated(Observable observable, GameState oldVal, GameState newVal) {
@@ -62,14 +74,13 @@ public class GameViewModel extends BaseViewModel {
         mOpponentDeckProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerTwoDeck()));
         mPlayerDeckProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerOneDeck()));
 
-        //If we are the active player.
-        if (mConnectionProvider.getAuthenticatedUser().getValue().getUsername().equals(newVal.getActivePlayer().getUsername())) {
-            updateActiveView(newVal);
-        }
+        updateVisibleComponents(newVal);
     }
 
-    private void updateActiveView(GameState gameState) {
-        mDrawButtonVisibleProperty.setValue(gameState.getState() == GameState.State.Draw);
+    private void updateVisibleComponents(GameState gameState) {
+        boolean isDrawState = gameState.getState() == GameState.State.Draw;
+        boolean isActivePlayer = gameState.getActivePlayer().getUsername().equals(mConnectionProvider.getAuthenticatedUser().getValue().getUsername());
+        mDrawButtonVisibleProperty.setValue(isActivePlayer && isDrawState);
     }
 
     public Property<ObservableList<Card>> getPlayerHandProperty() {
@@ -99,5 +110,9 @@ public class GameViewModel extends BaseViewModel {
 
     public Property<Boolean> getDrawButtonVisibleProperty() {
         return mDrawButtonVisibleProperty;
+    }
+
+    public Command getDrawCommand() {
+        return mDrawCommand;
     }
 }

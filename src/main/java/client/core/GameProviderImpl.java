@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import models.Events;
 import models.Player;
+import models.requests.DrawRequest;
 import models.requests.GameRequest;
 import models.responses.GameState;
 import models.responses.PlayerList;
@@ -73,5 +74,10 @@ public class GameProviderImpl implements GameProvider {
 
     @Override
     public void leaveGame() {
+    }
+
+    @Override
+    public void drawCard() {
+        mClientProvider.getClient().emit(Events.DRAW, JSONUtils.toJson(new DrawRequest()));
     }
 }
