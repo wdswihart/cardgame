@@ -1,5 +1,7 @@
 package client.ui.home;
 
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import models.Player;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
@@ -41,6 +43,13 @@ public class HomeView implements FxmlView<HomeViewModel> {
                     super.updateItem(player, b);
                     if (player != null) {
                         setText(player.getUsername());
+
+                        if (player.getUsername().equals(mHomeViewModel.getActiveUsername())) {
+                            setTextFill(Paint.valueOf("RED"));
+                        }
+                        else {
+                            setTextFill(Paint.valueOf("BLACK"));
+                        }
                     }
                     else {
                         setText("");
@@ -86,6 +95,7 @@ public class HomeView implements FxmlView<HomeViewModel> {
 
         mMessageField.textProperty().bindBidirectional(mHomeViewModel.getMessageProperty());
     }
+
 
     @FXML
     public void showCardDetailViewAction() {

@@ -32,11 +32,11 @@ public class ChatEventHandler extends BaseEventHandler<String> {
 
     @Override
     protected void handle(SocketIOClient client, String model) {
-        if (!mActiveUserProvider.getActiveUsers().containsKey(client.getSessionId().toString())) {
+        if (!mUsersProvider.getUsers().containsKey(client.getSessionId().toString())) {
             return;
         }
 
-        GameServer.User user = mActiveUserProvider.getActiveUsers().get(client.getSessionId().toString());
+        GameServer.User user = mUsersProvider.getUsers().get(client.getSessionId().toString());
         mServerProvider.broadcast(Events.CHAT, user.getPlayer().getUsername() + ": " + model);
     }
 }

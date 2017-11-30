@@ -9,13 +9,14 @@ public class Events {
     public static final String CHAT = "Chat";
 
     public static final String START_GAME = "StartGame";
+    public static final String UPDATE_GAME = "UpdateGame";
 
     //Used when someone invites you to a game.
     public static final String INVITE_REQUEST = "InviteRequest";
 
     public static final String REFRESH_SERVER = "RefreshServer";
     public static final String MAINTAIN_SERVER = "MaintainServer";
-    public static final String DRAW_SERVER = "DrawServer";
+    public static final String DRAW = "Draw";
 
     public static final String MAIN_SERVER = "MainServer";
 

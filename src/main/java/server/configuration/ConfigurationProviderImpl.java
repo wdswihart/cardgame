@@ -31,4 +31,9 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
     public int getPort() {
         return mPort;
     }
+
+    @Override
+    public int getMaxHandSize() {
+        return 7;
+    }
 }

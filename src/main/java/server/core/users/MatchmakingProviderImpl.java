@@ -9,6 +9,8 @@ import models.requests.GameRequest;
 import models.responses.GameState;
 import models.responses.PlayerList;
 import server.GameServer;
+import server.configuration.ConfigurationProvider;
+import server.core.gameplay.GameStateMachine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,16 +20,19 @@ import java.util.Map;
 @Singleton
 public class MatchmakingProviderImpl implements MatchmakingProvider {
     @Inject
-    ActiveUserProvider mActiveUserProvider;
+    UsersProvider mUsersProvider;
+
+    @Inject
+    ConfigurationProvider mConfigurationProvider;
 
     private Map<String, GameRequest> mPlayerSentRequests = new HashMap<>();
     private Map<String, List<GameRequest>> mPlayerReceivedRequests = new HashMap<>();
-    private Map<String, GameState> mGameMap = new HashMap<>();
+    private Map<String, GameStateMachine> mGameMap = new HashMap<>();
 
     @Override
     public boolean isGameCreated(GameRequest gameRequest) {
-        GameServer.User fromUser = mActiveUserProvider.getUserByUsername(gameRequest.getFromPlayer().getUsername());
-        GameServer.User toUser = mActiveUserProvider.getUserByUsername(gameRequest.getToPlayer().getUsername());
+        GameServer.User fromUser = mUsersProvider.getUserByUsername(gameRequest.getFromPlayer().getUsername());
+        GameServer.User toUser = mUsersProvider.getUserByUsername(gameRequest.getToPlayer().getUsername());
 
         if (mGameMap.containsKey(fromUser.getClient().getSessionId().toString()) ||
                 mGameMap.containsKey(toUser.getClient().getSessionId().toString())) {
@@ -37,17 +42,23 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         return false;
     }
 
+    @Override
+    public GameStateMachine getGameStateMachine(String userKey) {
+        return mGameMap.get(userKey);
+    }
+
     private void createGame(SocketIOClient client, GameRequest gameRequest) {
-        mGameMap.put(client.getSessionId().toString(), new GameState(gameRequest.getFromPlayer(), gameRequest.getToPlayer()));
+        GameState gameState = new GameState(gameRequest.getFromPlayer(), gameRequest.getToPlayer());
+        mGameMap.put(client.getSessionId().toString(), new GameStateMachine(gameState, mUsersProvider, mConfigurationProvider));
     }
 
     @Override
     public void sendPlayRequest(SocketIOClient client, GameRequest gameRequest) {
         Player requestingPlayer = gameRequest.getFromPlayer();
-        GameServer.User requestingUser = mActiveUserProvider.getUserByUsername(requestingPlayer.getUsername());
+        GameServer.User requestingUser = mUsersProvider.getUserByUsername(requestingPlayer.getUsername());
 
         Player requestedPlayer = gameRequest.getToPlayer();
-        GameServer.User requestedUser = mActiveUserProvider.getUserByUsername(requestedPlayer.getUsername());
+        GameServer.User requestedUser = mUsersProvider.getUserByUsername(requestedPlayer.getUsername());
 
         if (mPlayerSentRequests.containsKey(requestingUser.getClient().getSessionId().toString())) {
             //TODO: Already have your one request out.
@@ -63,7 +74,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         updateRequestsOnCreate(requestingUser, requestedUser, gameRequest);
 
         //Send GameState to joined player.
-        requestingUser.getClient().sendEvent(Events.START_GAME, mGameMap.get(requestingUser.getClient().getSessionId().toString()));
+        requestingUser.getClient().sendEvent(Events.START_GAME, mGameMap.get(requestingUser.getClient().getSessionId().toString()).getGameState());
         //Update the requested players invites.
         requestedUser.getClient().sendEvent(Events.INVITE_REQUEST, getPendingRequestsForClient(requestedUser.getClient()));
     }
@@ -96,23 +107,24 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
     @Override
     public void acceptPlayRequest(SocketIOClient client, GameRequest gameRequest) {
         Player requestingPlayer = gameRequest.getFromPlayer();
-        GameServer.User requestingUser = mActiveUserProvider.getUserByUsername(requestingPlayer.getUsername());
+        GameServer.User requestingUser = mUsersProvider.getUserByUsername(requestingPlayer.getUsername());
 
         Player requestedPlayer = gameRequest.getToPlayer();
-        GameServer.User requestedUser = mActiveUserProvider.getUserByUsername(requestedPlayer.getUsername());
+        GameServer.User requestedUser = mUsersProvider.getUserByUsername(requestedPlayer.getUsername());
 
         if (!mPlayerSentRequests.containsKey(requestedUser.getClient().getSessionId().toString())) {
             //TODO: Invite no longer valid.
             return;
         }
 
-        GameState game = mGameMap.get(requestedUser.getClient().getSessionId().toString());
+        GameStateMachine game = mGameMap.get(requestedUser.getClient().getSessionId().toString());
         mGameMap.put(requestingUser.getClient().getSessionId().toString(), game);
 
         updateRequestsOnJoin(requestingUser, requestedUser, gameRequest);
 
         //Send GameState to joined player.
-        requestingUser.getClient().sendEvent(Events.START_GAME, game);
+        requestingUser.getClient().sendEvent(Events.START_GAME, game.getGameState());
+        game.fire(GameStateMachine.Trigger.PlayersReady);
     }
 
     private void updateRequestsOnJoin(GameServer.User requestingUser, GameServer.User requestedUser, GameRequest gameRequest) {
@@ -133,7 +145,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
 
             for (GameRequest req : requests) {
                 //All the people that are waiting on the requesting guy to join will be kicked back to the lobby.
-                GameServer.User u = mActiveUserProvider.getUserByUsername(req.getFromPlayer().getUsername());
+                GameServer.User u = mUsersProvider.getUserByUsername(req.getFromPlayer().getUsername());
                 u.getClient().sendEvent(Events.START_GAME, new GameState());
                 u.getClient().sendEvent(Events.INVITE_REQUEST, getPendingRequestsForClient(u.getClient()));
             }

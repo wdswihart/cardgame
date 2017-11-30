@@ -18,6 +18,7 @@ public class JSONUtils {
         }
         catch (IOException exception) {
             System.out.println("Error parsing JSON: Class["+classType.toString()+"]");
+            exception.printStackTrace();
         }
         return parsedObj;
     }

@@ -11,4 +11,6 @@ public interface GameProvider {
 
     void joinGame(Player player);
     void leaveGame();
+
+    void drawCard();
 }
