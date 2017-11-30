@@ -27,11 +27,14 @@ public class GameStateMachine {
     //region StateMachine States/Triggers
 
     private StateMachine<GameState.State, Trigger> mStateMachine;
+    private Object mTriggeredValue = new Object();
+
     public enum Trigger {
         PlayersReady,
         Attack,
         Draw,
-        MainPass,
+        PlayCard,
+        MainPass, PlayedCard,
     }
     //endregion
 
@@ -57,8 +60,13 @@ public class GameStateMachine {
 
         config.configure(State.Main)
                 .permit(Trigger.MainPass, State.Draw)
+                .permit(Trigger.PlayCard, State.PlayingCard)
                 .onEntry(this::enterMain)
                 .onExit(this::exitMain);
+
+        config.configure(State.PlayingCard)
+                .permit(Trigger.PlayedCard, State.Main)
+                .onEntry(this::entryPlayingCard);
 
       mStateMachine = new StateMachine<State, Trigger>(State.Waiting, config);
 
@@ -100,16 +108,8 @@ public class GameStateMachine {
     }
 
     private void exitDraw() {
-        List<Card> deck = null;
-        List<Card> hand = null;
-        if (mGameState.getActivePlayer().equals(mGameState.getPlayerOne())) {
-            deck = mGameState.getPlayerOneDeck();
-            hand = mGameState.getPlayerOneHand();
-        }
-        else {
-            deck = mGameState.getPlayerTwoDeck();
-            hand = mGameState.getPlayerTwoHand();
-        }
+        List<Card> deck = getActivePlayerDeck();
+        List<Card> hand = getActivePlayerHand();
 
         int playerIdx = new Random().nextInt(deck.size());
         hand.add(deck.get(playerIdx));
@@ -120,19 +120,26 @@ public class GameStateMachine {
 
     private void enterMain() {
         mGameState.setState(State.Main);
-
-        //For now, just wait a few seconds and pass.
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        fire(Trigger.MainPass);
+        broadcastToPlayers(Events.UPDATE_GAME, mGameState);
     }
+
     private void exitMain() {
 
     }
 
+
+    private void entryPlayingCard() {
+        Card requestedCard = (Card) mTriggeredValue;
+        List<Card> activePlayerHand = getActivePlayerHand();
+
+        //For now, we can allow it to be played on the contingency that it is in the players hand.
+        if (activePlayerHand.contains(requestedCard)) {
+            activePlayerHand.remove(requestedCard);
+            getActivePlayerField().add(requestedCard);
+        }
+
+        mStateMachine.fire(Trigger.PlayedCard);
+    }
 
     public State getState() {
         return mStateMachine.getState();
@@ -144,6 +151,11 @@ public class GameStateMachine {
 
     public void fire(Trigger t) {
         mStateMachine.fire(t);
+    }
+
+    public void fireWith(Trigger t, Object o) {
+        mTriggeredValue = o;
+        fire(t);
     }
 
     private void broadcastToPlayers(String event, GameState mGameState) {
@@ -167,5 +179,26 @@ public class GameStateMachine {
             mGameState.getPlayerTwoHand().add(playerTwoDeck.get(playerTwoIdx));
             playerTwoDeck.remove(playerTwoIdx);
         }
+    }
+
+    private List<Card> getActivePlayerHand() {
+        if (mGameState.getActivePlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
+            return mGameState.getPlayerOneHand();
+        }
+        return mGameState.getPlayerTwoHand();
+    }
+
+    private List<Card> getActivePlayerDeck() {
+        if (mGameState.getActivePlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
+            return mGameState.getPlayerOneDeck();
+        }
+        return mGameState.getPlayerTwoDeck();
+    }
+
+    private List<Card> getActivePlayerField() {
+        if (mGameState.getActivePlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
+            return mGameState.getPlayerOneField();
+        }
+        return mGameState.getPlayerTwoField();
     }
 }
