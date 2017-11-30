@@ -5,7 +5,6 @@ import com.github.oxo42.stateless4j.StateMachineConfig;
 import com.google.inject.Inject;
 import models.Card;
 import models.Events;
-import models.Player;
 import models.responses.GameState;
 import server.GameServer;
 import server.core.users.ActiveUserProvider;
@@ -105,7 +104,7 @@ public class GameStateMachine {
         //Set the default active player to player 1.
         mGameState.setActivePlayer(mGameState.getPlayerOne());
 
-        broadcastToPlayers(Events.DRAW, mGameState);
+        broadcastToPlayers(Events.UPDATE_GAME, mGameState);
     }
 
     private void exitDraw() {

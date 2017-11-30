@@ -5,20 +5,24 @@ import client.core.GameProvider;
 import client.core.navigation.INavigationProvider;
 import client.ui.BaseViewModel;
 import com.google.inject.Inject;
-import de.saxsys.mvvmfx.ViewModel;
 import javafx.beans.Observable;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import models.Card;
+import models.Player;
 import models.responses.GameState;
 
 public class GameViewModel extends BaseViewModel {
     private GameProvider mGameProvider;
 
-    private Property<ObservableList<Card>> mPlayerOneHandProperty = new SimpleObjectProperty<>();
-    private Property<ObservableList<Card>> mPlayerTwoHandProperty = new SimpleObjectProperty<>();
+    private Property<ObservableList<Card>> mPlayerHandProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
+    private Property<ObservableList<Card>> mOpponentHandProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
+
+    private Property<Player> mPlayerProperty = new SimpleObjectProperty<>();
+    private Property<Player> mOpponentProperty = new SimpleObjectProperty<>();
 
     //Probably not going to expose this via a getter.
     private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>();
@@ -27,30 +31,37 @@ public class GameViewModel extends BaseViewModel {
     public GameViewModel(ConnectionProvider connectionProvider, INavigationProvider navigationProvider, GameProvider gameProvider) {
         super(connectionProvider, navigationProvider);
         mGameProvider = gameProvider;
-
+        mGameStateProperty = mGameProvider.getGameStateProperty();
         mGameStateProperty.addListener(this::onGameStateUpdated);
     }
 
-    private void onGameStateUpdated(Observable observable, GameState newGameState, GameState oldGameState) {
-        if (newGameState.isDefault()) {
+    private void onGameStateUpdated(Observable observable, GameState oldVal, GameState newVal) {
+        if (newVal.isDefault()) {
             //Game is over here or something went wrong.
             return;
         }
 
-        if (newGameState.getPlayerTwoHand().equals(oldGameState.getPlayerTwoHand())) {
-            mPlayerTwoHandProperty.setValue(FXCollections.observableList(newGameState.getPlayerTwoHand()));
-        }
+        mPlayerProperty.setValue(newVal.getPlayerOne());
+        mOpponentProperty.setValue(newVal.getPlayerTwo());
 
-        if (newGameState.getPlayerOneHand().equals(oldGameState.getPlayerOneHand())) {
-            mPlayerOneHandProperty.setValue(FXCollections.observableList(newGameState.getPlayerOneHand()));
-        }
+        mOpponentHandProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerTwoHand()));
+        mPlayerHandProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerOneHand()));
     }
 
-    public Property<ObservableList<Card>> getPlayerOneHandProperty() {
-        return mPlayerOneHandProperty;
+    public Property<ObservableList<Card>> getPlayerHandProperty() {
+        return mPlayerHandProperty;
     }
 
-    public Property<ObservableList<Card>> getPlayerTwoHandProperty() {
-        return mPlayerTwoHandProperty;
+    public Property<ObservableList<Card>> getOpponentHandProperty() {
+        return mOpponentHandProperty;
+    }
+
+
+    public Property<Player> getPlayerProperty() {
+        return mPlayerProperty;
+    }
+
+    public Property<Player> getOpponentProperty() {
+        return mOpponentProperty;
     }
 }

@@ -47,6 +47,9 @@ public class HomeView implements FxmlView<HomeViewModel> {
                         if (player.getUsername().equals(mHomeViewModel.getActiveUsername())) {
                             setTextFill(Paint.valueOf("RED"));
                         }
+                        else {
+                            setTextFill(Paint.valueOf("BLACK"));
+                        }
                     }
                     else {
                         setText("");

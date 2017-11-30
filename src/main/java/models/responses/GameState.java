@@ -27,8 +27,7 @@ public class GameState extends ModelBase {
 
     @Override
     public boolean isDefault() {
-        //TODO: Should this be &&?
-        return mPlayerOne.isDefault() || mPlayerTwo.isDefault();
+        return mPlayerOne.isDefault() && mPlayerTwo.isDefault();
     }
 
     //region Getters/Setters
@@ -53,7 +52,7 @@ public class GameState extends ModelBase {
     }
 
     public void setPlayerOneHand(List<Card> playerOneHand) {
-        this.mPlayerOneHand = mPlayerOneHand;
+        this.mPlayerOneHand = playerOneHand;
     }
 
     public List<Card> getPlayerTwoHand() {
@@ -61,7 +60,7 @@ public class GameState extends ModelBase {
     }
 
     public void setPlayerTwoHand(List<Card> playerTwoHand) {
-        this.mPlayerTwoHand = mPlayerTwoHand;
+        this.mPlayerTwoHand = playerTwoHand;
     }
 
     public Player getActivePlayer() {
