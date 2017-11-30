@@ -19,7 +19,7 @@ import java.util.Map;
 @Singleton
 public class MatchmakingProviderImpl implements MatchmakingProvider {
     @Inject
-    ActiveUserProvider mActiveUserProvider;
+    UsersProvider mUsersProvider;
 
     private Map<String, GameRequest> mPlayerSentRequests = new HashMap<>();
     private Map<String, List<GameRequest>> mPlayerReceivedRequests = new HashMap<>();
@@ -27,8 +27,8 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
 
     @Override
     public boolean isGameCreated(GameRequest gameRequest) {
-        GameServer.User fromUser = mActiveUserProvider.getUserByUsername(gameRequest.getFromPlayer().getUsername());
-        GameServer.User toUser = mActiveUserProvider.getUserByUsername(gameRequest.getToPlayer().getUsername());
+        GameServer.User fromUser = mUsersProvider.getUserByUsername(gameRequest.getFromPlayer().getUsername());
+        GameServer.User toUser = mUsersProvider.getUserByUsername(gameRequest.getToPlayer().getUsername());
 
         if (mGameMap.containsKey(fromUser.getClient().getSessionId().toString()) ||
                 mGameMap.containsKey(toUser.getClient().getSessionId().toString())) {
@@ -40,16 +40,16 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
 
     private void createGame(SocketIOClient client, GameRequest gameRequest) {
         GameState gameState = new GameState(gameRequest.getFromPlayer(), gameRequest.getToPlayer());
-        mGameMap.put(client.getSessionId().toString(), new GameStateMachine(gameState, mActiveUserProvider));
+        mGameMap.put(client.getSessionId().toString(), new GameStateMachine(gameState, mUsersProvider));
     }
 
     @Override
     public void sendPlayRequest(SocketIOClient client, GameRequest gameRequest) {
         Player requestingPlayer = gameRequest.getFromPlayer();
-        GameServer.User requestingUser = mActiveUserProvider.getUserByUsername(requestingPlayer.getUsername());
+        GameServer.User requestingUser = mUsersProvider.getUserByUsername(requestingPlayer.getUsername());
 
         Player requestedPlayer = gameRequest.getToPlayer();
-        GameServer.User requestedUser = mActiveUserProvider.getUserByUsername(requestedPlayer.getUsername());
+        GameServer.User requestedUser = mUsersProvider.getUserByUsername(requestedPlayer.getUsername());
 
         if (mPlayerSentRequests.containsKey(requestingUser.getClient().getSessionId().toString())) {
             //TODO: Already have your one request out.
@@ -98,10 +98,10 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
     @Override
     public void acceptPlayRequest(SocketIOClient client, GameRequest gameRequest) {
         Player requestingPlayer = gameRequest.getFromPlayer();
-        GameServer.User requestingUser = mActiveUserProvider.getUserByUsername(requestingPlayer.getUsername());
+        GameServer.User requestingUser = mUsersProvider.getUserByUsername(requestingPlayer.getUsername());
 
         Player requestedPlayer = gameRequest.getToPlayer();
-        GameServer.User requestedUser = mActiveUserProvider.getUserByUsername(requestedPlayer.getUsername());
+        GameServer.User requestedUser = mUsersProvider.getUserByUsername(requestedPlayer.getUsername());
 
         if (!mPlayerSentRequests.containsKey(requestedUser.getClient().getSessionId().toString())) {
             //TODO: Invite no longer valid.
@@ -136,7 +136,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
 
             for (GameRequest req : requests) {
                 //All the people that are waiting on the requesting guy to join will be kicked back to the lobby.
-                GameServer.User u = mActiveUserProvider.getUserByUsername(req.getFromPlayer().getUsername());
+                GameServer.User u = mUsersProvider.getUserByUsername(req.getFromPlayer().getUsername());
                 u.getClient().sendEvent(Events.START_GAME, new GameState());
                 u.getClient().sendEvent(Events.INVITE_REQUEST, getPendingRequestsForClient(u.getClient()));
             }

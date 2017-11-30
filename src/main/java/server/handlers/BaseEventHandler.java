@@ -3,10 +3,8 @@ package server.handlers;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.listener.DataListener;
-import com.google.common.reflect.Reflection;
 import com.google.inject.Inject;
-import io.netty.util.internal.ReflectionUtil;
-import server.core.users.ActiveUserProvider;
+import server.core.users.UsersProvider;
 import storage.StorageProvider;
 import util.JSONUtils;
 
@@ -14,7 +12,7 @@ public abstract class BaseEventHandler <T> implements DataListener<String>{
     @Inject
     protected StorageProvider mStorageProvider;
     @Inject
-    protected ActiveUserProvider mActiveUserProvider;
+    protected UsersProvider mUsersProvider;
 
     @Override
     public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {

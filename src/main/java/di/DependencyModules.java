@@ -8,14 +8,13 @@ import client.core.navigation.INavigationProvider;
 import client.core.navigation.NavigationProvider;
 import client.core.socketio.SocketIOClientProvider;
 import client.core.socketio.SocketIOClientProviderImpl;
-import com.fasterxml.jackson.databind.deser.DataFormatReaders;
 import com.google.inject.AbstractModule;
 import server.configuration.ConfigurationProvider;
 import server.configuration.ConfigurationProviderImpl;
 import server.core.socketio.SocketIOServerProvider;
 import server.core.socketio.SocketIOServerProviderImpl;
-import server.core.users.ActiveUserProvider;
-import server.core.users.ActiveUserProviderImpl;
+import server.core.users.UsersProvider;
+import server.core.users.UsersProviderImpl;
 import server.core.users.MatchmakingProvider;
 import server.core.users.MatchmakingProviderImpl;
 import storage.StorageProvider;
@@ -33,7 +32,7 @@ public class DependencyModules extends AbstractModule {
         bind(GameProvider.class).to(GameProviderImpl.class);
 
         bind(SocketIOServerProvider.class).to(SocketIOServerProviderImpl.class);
-        bind(ActiveUserProvider.class).to(ActiveUserProviderImpl.class);
+        bind(UsersProvider.class).to(UsersProviderImpl.class);
         bind(MatchmakingProvider.class).to(MatchmakingProviderImpl.class);
     }
 }
