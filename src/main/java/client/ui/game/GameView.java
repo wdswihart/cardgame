@@ -14,7 +14,6 @@ import models.Card;
 import models.Player;
 
 public class GameView implements FxmlView<GameViewModel> {
-
     @InjectViewModel
     private GameViewModel mGameViewModel;
 
@@ -30,10 +29,17 @@ public class GameView implements FxmlView<GameViewModel> {
     @FXML
     public ListView<Card> mPlayersHandListView;
 
+    //region Player Infos
     @FXML
     public Text mPlayerNameText;
     @FXML
     public Text mOpponentNameText;
+
+    @FXML
+    public Text mPlayerDeckCountText;
+    @FXML
+    public Text mOpponentDeckCountText;
+    //endregion
 
     public void initialize() {
         mPlayerHeaderPane.prefWidthProperty().bind(mRootPane.widthProperty());
@@ -46,6 +52,21 @@ public class GameView implements FxmlView<GameViewModel> {
 
         mGameViewModel.getOpponentHandProperty().addListener(this::updateOpponentHand);
         mOpponentsHandListView.setCellFactory(GameView::cardCellFactory);
+
+        mGameViewModel.getPlayerDeckProperty().addListener(this::updatePlayerDeck);
+        mGameViewModel.getOpponentDeckProperty().addListener(this::updateOpponentDeck);
+    }
+
+    private void updatePlayerDeck(Observable observable, ObservableList<Card> oldVal, ObservableList<Card> newVal) {
+        Platform.runLater(() -> {
+            mPlayerDeckCountText.setText(String.valueOf(newVal.size()));
+        });
+    }
+
+    private void updateOpponentDeck(Observable observable, ObservableList<Card> oldVal, ObservableList<Card> newVal) {
+        Platform.runLater(() -> {
+            mOpponentDeckCountText.setText(String.valueOf(newVal.size()));
+        });
     }
 
     private void updateOpponent(Observable observable, Player oldVal, Player newVal) {

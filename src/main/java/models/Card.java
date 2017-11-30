@@ -9,6 +9,16 @@ public class Card extends ModelBase {
 
     private int mToughness = 0;
 
+
+    public Card() {
+
+    }
+
+    public Card(String name) {
+        mName = name;
+    }
+
+
     public String getName() {
         return mName;
     }

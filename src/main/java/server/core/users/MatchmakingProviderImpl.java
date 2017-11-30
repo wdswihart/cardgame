@@ -9,6 +9,7 @@ import models.requests.GameRequest;
 import models.responses.GameState;
 import models.responses.PlayerList;
 import server.GameServer;
+import server.configuration.ConfigurationProvider;
 import server.core.gameplay.GameStateMachine;
 
 import java.util.ArrayList;
@@ -20,6 +21,9 @@ import java.util.Map;
 public class MatchmakingProviderImpl implements MatchmakingProvider {
     @Inject
     UsersProvider mUsersProvider;
+
+    @Inject
+    ConfigurationProvider mConfigurationProvider;
 
     private Map<String, GameRequest> mPlayerSentRequests = new HashMap<>();
     private Map<String, List<GameRequest>> mPlayerReceivedRequests = new HashMap<>();
@@ -40,7 +44,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
 
     private void createGame(SocketIOClient client, GameRequest gameRequest) {
         GameState gameState = new GameState(gameRequest.getFromPlayer(), gameRequest.getToPlayer());
-        mGameMap.put(client.getSessionId().toString(), new GameStateMachine(gameState, mUsersProvider));
+        mGameMap.put(client.getSessionId().toString(), new GameStateMachine(gameState, mUsersProvider, mConfigurationProvider));
     }
 
     @Override

@@ -32,6 +32,10 @@
                 <Text text="Health:"/>
                 <Text text="20"/>
             </HBox>
+            <HBox>
+                <Text text="Deck Count:"/>
+                <Text fx:id="mPlayerDeckCountText" text="0"/>
+            </HBox>
         </VBox>
         <VBox GridPane.columnIndex="1">
             <HBox>
@@ -41,6 +45,10 @@
             <HBox>
                 <Text text="Health:"/>
                 <Text text="20"/>
+            </HBox>
+            <HBox>
+                <Text text="Deck Count:"/>
+                <Text fx:id="mOpponentDeckCountText" text="0"/>
             </HBox>
         </VBox>
     </GridPane>

@@ -16,6 +16,9 @@ public class GameState extends ModelBase {
     private List<Card> mPlayerOneHand = new ArrayList<>();
     private List<Card> mPlayerTwoHand = new ArrayList<>();
 
+    private List<Card> mPlayerOneDeck = new ArrayList<>();
+    private List<Card> mPlayerTwoDeck = new ArrayList<>();
+
     public GameState(Player playerOne, Player playerTwo) {
         mPlayerOne = playerOne;
         mPlayerTwo = playerTwo;
@@ -69,6 +72,22 @@ public class GameState extends ModelBase {
 
     public void setActivePlayer(Player activePlayer) {
         this.mActivePlayer = activePlayer;
+    }
+
+    public List<Card> getPlayerTwoDeck() {
+        return mPlayerTwoDeck;
+    }
+
+    public void setPlayerTwoDeck(List<Card> playerTwoDeck) {
+        this.mPlayerTwoDeck = playerTwoDeck;
+    }
+
+    public List<Card> getPlayerOneDeck() {
+        return mPlayerOneDeck;
+    }
+
+    public void setPlayerOneDeck(List<Card> playerOneDeck) {
+        this.mPlayerOneDeck = playerOneDeck;
     }
     //endregion
 }

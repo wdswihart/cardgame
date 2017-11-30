@@ -27,6 +27,9 @@ public class GameViewModel extends BaseViewModel {
     //Probably not going to expose this via a getter.
     private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>();
 
+    private Property<ObservableList<Card>> mPlayerDeckProperty = new SimpleObjectProperty<>();
+    private Property<ObservableList<Card>> mOpponentDeckProperty = new SimpleObjectProperty<>();
+
     @Inject
     public GameViewModel(ConnectionProvider connectionProvider, INavigationProvider navigationProvider, GameProvider gameProvider) {
         super(connectionProvider, navigationProvider);
@@ -41,11 +44,16 @@ public class GameViewModel extends BaseViewModel {
             return;
         }
 
+        //TODO: Handle setting player 1/2. Player should be the client. Opponent shoudl be the other guy.
         mPlayerProperty.setValue(newVal.getPlayerOne());
         mOpponentProperty.setValue(newVal.getPlayerTwo());
 
         mOpponentHandProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerTwoHand()));
         mPlayerHandProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerOneHand()));
+
+        mOpponentDeckProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerTwoDeck()));
+        mPlayerDeckProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerOneDeck()));
+
     }
 
     public Property<ObservableList<Card>> getPlayerHandProperty() {
@@ -63,5 +71,13 @@ public class GameViewModel extends BaseViewModel {
 
     public Property<Player> getOpponentProperty() {
         return mOpponentProperty;
+    }
+
+    public Property<ObservableList<Card>> getPlayerDeckProperty() {
+        return mPlayerDeckProperty;
+    }
+
+    public Property<ObservableList<Card>> getOpponentDeckProperty() {
+        return mOpponentDeckProperty;
     }
 }

@@ -7,9 +7,15 @@ import models.Card;
 import models.Events;
 import models.responses.GameState;
 import server.GameServer;
+import server.configuration.ConfigurationProvider;
 import server.core.users.UsersProvider;
 
+import java.util.List;
+import java.util.Random;
+
 public class GameStateMachine {
+    private ConfigurationProvider mConfigurationProvider;
+
     private GameState mGameState = new GameState();
 
     private GameServer.User mUserOne;
@@ -44,7 +50,8 @@ public class GameStateMachine {
     //endregion
 
     @Inject
-    public GameStateMachine(GameState gameState, UsersProvider usersProvider) {
+    public GameStateMachine(GameState gameState, UsersProvider usersProvider, ConfigurationProvider configurationProvider) {
+        mConfigurationProvider = configurationProvider;
         mGameState = gameState;
 
         mUserOne = usersProvider.getUserByUsername(mGameState.getPlayerOne().getUsername());
@@ -89,22 +96,22 @@ public class GameStateMachine {
     }
 
     private void exitWaiting() {
-        //Need to deal some cards here.
-        mGameState.getPlayerOneHand().add(new Card());
-        mGameState.getPlayerOneHand().add(new Card());
-        mGameState.getPlayerOneHand().add(new Card());
-        mGameState.getPlayerOneHand().add(new Card());
-        mGameState.getPlayerOneHand().add(new Card());
+        //TODO: Maybe assign a random deck for now? (shrug)
+        addCardsToDeck(mGameState.getPlayerOneDeck(), 50);
+        addCardsToDeck(mGameState.getPlayerTwoDeck(), 45);
 
-        mGameState.getPlayerTwoHand().add(new Card());
-        mGameState.getPlayerTwoHand().add(new Card());
-        mGameState.getPlayerTwoHand().add(new Card());
-        mGameState.getPlayerTwoHand().add(new Card());
+        dealCards();
 
         //Set the default active player to player 1.
         mGameState.setActivePlayer(mGameState.getPlayerOne());
 
         broadcastToPlayers(Events.UPDATE_GAME, mGameState);
+    }
+
+    private void addCardsToDeck(List<Card> playerOneDeck, int i) {
+        for (int x = 0; x < i; x++) {
+            playerOneDeck.add(new Card("monster " + x));
+        }
     }
 
     private void exitDraw() {
@@ -131,5 +138,23 @@ public class GameStateMachine {
     private void broadcastToPlayers(String event, GameState mGameState) {
         mUserOne.getClient().sendEvent(event, mGameState);
         mUserTwo.getClient().sendEvent(event, mGameState);
+    }
+
+    private void dealCards() {
+        List<Card> playerOneDeck = mGameState.getPlayerOneDeck();
+        List<Card> playerTwoDeck = mGameState.getPlayerTwoDeck();
+
+        //Shuffle at some point.
+        int maxHandSize = mConfigurationProvider.getMaxHandSize();
+
+        for (int i = 0; i < maxHandSize; i++) {
+            int playerOneIdx = new Random().nextInt(playerOneDeck.size());
+            mGameState.getPlayerOneHand().add(playerOneDeck.get(playerOneIdx));
+            playerOneDeck.remove(playerOneIdx);
+
+            int playerTwoIdx = new Random().nextInt(playerTwoDeck.size());
+            mGameState.getPlayerTwoHand().add(playerTwoDeck.get(playerTwoIdx));
+            playerTwoDeck.remove(playerTwoIdx);
+        }
     }
 }
