@@ -2,6 +2,7 @@ package client.core;
 
 import javafx.beans.property.Property;
 import javafx.collections.ObservableList;
+import models.Card;
 import models.Player;
 import models.responses.GameState;
 
@@ -13,4 +14,6 @@ public interface GameProvider {
     void leaveGame();
 
     void drawCard();
+
+    void playCard(Card card);
 }

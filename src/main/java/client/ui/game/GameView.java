@@ -55,6 +55,8 @@ public class GameView implements FxmlView<GameViewModel> {
     //region Player Actions
     @FXML
     public Button mDrawButton;
+    @FXML
+    public Button mPlayCardButton;
     //endregion
 
     public void initialize() {
@@ -64,6 +66,7 @@ public class GameView implements FxmlView<GameViewModel> {
         mGameViewModel.getPlayerProperty().addListener(this::updatePlayer);
 
         mGameViewModel.getPlayerHandProperty().addListener(this::updatePlayerHand);
+        mGameViewModel.getSelectedPlayerCardProperty().bind(mPlayersHandListView.getSelectionModel().selectedItemProperty());
         mPlayersHandListView.setCellFactory(GameView::cardCellFactory);
 
         mGameViewModel.getOpponentHandProperty().addListener(this::updateOpponentHand);
@@ -73,6 +76,7 @@ public class GameView implements FxmlView<GameViewModel> {
         mGameViewModel.getOpponentDeckProperty().addListener(this::updateOpponentDeck);
 
         mDrawButton.visibleProperty().bind(mGameViewModel.getDrawButtonVisibleProperty());
+        mPlayCardButton.visibleProperty().bindBidirectional(mGameViewModel.getPlayCardButtonVisibleProperty());
 
         mPhaseText.textProperty().bind(mGameViewModel.getPhaseProperty());
     }
@@ -145,5 +149,10 @@ public class GameView implements FxmlView<GameViewModel> {
     @FXML
     public void drawButtonAction() {
         mGameViewModel.getDrawCommand().execute();
+    }
+
+    @FXML
+    public void playCardButtonAction() {
+        mGameViewModel.getPlayCardCommand().execute();
     }
 }

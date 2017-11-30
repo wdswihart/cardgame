@@ -76,7 +76,7 @@ public class GameServer {
 
         //Gameplay Events
         mServerProvider.on(Events.DRAW, DrawEventHandler.getHandler());
-        mServerProvider.on(Events.PLAY_CARD, PlayCardEventHandler.getHandler())
+        mServerProvider.on(Events.PLAY_CARD, PlayCardEventHandler.getHandler());
     }
 
     // startServer starts up the SocketIO server.

@@ -40,11 +40,15 @@ public class GameViewModel extends BaseViewModel {
 
     //endregion
 
+    private Property<Card> mSelectedPlayerCardProperty = new SimpleObjectProperty<>();
+
     //region UI State Visibility
     private Property<Boolean> mDrawButtonVisibleProperty = new SimpleBooleanProperty(false);
+    private Property<Boolean> mPlayCardButtonVisibleProperty = new SimpleBooleanProperty(false);
     //endregion
 
     private Command mDrawCommand;
+    private Command mPlayCardCommand;
 
     @Inject
     public GameViewModel(ConnectionProvider connectionProvider, INavigationProvider navigationProvider, GameProvider gameProvider) {
@@ -57,6 +61,17 @@ public class GameViewModel extends BaseViewModel {
             @Override
             protected void action() throws Exception {
                 mGameProvider.drawCard();
+            }
+        });
+
+        mPlayCardCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                if (mSelectedPlayerCardProperty.getValue().isDefault()) {
+                    return;
+                }
+
+                mGameProvider.playCard(mSelectedPlayerCardProperty.getValue());
             }
         });
     }
@@ -84,8 +99,11 @@ public class GameViewModel extends BaseViewModel {
 
     private void updateVisibleComponents(GameState gameState) {
         boolean isDrawState = gameState.getState() == GameState.State.Draw;
+        boolean isMainState = gameState.getState() == GameState.State.Main;
         boolean isActivePlayer = gameState.getActivePlayer().getUsername().equals(mConnectionProvider.getAuthenticatedUser().getValue().getUsername());
+
         mDrawButtonVisibleProperty.setValue(isActivePlayer && isDrawState);
+        mPlayCardButtonVisibleProperty.setValue(isActivePlayer && isMainState);
     }
 
     public Property<ObservableList<Card>> getPlayerHandProperty() {
@@ -124,5 +142,17 @@ public class GameViewModel extends BaseViewModel {
 
     public Command getDrawCommand() {
         return mDrawCommand;
+    }
+
+    public Command getPlayCardCommand() {
+        return mPlayCardCommand;
+    }
+
+    public Property<Card> getSelectedPlayerCardProperty() {
+        return mSelectedPlayerCardProperty;
+    }
+
+    public Property<Boolean> getPlayCardButtonVisibleProperty() {
+        return mPlayCardButtonVisibleProperty;
     }
 }
