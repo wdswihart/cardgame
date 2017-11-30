@@ -38,9 +38,10 @@
                 <Text text="Deck Count:"/>
                 <Text fx:id="mPlayerDeckCountText" text="0"/>
             </HBox>
-            <HBox>
+            <HBox fx:id="mGameControlBox">
                 <Button fx:id="mDrawButton" onAction="#drawButtonAction" text="Draw"/>
                 <Button fx:id="mPlayCardButton" onAction="#playCardButtonAction" text="Play Card"/>
+                <Button fx:id="mPassTurnButton" onAction="#passTurnAction" text="Pass Turn"/>
             </HBox>
         </VBox>
 

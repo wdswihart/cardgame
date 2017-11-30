@@ -87,4 +87,9 @@ public class GameProviderImpl implements GameProvider {
     public void playCard(Card card) {
         mClientProvider.getClient().emit(Events.PLAY_CARD, JSONUtils.toJson(new PlayCardRequest(card)));
     }
+
+    @Override
+    public void passTurn() {
+        mClientProvider.getClient().emit(Events.PASS_TURN, "");
+    }
 }

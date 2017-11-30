@@ -3,10 +3,8 @@ package server.core.gameplay;
 import com.github.oxo42.stateless4j.StateMachine;
 import com.github.oxo42.stateless4j.StateMachineConfig;
 import com.google.inject.Inject;
-import javafx.collections.ObservableList;
 import models.Card;
 import models.Events;
-import models.Player;
 import models.responses.GameState;
 import server.GameServer;
 import server.configuration.ConfigurationProvider;
@@ -34,7 +32,7 @@ public class GameStateMachine {
         Attack,
         Draw,
         PlayCard,
-        MainPass, PlayedCard,
+        PassMain, PlayedCard,
     }
     //endregion
 
@@ -59,7 +57,7 @@ public class GameStateMachine {
                 .onExit(this::exitDraw);
 
         config.configure(State.Main)
-                .permit(Trigger.MainPass, State.Draw)
+                .permit(Trigger.PassMain, State.Draw)
                 .permit(Trigger.PlayCard, State.PlayingCard)
                 .onEntry(this::enterMain)
                 .onExit(this::exitMain);

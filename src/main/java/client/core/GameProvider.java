@@ -16,4 +16,6 @@ public interface GameProvider {
     void drawCard();
 
     void playCard(Card card);
+
+    void passTurn();
 }
