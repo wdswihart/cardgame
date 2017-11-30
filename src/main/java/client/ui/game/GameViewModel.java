@@ -12,6 +12,7 @@ import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import models.Card;
@@ -26,6 +27,8 @@ public class GameViewModel extends BaseViewModel {
 
     private Property<Player> mPlayerProperty = new SimpleObjectProperty<>();
     private Property<Player> mOpponentProperty = new SimpleObjectProperty<>();
+
+    private Property<String> mPhaseProperty = new SimpleStringProperty();
 
     //Probably not going to expose this via a getter.
     private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>();
@@ -74,6 +77,8 @@ public class GameViewModel extends BaseViewModel {
         mOpponentDeckProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerTwoDeck()));
         mPlayerDeckProperty.setValue(FXCollections.observableArrayList(newVal.getPlayerOneDeck()));
 
+        mPhaseProperty.setValue(newVal.getState().toString());
+
         updateVisibleComponents(newVal);
     }
 
@@ -111,6 +116,11 @@ public class GameViewModel extends BaseViewModel {
     public Property<Boolean> getDrawButtonVisibleProperty() {
         return mDrawButtonVisibleProperty;
     }
+
+    public Property<String> getPhaseProperty() {
+        return mPhaseProperty;
+    }
+
 
     public Command getDrawCommand() {
         return mDrawCommand;

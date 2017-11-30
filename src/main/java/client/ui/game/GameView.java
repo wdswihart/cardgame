@@ -49,6 +49,8 @@ public class GameView implements FxmlView<GameViewModel> {
     public Text mOpponentDeckCountText;
     //endregion
 
+    @FXML
+    public Text mPhaseText;
 
     //region Player Actions
     @FXML
@@ -71,6 +73,8 @@ public class GameView implements FxmlView<GameViewModel> {
         mGameViewModel.getOpponentDeckProperty().addListener(this::updateOpponentDeck);
 
         mDrawButton.visibleProperty().bind(mGameViewModel.getDrawButtonVisibleProperty());
+
+        mPhaseText.textProperty().bind(mGameViewModel.getPhaseProperty());
     }
 
     private void updatePlayerDeck(Observable observable, ObservableList<Card> oldVal, ObservableList<Card> newVal) {
