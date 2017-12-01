@@ -6,6 +6,8 @@ import models.Card;
 import models.Player;
 import models.responses.GameState;
 
+import java.util.List;
+
 public interface GameProvider {
     Property<GameState> getGameStateProperty();
     Property<ObservableList<Player>> getPendingInvitesProperty();
@@ -18,4 +20,6 @@ public interface GameProvider {
     void playCard(Card card);
 
     void passTurn();
+
+    void attack(List<Card> attackers);
 }

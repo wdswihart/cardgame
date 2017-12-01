@@ -5,6 +5,8 @@ import com.github.oxo42.stateless4j.StateMachineConfig;
 import com.google.inject.Inject;
 import models.Card;
 import models.Events;
+import models.Player;
+import models.requests.AttackRequest;
 import models.responses.GameState;
 import server.GameServer;
 import server.configuration.ConfigurationProvider;
@@ -32,7 +34,7 @@ public class GameStateMachine {
         Attack,
         Draw,
         PlayCard,
-        PassMain, PlayedCard,
+        PassMain, PlayedCard, Defend,
     }
     //endregion
 
@@ -59,12 +61,17 @@ public class GameStateMachine {
         config.configure(State.Main)
                 .permit(Trigger.PassMain, State.Draw)
                 .permit(Trigger.PlayCard, State.PlayingCard)
+                .permit(Trigger.Attack, State.Attack)
                 .onEntry(this::enterMain)
                 .onExit(this::exitMain);
 
         config.configure(State.PlayingCard)
                 .permit(Trigger.PlayedCard, State.Main)
-                .onEntry(this::entryPlayingCard);
+                .onEntry(this::enterPlayingCard);
+
+        config.configure(State.Attack)
+                .permit(Trigger.Defend, State.Main)
+                .onEntry(this::enterAttack);
 
       mStateMachine = new StateMachine<State, Trigger>(State.Waiting, config);
 
@@ -86,8 +93,12 @@ public class GameStateMachine {
     }
 
     private void addCardsToDeck(List<Card> playerOneDeck, int i) {
+        Random r = new Random();
         for (int x = 0; x < i; x++) {
-            playerOneDeck.add(new Card("monster " + x));
+            Card c = new Card("monster " + x);
+            c.setPower(r.nextInt(5));
+            c.setToughness(r.nextInt(5));
+            playerOneDeck.add(c);
         }
     }
 
@@ -118,6 +129,9 @@ public class GameStateMachine {
 
     private void enterMain() {
         mGameState.setState(State.Main);
+
+        //TODO: Send list of actions player is able to do.
+
         broadcastToPlayers(Events.UPDATE_GAME, mGameState);
     }
 
@@ -125,8 +139,7 @@ public class GameStateMachine {
 
     }
 
-
-    private void entryPlayingCard() {
+    private void enterPlayingCard() {
         Card requestedCard = (Card) mTriggeredValue;
         List<Card> activePlayerHand = getActivePlayerHand();
 
@@ -138,6 +151,38 @@ public class GameStateMachine {
 
         mStateMachine.fire(Trigger.PlayedCard);
     }
+
+    //region Attack
+    private void enterAttack() {
+        AttackRequest request = (AttackRequest)mTriggeredValue;
+
+        for (Card card : request.getAttackingMonsters()) {
+            if (canAttack(card)) {
+                //For now we're just applying damage to other player.
+                dealDamage(card);
+            }
+        }
+        broadcastToPlayers(Events.UPDATE_GAME, mGameState);
+
+        //Allow to directly return to main and pass for now.
+        mStateMachine.fire(Trigger.Defend);
+        mStateMachine.fire(Trigger.PassMain);
+    }
+
+    private void dealDamage(Card card) {
+        //TODO: Put the cards/decks/hands/fields/heaths into Player. This is annoying.
+        if (mGameState.getActivePlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
+            mGameState.setPlayerTwoHealth(mGameState.getPlayerTwoHealth() - card.getPower());
+        }
+        else {
+            mGameState.setPlayerOneHealth(mGameState.getPlayerOneHealth() - card.getPower());
+        }
+    }
+
+    private boolean canAttack(Card card) {
+        return getActivePlayerField().contains(card);
+    }
+    //endregion
 
     public State getState() {
         return mStateMachine.getState();
@@ -179,6 +224,8 @@ public class GameStateMachine {
         }
     }
 
+
+    //region Convenience Methods
     private List<Card> getActivePlayerHand() {
         if (mGameState.getActivePlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
             return mGameState.getPlayerOneHand();
@@ -199,4 +246,26 @@ public class GameStateMachine {
         }
         return mGameState.getPlayerTwoField();
     }
+
+    private List<Card> getInactivePlayerHand() {
+        if (mGameState.getActivePlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
+            return mGameState.getPlayerTwoHand();
+        }
+        return mGameState.getPlayerOneHand();
+    }
+
+    private List<Card> getInactivePlayerDeck() {
+        if (mGameState.getActivePlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
+            return mGameState.getPlayerTwoDeck();
+        }
+        return mGameState.getPlayerOneDeck();
+    }
+
+    private List<Card> getInactivePlayerField() {
+        if (mGameState.getActivePlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
+            return mGameState.getPlayerTwoField();
+        }
+        return mGameState.getPlayerOneField();
+    }
+    //endregion
 }

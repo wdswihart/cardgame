@@ -6,6 +6,7 @@ import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -21,6 +22,7 @@ import models.Player;
 import java.io.IOException;
 
 public class GameView implements FxmlView<GameViewModel> {
+
     @InjectViewModel
     private GameViewModel mGameViewModel;
 
@@ -43,6 +45,11 @@ public class GameView implements FxmlView<GameViewModel> {
     public Text mOpponentNameText;
 
     @FXML
+    public Text mPlayerHealthText;
+    @FXML
+    public Text mOpponentHealthText;
+
+    @FXML
     public Text mPlayerDeckCountText;
     @FXML
     public Text mOpponentDeckCountText;
@@ -60,6 +67,9 @@ public class GameView implements FxmlView<GameViewModel> {
     public Button mPlayCardButton;
     @FXML
     public Button mPassTurnButton;
+
+    public Button mAttackButton;
+
     //endregion
 
     public void initialize() {
@@ -78,11 +88,19 @@ public class GameView implements FxmlView<GameViewModel> {
         mGameViewModel.getPlayerDeckProperty().addListener(this::updatePlayerDeck);
         mGameViewModel.getOpponentDeckProperty().addListener(this::updateOpponentDeck);
 
+
+        mPlayerHealthText.textProperty().bind(mGameViewModel.getPlayerHealthProperty());
+        mOpponentHealthText.textProperty().bind(mGameViewModel.getOpponentHealthProperty());
+        mPhaseText.textProperty().bind(mGameViewModel.getPhaseProperty());
+
+        setupVisibility();
+    }
+
+    private void setupVisibility() {
         mDrawButton.disableProperty().bind(mGameViewModel.getDrawButtonDisabledProperty());
         mPlayCardButton.disableProperty().bind(mGameViewModel.getPlayCardButtonDisabledProperty());
+        mAttackButton.disableProperty().bind(mGameViewModel.getAttackButtonDisabledProperty());
         mGameControlBox.visibleProperty().bind(mGameViewModel.getGameControlVisibleProperty());
-
-        mPhaseText.textProperty().bind(mGameViewModel.getPhaseProperty());
     }
 
     private void updatePlayerDeck(Observable observable, ObservableList<Card> oldVal, ObservableList<Card> newVal) {
@@ -160,7 +178,13 @@ public class GameView implements FxmlView<GameViewModel> {
         mGameViewModel.getPlayCardCommand().execute();
     }
 
+    @FXML
     public void passTurnAction() {
         mGameViewModel.getPassTurnCommand().execute();
+    }
+
+    @FXML
+    public void attackAction() {
+        mGameViewModel.getAttackCommand().execute();
     }
 }

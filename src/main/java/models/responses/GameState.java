@@ -1,5 +1,6 @@
 package models.responses;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import models.Card;
 import models.ModelBase;
 import models.Player;
@@ -8,10 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameState extends ModelBase {
+
     public enum State {
         Waiting,
         Draw,
-        Main, PlayingCard,
+        Main,
+        Attack,
+        PlayingCard,
 //        End,
 //        Refresh,
 //        Maintain,
@@ -24,6 +28,9 @@ public class GameState extends ModelBase {
 
     private Player mPlayerOne = new Player();
     private Player mPlayerTwo = new Player();
+
+    private int mPlayerOneHealth = 20;
+    private int mPlayerTwoHealth = 20;
 
     private Player mActivePlayer = new Player();
 
@@ -131,5 +138,20 @@ public class GameState extends ModelBase {
         this.mPlayerTwoField = playerTwoField;
     }
 
+    public int getPlayerOneHealth() {
+        return mPlayerOneHealth;
+    }
+
+    public void setPlayerOneHealth(int playerOneHealth) {
+        this.mPlayerOneHealth = playerOneHealth;
+    }
+
+    public int getPlayerTwoHealth() {
+        return mPlayerTwoHealth;
+    }
+
+    public void setPlayerTwoHealth(int playerTwoHealth) {
+        this.mPlayerTwoHealth = playerTwoHealth;
+    }
     //endregion
 }

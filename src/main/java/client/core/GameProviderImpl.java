@@ -10,12 +10,15 @@ import javafx.collections.ObservableList;
 import models.Card;
 import models.Events;
 import models.Player;
+import models.requests.AttackRequest;
 import models.requests.DrawRequest;
 import models.requests.GameRequest;
 import models.requests.PlayCardRequest;
 import models.responses.GameState;
 import models.responses.PlayerList;
 import util.JSONUtils;
+
+import java.util.List;
 
 @Singleton
 public class GameProviderImpl implements GameProvider {
@@ -91,5 +94,10 @@ public class GameProviderImpl implements GameProvider {
     @Override
     public void passTurn() {
         mClientProvider.getClient().emit(Events.PASS_TURN, "");
+    }
+
+    @Override
+    public void attack(List<Card> attackers) {
+        mClientProvider.getClient().emit(Events.ATTACK, JSONUtils.toJson(new AttackRequest(attackers)));
     }
 }
