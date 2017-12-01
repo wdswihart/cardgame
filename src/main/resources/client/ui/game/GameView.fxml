@@ -44,6 +44,7 @@
                 <Button fx:id="mAttackButton"   onAction="#attackAction" text="Attack"/>
                 <Button fx:id="mPassTurnButton" onAction="#passTurnAction" text="Pass Turn"/>
             </HBox>
+            <Button onAction="#quitGameAction" text="Quit Game"/>
         </VBox>
 
         <!--State Info-->

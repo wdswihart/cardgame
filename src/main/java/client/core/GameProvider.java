@@ -22,4 +22,6 @@ public interface GameProvider {
     void passTurn();
 
     void attack(List<Card> attackers);
+
+    void quitGame();
 }

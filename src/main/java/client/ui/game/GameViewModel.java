@@ -13,7 +13,6 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import models.Card;
@@ -66,6 +65,7 @@ public class GameViewModel extends BaseViewModel {
     private Command mPlayCardCommand;
     private Command mPassTurnCommand;
     private Command mAttackCommand;
+    private Command mQuitGameCommand;
     //endregion
 
     @Inject
@@ -107,11 +107,19 @@ public class GameViewModel extends BaseViewModel {
                 mGameProvider.attack(mPlayerFieldProperty.getValue());
             }
         });
+
+        mQuitGameCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                mGameProvider.quitGame();
+            }
+        });
     }
 
     private void onGameStateUpdated(Observable observable, GameState oldVal, GameState newVal) {
         if (newVal.isDefault()) {
             //Game is over here or something went wrong.
+            mNavigationProvider.navigatePrevious();
             return;
         }
 
@@ -141,7 +149,7 @@ public class GameViewModel extends BaseViewModel {
 
         if (isGameOver) {
             String winnerName = "";
-            if (mGameStateProperty.getValue().getPlayerOneHealth() == 0) {
+            if (mGameStateProperty.getValue().getPlayerOneHealth() > mGameStateProperty.getValue().getPlayerTwoHealth()) {
                 winnerName = mGameStateProperty.getValue().getPlayerOne().getUsername();
             } else if (mGameStateProperty.getValue().getPlayerTwoHealth() == 0) {
                 winnerName = mGameStateProperty.getValue().getPlayerOne().getUsername();
@@ -261,5 +269,9 @@ public class GameViewModel extends BaseViewModel {
 
     public void setmWinnerMessageVisibleProperty(Property<Boolean> mWinnerMessageVisibleProperty) {
         this.mWinnerMessageVisibleProperty = mWinnerMessageVisibleProperty;
+    }
+
+    public Command getQuitGameCommand() {
+        return mQuitGameCommand;
     }
 }

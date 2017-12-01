@@ -191,4 +191,9 @@ public class GameView implements FxmlView<GameViewModel> {
     public void attackAction() {
         mGameViewModel.getAttackCommand().execute();
     }
+
+    @FXML
+    public void quitGameAction() {
+        mGameViewModel.getQuitGameCommand().execute();
+    }
 }

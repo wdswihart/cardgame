@@ -245,6 +245,17 @@ public class GameStateMachine {
         }
     }
 
+    //Takes care of removing a player from the game.
+    //Notifying an empty GameState will signal that the user should no longer be in the GameView.
+    public void removePlayer(Player player) {
+        if (player.getUsername().equals(mGameState.getPlayerOne().getUsername())) {
+            mUserOne.getClient().sendEvent(Events.UPDATE_GAME, new GameState());
+        }
+        else if (player.getUsername().equals(mGameState.getPlayerTwo().getUsername())) {
+            mUserTwo.getClient().sendEvent(Events.UPDATE_GAME, new GameState());
+        }
+    }
+
 
     //region Convenience Methods
     private List<Card> getActivePlayerHand() {

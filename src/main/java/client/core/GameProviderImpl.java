@@ -38,7 +38,10 @@ public class GameProviderImpl implements GameProvider {
 
             GameState game = JSONUtils.fromJson(params[0], GameState.class);
             game = (game == null) ? new GameState() : game;
-            mGameStateProperty.setValue(game);
+
+            synchronized (this) {
+                mGameStateProperty.setValue(game);
+            }
         });
 
         mClientProvider.getClient().on(Events.INVITE_REQUEST, params -> {
@@ -54,7 +57,10 @@ public class GameProviderImpl implements GameProvider {
 
             GameState game = JSONUtils.fromJson(params[0], GameState.class);
             game = (game == null) ? new GameState() : game;
-            mGameStateProperty.setValue(game);
+
+            synchronized (this) {
+                mGameStateProperty.setValue(game);
+            }
         });
     }
 
@@ -93,11 +99,16 @@ public class GameProviderImpl implements GameProvider {
 
     @Override
     public void passTurn() {
-        mClientProvider.getClient().emit(Events.PASS_TURN, "");
+        mClientProvider.getClient().emit(Events.PASS_TURN, "{}");
     }
 
     @Override
     public void attack(List<Card> attackers) {
         mClientProvider.getClient().emit(Events.ATTACK, JSONUtils.toJson(new AttackRequest(attackers)));
+    }
+
+    @Override
+    public void quitGame() {
+        mClientProvider.getClient().emit(Events.QUIT_GAME, "{}");
     }
 }
