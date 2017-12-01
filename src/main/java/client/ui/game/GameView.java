@@ -14,6 +14,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import models.Card;
 import models.Player;
@@ -27,44 +28,52 @@ public class GameView implements FxmlView<GameViewModel> {
     @FXML
     public GridPane mRootPane;
 
-    @FXML
-    public GridPane mPlayerHeaderPane;
-
+    //region Hands & Fields
     @FXML
     public ListView<Card> mOpponentsHandListView;
 
     @FXML
     public ListView<Card> mPlayersHandListView;
 
-    //region Player Infos
+    @FXML
+    public ListView<Card> mOpponentFieldListView;
+
+    @FXML
+    public ListView<Card> mPlayerFieldListView;
+    //endregion
+
+    //region Player Info
     @FXML
     public Text mPlayerNameText;
+
     @FXML
     public Text mOpponentNameText;
 
     @FXML
     public Text mPlayerDeckCountText;
+
     @FXML
     public Text mOpponentDeckCountText;
-    //endregion
 
     @FXML
     public Text mPhaseText;
+    //endregion
 
     //region Player Actions
     @FXML
-    public HBox mGameControlBox;
+    public VBox mGameControlBox;
+
     @FXML
     public Button mDrawButton;
+
     @FXML
     public Button mPlayCardButton;
+
     @FXML
     public Button mPassTurnButton;
     //endregion
 
     public void initialize() {
-        mPlayerHeaderPane.prefWidthProperty().bind(mRootPane.widthProperty());
-
         mGameViewModel.getOpponentProperty().addListener(this::updateOpponent);
         mGameViewModel.getPlayerProperty().addListener(this::updatePlayer);
 

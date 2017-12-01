@@ -10,7 +10,8 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
-<GridPane fx:id="mRootPane" alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.game.GameView">
+
+<!--<GridPane fx:id="mRootPane" alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.game.GameView">
     <rowConstraints>
         <RowConstraints percentHeight="20"/>
         <RowConstraints percentHeight="40"/>
@@ -24,7 +25,7 @@
             <ColumnConstraints percentWidth="40" halignment="RIGHT"/>
         </columnConstraints>
 
-        <!--Player Info-->
+        &lt;!&ndash;Player Info&ndash;&gt;
         <VBox GridPane.columnIndex="0">
             <HBox>
                 <Text text="Player:"/>
@@ -45,12 +46,12 @@
             </HBox>
         </VBox>
 
-        <!--State Info-->
+        &lt;!&ndash;State Info&ndash;&gt;
         <VBox GridPane.columnIndex="1">
             <Text text="Phase: "/>
             <Text fx:id="mPhaseText"/>
         </VBox>
-        <!--Opponent Info-->
+        &lt;!&ndash;Opponent Info&ndash;&gt;
         <VBox GridPane.columnIndex="2">
             <HBox>
                 <Text text="Opponent:"/>
@@ -67,11 +68,93 @@
         </VBox>
     </GridPane>
 
-    <!--PLayer/Opponent hands-->
+    &lt;!&ndash;PLayer/Opponent hands&ndash;&gt;
     <VBox GridPane.rowIndex="1">
         <ListView fx:id="mOpponentsHandListView" orientation="HORIZONTAL"/>
     </VBox>
     <VBox GridPane.rowIndex="2">
         <ListView fx:id="mPlayersHandListView" orientation="HORIZONTAL"/>
     </VBox>
+</GridPane>-->
+
+<?import javafx.scene.control.TextArea?>
+<GridPane fx:id="mRootPane" fx:controller="client.ui.game.GameView" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+
+    <columnConstraints>
+        <ColumnConstraints percentWidth="20"/>
+        <ColumnConstraints percentWidth="60"/>
+        <ColumnConstraints percentWidth="20"/>
+    </columnConstraints>
+
+    <!--Opponent info-->
+    <VBox GridPane.rowIndex="0" GridPane.columnIndex="0">
+        <HBox>
+            <Text text="Opponent:"/>
+            <Text fx:id="mOpponentNameText" text="Opponent" />
+        </HBox>
+        <HBox>
+            <Text text="Health:"/>
+            <Text text="20"/>
+        </HBox>
+        <HBox>
+            <Text text="Deck Count:"/>
+            <Text fx:id="mOpponentDeckCountText" text="0"/>
+        </HBox>
+    </VBox>
+
+    <!--Player info-->
+    <VBox GridPane.rowIndex="1" GridPane.columnIndex="0">
+        <HBox>
+            <Text text="Player:"/>
+            <Text fx:id="mPlayerNameText" text="Player"/>
+        </HBox>
+        <HBox>
+            <Text text="Health:"/>
+            <Text text="20"/>
+        </HBox>
+        <HBox>
+            <Text text="Deck Count:"/>
+            <Text fx:id="mPlayerDeckCountText" text="0"/>
+        </HBox>
+        <VBox fx:id="mGameControlBox">
+            <Button fx:id="mDrawButton" onAction="#drawButtonAction" text="Draw"/>
+            <Button fx:id="mPlayCardButton" onAction="#playCardButtonAction" text="Play Card"/>
+            <Button fx:id="mPassTurnButton" onAction="#passTurnAction" text="Pass Turn"/>
+        </VBox>
+        <HBox>
+            <Text text="Phase: "/>
+            <Text fx:id="mPhaseText"/>
+        </HBox>
+    </VBox>
+
+    <!--Opponent Hand & Field-->
+    <GridPane GridPane.rowIndex="0" GridPane.columnIndex="1">
+        <rowConstraints>
+            <RowConstraints percentHeight="10"/>
+            <RowConstraints percentHeight="90"/>
+        </rowConstraints>
+
+        <ListView fx:id="mOpponentsHandListView" GridPane.rowIndex="0" orientation="HORIZONTAL"/>
+        <ListView fx:id="mOpponentFieldListView" GridPane.rowIndex="1" orientation="HORIZONTAL"/>
+
+    </GridPane>
+
+    <!--Player Hand & Field-->
+    <GridPane GridPane.rowIndex="1" GridPane.columnIndex="1">
+        <rowConstraints>
+            <RowConstraints percentHeight="90"/>
+            <RowConstraints percentHeight="10"/>
+        </rowConstraints>
+
+        <ListView fx:id="mPlayerFieldListViewr" GridPane.rowIndex="0" orientation="HORIZONTAL"/>
+        <ListView fx:id="mPlayersHandListView" GridPane.rowIndex="1" orientation="HORIZONTAL"/>
+
+    </GridPane>
+
+    <!--Card Display & Chat-->
+    <VBox GridPane.rowIndex="0" GridPane.columnIndex="2">
+        <Text text="TO-DO: Card display"/>
+    </VBox>
+    <TextArea GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+
 </GridPane>
