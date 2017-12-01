@@ -34,7 +34,10 @@ public class GameStateMachine {
         Attack,
         Draw,
         PlayCard,
-        PassMain, PlayedCard, Defend,
+        PassMain,
+        PlayedCard,
+        Defend,
+        GameOver,
     }
     //endregion
 
@@ -62,16 +65,22 @@ public class GameStateMachine {
                 .permit(Trigger.PassMain, State.Draw)
                 .permit(Trigger.PlayCard, State.PlayingCard)
                 .permit(Trigger.Attack, State.Attack)
+                .permit(Trigger.GameOver, State.EndGame)
                 .onEntry(this::enterMain)
                 .onExit(this::exitMain);
 
         config.configure(State.PlayingCard)
                 .permit(Trigger.PlayedCard, State.Main)
+                .permit(Trigger.GameOver, State.EndGame)
                 .onEntry(this::enterPlayingCard);
 
         config.configure(State.Attack)
                 .permit(Trigger.Defend, State.Main)
+                .permit(Trigger.GameOver, State.EndGame)
                 .onEntry(this::enterAttack);
+
+        config.configure(State.EndGame)
+                .onEntry(this::enterEndGame);
 
       mStateMachine = new StateMachine<State, Trigger>(State.Waiting, config);
 
@@ -172,10 +181,17 @@ public class GameStateMachine {
     private void dealDamage(Card card) {
         //TODO: Put the cards/decks/hands/fields/heaths into Player. This is annoying.
         if (mGameState.getActivePlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
-            mGameState.setPlayerTwoHealth(mGameState.getPlayerTwoHealth() - card.getPower());
+            int newHealth = mGameState.getPlayerTwoHealth() - card.getPower();
+            newHealth = newHealth < 0 ? 0 : newHealth;
+            mGameState.setPlayerTwoHealth(newHealth);
         }
         else {
-            mGameState.setPlayerOneHealth(mGameState.getPlayerOneHealth() - card.getPower());
+            int newHealth = mGameState.getPlayerOneHealth() - card.getPower();
+            newHealth = newHealth < 0 ? 0 : newHealth;
+            mGameState.setPlayerOneHealth(newHealth);
+        }
+        if (mGameState.getPlayerTwoHealth() == 0 || mGameState.getPlayerOneHealth() == 0) {
+            mStateMachine.fire(Trigger.GameOver);
         }
     }
 
@@ -183,6 +199,11 @@ public class GameStateMachine {
         return getActivePlayerField().contains(card);
     }
     //endregion
+
+    private void enterEndGame() {
+        mGameState.setState(State.EndGame);
+        broadcastToPlayers(Events.UPDATE_GAME, mGameState);
+    }
 
     public State getState() {
         return mStateMachine.getState();

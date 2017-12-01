@@ -15,7 +15,7 @@ public class GameState extends ModelBase {
         Draw,
         Main,
         Attack,
-        PlayingCard,
+        PlayingCard, EndGame,
 //        End,
 //        Refresh,
 //        Maintain,

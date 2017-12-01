@@ -13,6 +13,7 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import models.Card;
@@ -49,6 +50,9 @@ public class GameViewModel extends BaseViewModel {
     //endregion
 
     private Property<Card> mSelectedPlayerCardProperty = new SimpleObjectProperty<>();
+
+    private Property<String> mWinnerMessageProperty = new SimpleStringProperty();
+    private Property<Boolean> mWinnerMessageVisibleProperty = new SimpleBooleanProperty(false);
 
     //region UI State Visibility
     private Property<Boolean> mDrawButtonDisabledProperty = new SimpleBooleanProperty(false);
@@ -126,14 +130,27 @@ public class GameViewModel extends BaseViewModel {
     }
 
     private void updateVisibleComponents(GameState gameState) {
+        boolean isGameOver = gameState.getState() == GameState.State.EndGame;
         boolean isDrawState = gameState.getState() == GameState.State.Draw;
         boolean isMainState = gameState.getState() == GameState.State.Main;
         boolean isActivePlayer = gameState.getActivePlayer().getUsername().equals(mConnectionProvider.getAuthenticatedUser().getValue().getUsername());
 
-        mDrawButtonDisabledProperty.setValue(!isActivePlayer || !isDrawState);
-        mPlayCardButtonVisibleProperty.setValue(!isActivePlayer || !isMainState);
-        mAttackButtonDisabledProperty.setValue(!isActivePlayer || !isMainState);
-        mGameControlVisibleProperty.setValue(isActivePlayer);
+        mDrawButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isDrawState);
+        mPlayCardButtonVisibleProperty.setValue(isGameOver || !isActivePlayer || !isMainState);
+        mAttackButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isMainState);
+
+        if (isGameOver) {
+            String winnerName = "";
+            if (mGameStateProperty.getValue().getPlayerOneHealth() == 0) {
+                winnerName = mGameStateProperty.getValue().getPlayerOne().getUsername();
+            } else if (mGameStateProperty.getValue().getPlayerTwoHealth() == 0) {
+                winnerName = mGameStateProperty.getValue().getPlayerOne().getUsername();
+            }
+            mWinnerMessageProperty.setValue("Winner: " + winnerName);
+        }
+
+        mWinnerMessageVisibleProperty.setValue(isGameOver);
+        mGameControlVisibleProperty.setValue(!isGameOver && isActivePlayer);
     }
 
     private void updatePlayer(Player player, List<Card> hand, List<Card> deck, List<Card> field, int health) {
@@ -228,5 +245,21 @@ public class GameViewModel extends BaseViewModel {
 
     public Property<String> getOpponentHealthProperty() {
         return mOpponentHealthProperty;
+    }
+
+    public Property<String> getWinnerMessageProperty() {
+        return mWinnerMessageProperty;
+    }
+
+    public Property<Boolean> getWinnerMessageVisibleProperty() {
+        return mWinnerMessageVisibleProperty;
+    }
+
+    public Property<Boolean> getmWinnerMessageVisibleProperty() {
+        return mWinnerMessageVisibleProperty;
+    }
+
+    public void setmWinnerMessageVisibleProperty(Property<Boolean> mWinnerMessageVisibleProperty) {
+        this.mWinnerMessageVisibleProperty = mWinnerMessageVisibleProperty;
     }
 }

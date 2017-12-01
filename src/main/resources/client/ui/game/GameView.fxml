@@ -50,6 +50,7 @@
         <VBox GridPane.columnIndex="1">
             <Text text="Phase: "/>
             <Text fx:id="mPhaseText"/>
+            <Text fx:id="mWinnerMessage"/>
         </VBox>
         <!--Opponent Info-->
         <VBox GridPane.columnIndex="2">

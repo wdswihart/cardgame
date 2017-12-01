@@ -22,7 +22,6 @@ import models.Player;
 import java.io.IOException;
 
 public class GameView implements FxmlView<GameViewModel> {
-
     @InjectViewModel
     private GameViewModel mGameViewModel;
 
@@ -58,6 +57,9 @@ public class GameView implements FxmlView<GameViewModel> {
     @FXML
     public Text mPhaseText;
 
+    @FXML
+    public Text mWinnerMessage;
+
     //region Player Actions
     @FXML
     public HBox mGameControlBox;
@@ -91,6 +93,7 @@ public class GameView implements FxmlView<GameViewModel> {
 
         mPlayerHealthText.textProperty().bind(mGameViewModel.getPlayerHealthProperty());
         mOpponentHealthText.textProperty().bind(mGameViewModel.getOpponentHealthProperty());
+        mWinnerMessage.textProperty().bind(mGameViewModel.getWinnerMessageProperty());
         mPhaseText.textProperty().bind(mGameViewModel.getPhaseProperty());
 
         setupVisibility();
@@ -101,6 +104,7 @@ public class GameView implements FxmlView<GameViewModel> {
         mPlayCardButton.disableProperty().bind(mGameViewModel.getPlayCardButtonDisabledProperty());
         mAttackButton.disableProperty().bind(mGameViewModel.getAttackButtonDisabledProperty());
         mGameControlBox.visibleProperty().bind(mGameViewModel.getGameControlVisibleProperty());
+        mWinnerMessage.visibleProperty().bind(mGameViewModel.getWinnerMessageVisibleProperty());
     }
 
     private void updatePlayerDeck(Observable observable, ObservableList<Card> oldVal, ObservableList<Card> newVal) {
