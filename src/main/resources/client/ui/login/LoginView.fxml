@@ -16,8 +16,6 @@
         <TextField fx:id="mUsernameField" onKeyReleased="#onKeyReleased"/>
         <Text text="Password:"/>
         <TextField fx:id="mPasswordField" onKeyReleased="#onKeyReleased"/>
-        <Text text="Server Address:"/>
-        <TextField fx:id="mServerAddressField" onKeyReleased="#onKeyReleased"/>
         <HBox>
             <Button fx:id="mLoginButton" onAction="#loginAction" prefWidth="200" text="Login" />
             <Button fx:id="mCreateAccountButton" onAction="#createAccountAction" prefWidth="200" text="Create Account" />

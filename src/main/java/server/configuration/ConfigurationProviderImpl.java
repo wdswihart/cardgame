@@ -1,5 +1,8 @@
 package server.configuration;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 public class ConfigurationProviderImpl implements ConfigurationProvider {
 
     private static ConfigurationProviderImpl sInstance = new ConfigurationProviderImpl();
@@ -10,16 +13,15 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
         sInstance = impl;
     }
 
-    private String mHost = "localhost";
+    private String mHost = "";
     private int mPort = 8087;
 
-    public ConfigurationProviderImpl(String host, int port) {
-        mHost = host;
-        mPort = port;
-    }
-
     public ConfigurationProviderImpl() {
-
+        try {
+            mHost = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

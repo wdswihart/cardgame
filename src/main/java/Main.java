@@ -1,3 +1,4 @@
+import client.ui.discovery.DiscoveryView;
 import client.ui.login.LoginView;
 import com.google.inject.Module;
 import client.core.navigation.NavigationProvider;
@@ -7,6 +8,8 @@ import javafx.stage.Stage;
 import server.GameServer;
 import util.GuiceUtils;
 
+import java.io.IOException;
+import java.net.*;
 import java.util.List;
 
 public class Main extends MvvmfxGuiceApplication {
@@ -21,8 +24,6 @@ public class Main extends MvvmfxGuiceApplication {
                 e.printStackTrace();
             }
         }).run();
-
-
         launch(args);
     }
 
@@ -40,7 +41,7 @@ public class Main extends MvvmfxGuiceApplication {
         stage.setTitle("Card Game");
         stage.setMaximized(true);
 
-        NavigationProvider.getInstance().navigateTo(LoginView.class);
+        NavigationProvider.getInstance().navigateTo(DiscoveryView.class);
         stage.show();
     }
 }
