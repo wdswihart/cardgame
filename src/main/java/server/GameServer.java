@@ -1,6 +1,8 @@
 package server;
 
+import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOClient;
+import com.corundumstudio.socketio.SocketIOServer;
 import com.google.inject.Inject;
 import models.Events;
 import models.Player;
@@ -13,14 +15,18 @@ import server.handlers.gameplay.PassTurnEventHandler;
 import server.handlers.gameplay.PlayCardEventHandler;
 import storage.StorageProvider;
 
+import java.io.IOException;
+import java.net.*;
+
 public class GameServer {
     private StorageProvider mStorageProvider;
     private ConfigurationProvider mConfigurationProvider;
     private SocketIOServerProvider mServerProvider;
     private UsersProvider mUsersProvider;
 
+    private DatagramSocket mDatagramSocket;
+
     public static class User {
-        // FIELDS:
         private SocketIOClient mClient;
 
         private Player mPlayer;
@@ -51,6 +57,37 @@ public class GameServer {
         mUsersProvider = usersProvider;
 
         setEventListeners();
+
+        startDiscoveryServer();
+    }
+
+    private void startDiscoveryServer() {
+        try {
+            mDatagramSocket = new DatagramSocket(12000);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+        new Thread(() -> {
+            byte[] buf = new byte[1000];
+            DatagramPacket dgp = new DatagramPacket(buf, buf.length);
+
+            while (true) {
+                try {
+                    System.out.println("[DiscoveryServer]: Waiting for data.");
+                    mDatagramSocket.receive(dgp);
+
+                    System.out.println("[DiscoveryServer]: Received discovery request.");
+
+                    buf = (InetAddress.getLocalHost().getHostAddress() + ":" + mConfigurationProvider.getPort()).getBytes();
+
+                    DatagramPacket packetOut = new DatagramPacket(buf, buf.length, dgp.getAddress(), dgp.getPort());
+                    mDatagramSocket.send(packetOut);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override

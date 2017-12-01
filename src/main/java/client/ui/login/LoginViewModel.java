@@ -17,12 +17,9 @@ public class LoginViewModel extends BaseViewModel {
 
     private Property<String> mUsernameProperty = new SimpleStringProperty("");
     private Property<String> mPasswordProperty = new SimpleStringProperty("");
-    private Property<String> mServerAddressProperty = new SimpleStringProperty("http://127.0.0.1:8087");
 
     private Command mLoginCommand;
     private Command mShowCreateAccountViewCommand;
-
-    private String mLastServerAddress = "http://127.0.0.1:8087";
 
     // CONSTRUCTORS:
 
@@ -47,20 +44,11 @@ public class LoginViewModel extends BaseViewModel {
         mLoginCommand = new DelegateCommand(() -> new Action() {
             @Override
             protected void action() throws Exception {
-                if (mServerAddressProperty.getValue().isEmpty()) {
-                    mServerAddressProperty.setValue("http://127.0.0.1:8087");
-                }
-
                 try {
-                    if (!mLastServerAddress.equals(mServerAddressProperty.getValue())) {
-                        mConnectionProvider.connectToHost(mServerAddressProperty.getValue());
-                        mLastServerAddress = mServerAddressProperty.getValue();
-                    }
-
                     mConnectionProvider.loginUser(mUsernameProperty.getValue(), mPasswordProperty.getValue());
                 }
                 catch (Exception e) {
-                    mErrorProperty.setValue("Error connecting to " + mServerAddressProperty.getValue());
+                    mErrorProperty.setValue("Error connecting to server.");
                 }
             }
         });
@@ -81,18 +69,10 @@ public class LoginViewModel extends BaseViewModel {
         return mPasswordProperty;
     }
 
-    public Property<String> getServerAddressProperty() {
-        return mServerAddressProperty;
-    }
 
     public Command getLoginCommand() {
         return mLoginCommand;
     }
 
     public Command getShowCreateAccountViewCommand() { return mShowCreateAccountViewCommand; }
-
-
-    public void setmServerAddressProperty(Property<String> mServerAddressProperty) {
-        this.mServerAddressProperty = mServerAddressProperty;
-    }
 }
