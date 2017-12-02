@@ -15,6 +15,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.layout.VBox;
 import models.Card;
 import models.Player;
 import models.responses.GameState;
@@ -46,18 +47,17 @@ public class GameViewModel extends BaseViewModel {
     private Property<String> mPlayerHealthProperty = new SimpleStringProperty();
     private Property<String> mOpponentHealthProperty = new SimpleStringProperty();
 
+    private Property<String> mWinnerProperty = new SimpleStringProperty();
     //endregion
 
     private Property<Card> mSelectedPlayerCardProperty = new SimpleObjectProperty<>();
-
-    private Property<String> mWinnerMessageProperty = new SimpleStringProperty();
-    private Property<Boolean> mWinnerMessageVisibleProperty = new SimpleBooleanProperty(false);
 
     //region UI State Visibility
     private Property<Boolean> mDrawButtonDisabledProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mPlayCardButtonVisibleProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mAttackButtonDisabledProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mGameControlVisibleProperty = new SimpleBooleanProperty(false);
+    private Property<Boolean> mWinningDisplayBoxVisibleProperty = new SimpleBooleanProperty(false);
     //endregion
 
     //region Commands
@@ -154,10 +154,10 @@ public class GameViewModel extends BaseViewModel {
             } else if (mGameStateProperty.getValue().getPlayerTwoHealth() == 0) {
                 winnerName = mGameStateProperty.getValue().getPlayerOne().getUsername();
             }
-            mWinnerMessageProperty.setValue("Winner: " + winnerName);
+            mWinnerProperty.setValue("Winner: " + winnerName);
         }
 
-        mWinnerMessageVisibleProperty.setValue(isGameOver);
+        mWinningDisplayBoxVisibleProperty.setValue(isGameOver);
         mGameControlVisibleProperty.setValue(!isGameOver && isActivePlayer);
     }
 
@@ -263,15 +263,15 @@ public class GameViewModel extends BaseViewModel {
         return mOpponentHealthProperty;
     }
 
-    public Property<String> getWinnerMessageProperty() {
-        return mWinnerMessageProperty;
-    }
-
-    public Property<Boolean> getWinnerMessageVisibleProperty() {
-        return mWinnerMessageVisibleProperty;
-    }
-
     public Command getQuitGameCommand() {
         return mQuitGameCommand;
+    }
+
+    public Property<Boolean> getWinningDisplayBoxVisibleProperty() {
+        return mWinningDisplayBoxVisibleProperty;
+    }
+
+    public Property<String> getWinnerProperty() {
+        return mWinnerProperty;
     }
 }

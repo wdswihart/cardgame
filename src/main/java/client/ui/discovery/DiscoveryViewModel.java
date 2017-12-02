@@ -73,7 +73,6 @@ public class DiscoveryViewModel extends BaseViewModel {
                             }
                         }
                     });
-                    Thread.sleep(500);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

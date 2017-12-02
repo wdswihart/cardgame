@@ -30,6 +30,12 @@ public class GameView implements FxmlView<GameViewModel> {
     @FXML
     public GridPane mRootPane;
 
+    @FXML
+    public VBox mCardDetailBox;
+
+    @FXML
+    public HBox mWinningDisplayBox;
+
     //region Hands & Fields
     @FXML
     public ListView<Card> mOpponentsHandListView;
@@ -64,10 +70,11 @@ public class GameView implements FxmlView<GameViewModel> {
 
     @FXML
     public Text mPhaseText;
-    //endregion
 
     @FXML
-    public Text mWinnerMessage;
+    public Text mWinnerText;
+
+    //endregion
 
     //region Player Actions
     @FXML
@@ -108,8 +115,8 @@ public class GameView implements FxmlView<GameViewModel> {
 
         mPlayerHealthText.textProperty().bind(mGameViewModel.getPlayerHealthProperty());
         mOpponentHealthText.textProperty().bind(mGameViewModel.getOpponentHealthProperty());
-        //mWinnerMessage.textProperty().bind(mGameViewModel.getWinnerMessageProperty());
         mPhaseText.textProperty().bind(mGameViewModel.getPhaseProperty());
+        mWinnerText.textProperty().bind(mGameViewModel.getWinnerProperty());
 
         setupVisibility();
     }
@@ -131,7 +138,7 @@ public class GameView implements FxmlView<GameViewModel> {
         mPlayCardButton.disableProperty().bind(mGameViewModel.getPlayCardButtonDisabledProperty());
         mAttackButton.disableProperty().bind(mGameViewModel.getAttackButtonDisabledProperty());
         mGameControlBox.visibleProperty().bind(mGameViewModel.getGameControlVisibleProperty());
-//        mWinnerMessage.visibleProperty().bind(mGameViewModel.getWinnerMessageVisibleProperty());
+        mWinningDisplayBox.visibleProperty().bind(mGameViewModel.getWinningDisplayBoxVisibleProperty());
     }
 
     private void updatePlayerDeck(Observable observable, ObservableList<Card> oldVal, ObservableList<Card> newVal) {
