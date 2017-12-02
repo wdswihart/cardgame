@@ -247,6 +247,14 @@ public class GameViewModel extends BaseViewModel {
         return mAttackButtonDisabledProperty;
     }
 
+    public Property<ObservableList<Card>> getPlayerFieldProperty() {
+        return mPlayerFieldProperty;
+    }
+
+    public Property<ObservableList<Card>> getOpponentFieldProperty() {
+        return mOpponentFieldProperty;
+    }
+
     public Property<String> getPlayerHealthProperty() {
         return mPlayerHealthProperty;
     }
@@ -261,14 +269,6 @@ public class GameViewModel extends BaseViewModel {
 
     public Property<Boolean> getWinnerMessageVisibleProperty() {
         return mWinnerMessageVisibleProperty;
-    }
-
-    public Property<Boolean> getmWinnerMessageVisibleProperty() {
-        return mWinnerMessageVisibleProperty;
-    }
-
-    public void setmWinnerMessageVisibleProperty(Property<Boolean> mWinnerMessageVisibleProperty) {
-        this.mWinnerMessageVisibleProperty = mWinnerMessageVisibleProperty;
     }
 
     public Command getQuitGameCommand() {

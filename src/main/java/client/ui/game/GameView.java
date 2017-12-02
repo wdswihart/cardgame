@@ -15,6 +15,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import models.Card;
 import models.Player;
@@ -28,18 +29,24 @@ public class GameView implements FxmlView<GameViewModel> {
     @FXML
     public GridPane mRootPane;
 
-    @FXML
-    public GridPane mPlayerHeaderPane;
-
+    //region Hands & Fields
     @FXML
     public ListView<Card> mOpponentsHandListView;
 
     @FXML
     public ListView<Card> mPlayersHandListView;
 
-    //region Player Infos
+    @FXML
+    public ListView<Card> mOpponentFieldListView;
+
+    @FXML
+    public ListView<Card> mPlayerFieldListView;
+    //endregion
+
+    //region Player Info
     @FXML
     public Text mPlayerNameText;
+
     @FXML
     public Text mOpponentNameText;
 
@@ -50,23 +57,27 @@ public class GameView implements FxmlView<GameViewModel> {
 
     @FXML
     public Text mPlayerDeckCountText;
+
     @FXML
     public Text mOpponentDeckCountText;
-    //endregion
 
     @FXML
     public Text mPhaseText;
+    //endregion
 
     @FXML
     public Text mWinnerMessage;
 
     //region Player Actions
     @FXML
-    public HBox mGameControlBox;
+    public VBox mGameControlBox;
+
     @FXML
     public Button mDrawButton;
+
     @FXML
     public Button mPlayCardButton;
+
     @FXML
     public Button mPassTurnButton;
 
@@ -75,8 +86,6 @@ public class GameView implements FxmlView<GameViewModel> {
     //endregion
 
     public void initialize() {
-        mPlayerHeaderPane.prefWidthProperty().bind(mRootPane.widthProperty());
-
         mGameViewModel.getOpponentProperty().addListener(this::updateOpponent);
         mGameViewModel.getPlayerProperty().addListener(this::updatePlayer);
 
@@ -90,13 +99,29 @@ public class GameView implements FxmlView<GameViewModel> {
         mGameViewModel.getPlayerDeckProperty().addListener(this::updatePlayerDeck);
         mGameViewModel.getOpponentDeckProperty().addListener(this::updateOpponentDeck);
 
+        mPlayerFieldListView.setCellFactory(GameView::cardCellFactory);
+        mOpponentFieldListView.setCellFactory(GameView::cardCellFactory);
+        mGameViewModel.getPlayerFieldProperty().addListener(this::updatePlayerField);
+        mGameViewModel.getOpponentFieldProperty().addListener(this::updateOpponentField);
 
         mPlayerHealthText.textProperty().bind(mGameViewModel.getPlayerHealthProperty());
         mOpponentHealthText.textProperty().bind(mGameViewModel.getOpponentHealthProperty());
-        mWinnerMessage.textProperty().bind(mGameViewModel.getWinnerMessageProperty());
+        //mWinnerMessage.textProperty().bind(mGameViewModel.getWinnerMessageProperty());
         mPhaseText.textProperty().bind(mGameViewModel.getPhaseProperty());
 
         setupVisibility();
+    }
+
+    private void updatePlayerField(Observable observable, ObservableList<Card> oldVal, ObservableList<Card> newVal) {
+        Platform.runLater(() -> {
+            mPlayerFieldListView.setItems(newVal);
+        });
+    }
+
+    private void updateOpponentField(Observable observable, ObservableList<Card> oldVal, ObservableList<Card> newVal) {
+        Platform.runLater(() -> {
+            mOpponentFieldListView.setItems(newVal);
+        });
     }
 
     private void setupVisibility() {
@@ -104,7 +129,7 @@ public class GameView implements FxmlView<GameViewModel> {
         mPlayCardButton.disableProperty().bind(mGameViewModel.getPlayCardButtonDisabledProperty());
         mAttackButton.disableProperty().bind(mGameViewModel.getAttackButtonDisabledProperty());
         mGameControlBox.visibleProperty().bind(mGameViewModel.getGameControlVisibleProperty());
-        mWinnerMessage.visibleProperty().bind(mGameViewModel.getWinnerMessageVisibleProperty());
+//        mWinnerMessage.visibleProperty().bind(mGameViewModel.getWinnerMessageVisibleProperty());
     }
 
     private void updatePlayerDeck(Observable observable, ObservableList<Card> oldVal, ObservableList<Card> newVal) {
@@ -170,7 +195,6 @@ public class GameView implements FxmlView<GameViewModel> {
             }
         };
     }
-
 
     @FXML
     public void drawButtonAction() {
