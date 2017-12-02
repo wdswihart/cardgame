@@ -77,6 +77,8 @@ public class DiscoveryViewModel extends BaseViewModel {
             } catch (IOException e) {
                 e.printStackTrace();
                 mServersListProperty.add("127.0.0.1:8087");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }).start();
     }

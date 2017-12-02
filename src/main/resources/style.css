@@ -26,3 +26,14 @@
 .scroll-pane {
     -fx-pref-width: 100%;
 }
+
+.card {
+    -fx-border-width: 5px;
+    -fx-border-color: grey;
+    -fx-background-color: chartreuse;
+}
+
+.heading {
+    -fx-font-size: 4em;
+    -fx-fill: whitesmoke;
+}

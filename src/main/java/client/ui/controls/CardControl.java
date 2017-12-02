@@ -11,8 +11,6 @@ import models.Card;
 import java.io.IOException;
 
 public class CardControl {
-    @FXML
-    private GridPane mRoot;
 
     @FXML
     private Text mName;

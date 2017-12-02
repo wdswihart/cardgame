@@ -7,10 +7,12 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Text?>
+<?import java.net.URL?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           alignment="CENTER"
           fx:controller="client.ui.controls.SmallCardControl"
+          styleClass="card"
           prefHeight="20" prefWidth="50.0">
     <rowConstraints>
         <RowConstraints percentHeight="50"/>
@@ -27,4 +29,8 @@
         <Text text="/"/>
         <Text fx:id="mToughness" text="0"/>
     </HBox>
+
+    <stylesheets>
+        <URL value="@/style.css"/>
+    </stylesheets>
 </GridPane>

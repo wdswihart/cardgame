@@ -1,9 +1,9 @@
 package models;
 
 public class Card extends ModelBase {
-    private String mName = "test-name";
+    private String mName = "";
 
-    private String mDescription = "test-desc";
+    private String mDescription = "";
 
     private int mPower = 0;
 
