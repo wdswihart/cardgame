@@ -1,6 +1,7 @@
 package client.ui.game;
 
 import client.ui.controls.CardControl;
+import client.ui.controls.SmallCardControl;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.application.Platform;
@@ -91,10 +92,11 @@ public class GameView implements FxmlView<GameViewModel> {
 
         mGameViewModel.getPlayerHandProperty().addListener(this::updatePlayerHand);
         mGameViewModel.getSelectedPlayerCardProperty().bind(mPlayersHandListView.getSelectionModel().selectedItemProperty());
-        mPlayersHandListView.setCellFactory(GameView::cardCellFactory);
+        mPlayersHandListView.setCellFactory(GameView::smallCardCellFactory);
 
         mGameViewModel.getOpponentHandProperty().addListener(this::updateOpponentHand);
-        mOpponentsHandListView.setCellFactory(GameView::cardCellFactory);
+        //TODO: Make this a stock card.
+        mOpponentsHandListView.setCellFactory(GameView::smallCardCellFactory);
 
         mGameViewModel.getPlayerDeckProperty().addListener(this::updatePlayerDeck);
         mGameViewModel.getOpponentDeckProperty().addListener(this::updateOpponentDeck);
@@ -195,6 +197,35 @@ public class GameView implements FxmlView<GameViewModel> {
             }
         };
     }
+
+    private static ListCell<Card> smallCardCellFactory(ListView<Card> param) {
+        return new ListCell<Card>() {
+            private SmallCardControl controller;
+            Node graphic;
+
+            {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/controls/SmallCardControl.fxml"));
+                    graphic = loader.load();
+                    controller = loader.getController();
+                } catch (IOException exc) {
+                    throw new RuntimeException(exc);
+                }
+            }
+
+            @Override
+            protected void updateItem(Card card, boolean b) {
+                super.updateItem(card, b);
+                if (card != null) {
+                    controller.setCard(card);
+                    setGraphic(graphic);
+                } else {
+                    setGraphic(null);
+                }
+            }
+        };
+    }
+
 
     @FXML
     public void drawButtonAction() {
