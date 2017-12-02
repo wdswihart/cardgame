@@ -67,25 +67,46 @@ public class GameServer {
         }
 
         new Thread(() -> {
-            byte[] buf = new byte[1000];
-            DatagramPacket dgp = new DatagramPacket(buf, buf.length);
 
             while (true) {
+                byte[] buf = new byte[1000];
+                DatagramPacket dgp = new DatagramPacket(buf, buf.length);
+
                 try {
                     System.out.println("[DiscoveryServer]: Waiting for data.");
                     mDatagramSocket.receive(dgp);
 
                     System.out.println("[DiscoveryServer]: Received discovery request.");
 
-                    buf = (InetAddress.getLocalHost().getHostAddress() + ":" + mConfigurationProvider.getPort()).getBytes();
+                    new Thread(() -> {
+                        sendAddress(dgp.getAddress().getHostAddress(), dgp.getPort());
+                    }).start();;
 
-                    DatagramPacket packetOut = new DatagramPacket(buf, buf.length, dgp.getAddress(), dgp.getPort());
-                    mDatagramSocket.send(packetOut);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
+    }
+
+    private void sendAddress(String clientAddress, int clientPort) {
+        byte[] buf = new byte[1000];
+        DatagramPacket dgp = new DatagramPacket(buf, buf.length);
+        try {
+            buf = (InetAddress.getLocalHost().getHostAddress() + ":" + mConfigurationProvider.getPort()).getBytes();
+
+            DatagramSocket socket = new DatagramSocket();
+
+            for (int i = 0; i < 10; i++) {
+                System.out.println("[DiscoveryServer]: Sending packet to address: " + dgp.getAddress());
+                DatagramPacket packetOut = new DatagramPacket(buf, buf.length, InetAddress.getByName(clientAddress), clientPort);
+                socket.send(packetOut);
+                Thread.sleep(i * 2000);
+            }
+
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

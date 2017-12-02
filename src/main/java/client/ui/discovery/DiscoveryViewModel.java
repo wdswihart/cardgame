@@ -8,6 +8,7 @@ import client.ui.login.LoginView;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
+import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -15,9 +16,11 @@ import javafx.collections.ObservableList;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.lang.management.PlatformLoggingMXBean;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Timer;
 
 public class DiscoveryViewModel extends BaseViewModel {
     private SocketIOClientProvider mSocketIOClientProvider;
@@ -55,17 +58,28 @@ public class DiscoveryViewModel extends BaseViewModel {
                 DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("255.255.255.255"), 12000);
                 DatagramSocket socket = new DatagramSocket();
                 socket.send(packet);
-                socket.receive(packet);
 
-                String address = new String(packet.getData(), packet.getOffset(), packet.getLength());
-                System.out.println("[ADDRESS_DISCOVERY]: Address discovered ["+ address +"]");
+                for (int i = 0; i < 20; i++) {
+                    socket.receive(packet);
 
-                mServersListProperty.add(address);
+                    String address = new String(packet.getData(), packet.getOffset(), packet.getLength());
+                    System.out.println("[ADDRESS_DISCOVERY]: Address discovered [" + address + "]");
+
+
+                    Platform.runLater(() -> {
+                        synchronized (this) {
+                            if (!mServersListProperty.contains(address)) {
+                                mServersListProperty.add(address);
+                            }
+                        }
+                    });
+                    Thread.sleep(500);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 mServersListProperty.add("127.0.0.1:8087");
             }
-        }).run();
+        }).start();
     }
 
     public Command getJoinServerCommand() {
