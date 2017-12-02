@@ -74,19 +74,19 @@ public class SocketIOClientProviderImpl implements SocketIOClientProvider {
         transferListeners(oldSocket, sSocketIOClient);
 
         sSocketIOClient.on(Socket.EVENT_CONNECT, s -> {
-            System.out.println("EVENT CONNECT");
+            System.out.println("[CLIENT] EVENT CONNECT");
         });
 
         sSocketIOClient.on(Socket.EVENT_CONNECTING, s -> {
-            System.out.println("EVENT CONNECTING");
+            System.out.println("[CLIENT] EVENT CONNECTING");
         });
 
         sSocketIOClient.on(Socket.EVENT_CONNECT_TIMEOUT, s -> {
-            System.out.println("CONNECT TIMEOUT");
+            System.out.println("[CLIENT] CONNECT TIMEOUT");
         });
 
         sSocketIOClient.on(Socket.EVENT_ERROR, s -> {
-            System.out.println("EVENT ERROR");
+            System.out.println("[CLIENT] EVENT ERROR");
         });
 
         sSocketIOClient.connect();
