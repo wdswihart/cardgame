@@ -40,19 +40,33 @@ public class GameViewModel extends BaseViewModel {
     private Property<ObservableList<Card>> mPlayerDeckProperty = new SimpleObjectProperty<>();
     private Property<ObservableList<Card>> mOpponentDeckProperty = new SimpleObjectProperty<>();
 
+    private Property<ObservableList<Card>> mPlayerFieldProperty = new SimpleObjectProperty<>();
+    private Property<ObservableList<Card>> mOpponentFieldProperty = new SimpleObjectProperty<>();
+
+    private Property<String> mPlayerHealthProperty = new SimpleStringProperty();
+    private Property<String> mOpponentHealthProperty = new SimpleStringProperty();
+
     //endregion
 
     private Property<Card> mSelectedPlayerCardProperty = new SimpleObjectProperty<>();
 
+    private Property<String> mWinnerMessageProperty = new SimpleStringProperty();
+    private Property<Boolean> mWinnerMessageVisibleProperty = new SimpleBooleanProperty(false);
+
     //region UI State Visibility
     private Property<Boolean> mDrawButtonDisabledProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mPlayCardButtonVisibleProperty = new SimpleBooleanProperty(false);
+    private Property<Boolean> mAttackButtonDisabledProperty = new SimpleBooleanProperty(false);
+    private Property<Boolean> mGameControlVisibleProperty = new SimpleBooleanProperty(false);
     //endregion
 
+    //region Commands
     private Command mDrawCommand;
     private Command mPlayCardCommand;
-    private Property<Boolean> mGameControlVisibleProperty = new SimpleBooleanProperty(false);
     private Command mPassTurnCommand;
+    private Command mAttackCommand;
+    private Command mQuitGameCommand;
+    //endregion
 
     @Inject
     public GameViewModel(ConnectionProvider connectionProvider, INavigationProvider navigationProvider, GameProvider gameProvider) {
@@ -86,22 +100,36 @@ public class GameViewModel extends BaseViewModel {
                 mGameProvider.passTurn();
             }
         });
+
+        mAttackCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                mGameProvider.attack(mPlayerFieldProperty.getValue());
+            }
+        });
+
+        mQuitGameCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                mGameProvider.quitGame();
+            }
+        });
     }
 
     private void onGameStateUpdated(Observable observable, GameState oldVal, GameState newVal) {
         if (newVal.isDefault()) {
             //Game is over here or something went wrong.
+            mNavigationProvider.navigatePrevious();
             return;
         }
 
         //TODO: Handle setting player 1/2. Player should be the client. Opponent shoudl be the other guy.
         if (mConnectionProvider.getAuthenticatedUser().getValue().getUsername().equals(newVal.getPlayerOne().getUsername())) {
-            updatePlayer(newVal.getPlayerOne(), newVal.getPlayerOneHand(), newVal.getPlayerOneDeck());
-            updateOpponent(newVal.getPlayerTwo(), newVal.getPlayerTwoHand(), newVal.getPlayerTwoDeck());
-        }
-        else {
-            updateOpponent(newVal.getPlayerOne(), newVal.getPlayerOneHand(), newVal.getPlayerOneDeck());
-            updatePlayer(newVal.getPlayerTwo(), newVal.getPlayerTwoHand(), newVal.getPlayerTwoDeck());
+            updatePlayer(newVal.getPlayerOne(), newVal.getPlayerOneHand(), newVal.getPlayerOneDeck(), newVal.getPlayerOneField(), newVal.getPlayerOneHealth());
+            updateOpponent(newVal.getPlayerTwo(), newVal.getPlayerTwoHand(), newVal.getPlayerTwoDeck(), newVal.getPlayerTwoField(), newVal.getPlayerTwoHealth());
+        } else {
+            updateOpponent(newVal.getPlayerOne(), newVal.getPlayerOneHand(), newVal.getPlayerOneDeck(), newVal.getPlayerOneField(), newVal.getPlayerOneHealth());
+            updatePlayer(newVal.getPlayerTwo(), newVal.getPlayerTwoHand(), newVal.getPlayerTwoDeck(), newVal.getPlayerTwoField(), newVal.getPlayerTwoHealth());
         }
 
         mPhaseProperty.setValue(newVal.getState().toString());
@@ -110,25 +138,43 @@ public class GameViewModel extends BaseViewModel {
     }
 
     private void updateVisibleComponents(GameState gameState) {
+        boolean isGameOver = gameState.getState() == GameState.State.EndGame;
         boolean isDrawState = gameState.getState() == GameState.State.Draw;
         boolean isMainState = gameState.getState() == GameState.State.Main;
         boolean isActivePlayer = gameState.getActivePlayer().getUsername().equals(mConnectionProvider.getAuthenticatedUser().getValue().getUsername());
 
-        mDrawButtonDisabledProperty.setValue(!isActivePlayer || !isDrawState);
-        mPlayCardButtonVisibleProperty.setValue(!isActivePlayer || !isMainState);
-        mGameControlVisibleProperty.setValue(isActivePlayer);
+        mDrawButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isDrawState);
+        mPlayCardButtonVisibleProperty.setValue(isGameOver || !isActivePlayer || !isMainState);
+        mAttackButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isMainState);
+
+        if (isGameOver) {
+            String winnerName = "";
+            if (mGameStateProperty.getValue().getPlayerOneHealth() > mGameStateProperty.getValue().getPlayerTwoHealth()) {
+                winnerName = mGameStateProperty.getValue().getPlayerOne().getUsername();
+            } else if (mGameStateProperty.getValue().getPlayerTwoHealth() == 0) {
+                winnerName = mGameStateProperty.getValue().getPlayerOne().getUsername();
+            }
+            mWinnerMessageProperty.setValue("Winner: " + winnerName);
+        }
+
+        mWinnerMessageVisibleProperty.setValue(isGameOver);
+        mGameControlVisibleProperty.setValue(!isGameOver && isActivePlayer);
     }
 
-    private void updatePlayer(Player player, List<Card> hand, List<Card> deck) {
+    private void updatePlayer(Player player, List<Card> hand, List<Card> deck, List<Card> field, int health) {
         mPlayerProperty.setValue(player);
         mPlayerHandProperty.setValue(FXCollections.observableArrayList(hand));
         mPlayerDeckProperty.setValue(FXCollections.observableArrayList(deck));
+        mPlayerFieldProperty.setValue(FXCollections.observableArrayList(field));
+        mPlayerHealthProperty.setValue(String.valueOf(health));
     }
 
-    private void updateOpponent(Player player, List<Card> hand, List<Card> deck) {
+    private void updateOpponent(Player player, List<Card> hand, List<Card> deck, List<Card> field, int health) {
         mOpponentProperty.setValue(player);
         mOpponentHandProperty.setValue(FXCollections.observableArrayList(hand));
         mOpponentDeckProperty.setValue(FXCollections.observableArrayList(deck));
+        mOpponentFieldProperty.setValue(FXCollections.observableArrayList(field));
+        mOpponentHealthProperty.setValue(String.valueOf(health));
     }
 
     public Property<ObservableList<Card>> getPlayerHandProperty() {
@@ -191,5 +237,41 @@ public class GameViewModel extends BaseViewModel {
 
     public void setPassTurnCommand(Command passTurnCommand) {
         this.mPassTurnCommand = passTurnCommand;
+    }
+
+    public Command getAttackCommand() {
+        return mAttackCommand;
+    }
+
+    public Property<Boolean> getAttackButtonDisabledProperty() {
+        return mAttackButtonDisabledProperty;
+    }
+
+    public Property<ObservableList<Card>> getPlayerFieldProperty() {
+        return mPlayerFieldProperty;
+    }
+
+    public Property<ObservableList<Card>> getOpponentFieldProperty() {
+        return mOpponentFieldProperty;
+    }
+
+    public Property<String> getPlayerHealthProperty() {
+        return mPlayerHealthProperty;
+    }
+
+    public Property<String> getOpponentHealthProperty() {
+        return mOpponentHealthProperty;
+    }
+
+    public Property<String> getWinnerMessageProperty() {
+        return mWinnerMessageProperty;
+    }
+
+    public Property<Boolean> getWinnerMessageVisibleProperty() {
+        return mWinnerMessageVisibleProperty;
+    }
+
+    public Command getQuitGameCommand() {
+        return mQuitGameCommand;
     }
 }

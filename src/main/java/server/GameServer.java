@@ -10,9 +10,7 @@ import server.configuration.ConfigurationProvider;
 import server.core.socketio.SocketIOServerProvider;
 import server.core.users.UsersProvider;
 import server.handlers.*;
-import server.handlers.gameplay.DrawEventHandler;
-import server.handlers.gameplay.PassTurnEventHandler;
-import server.handlers.gameplay.PlayCardEventHandler;
+import server.handlers.gameplay.*;
 import storage.StorageProvider;
 
 import java.io.IOException;
@@ -137,6 +135,9 @@ public class GameServer {
         mServerProvider.on(Events.DRAW, DrawEventHandler.getHandler());
         mServerProvider.on(Events.PLAY_CARD, PlayCardEventHandler.getHandler());
         mServerProvider.on(Events.PASS_TURN, PassTurnEventHandler.getHandler());
+        mServerProvider.on(Events.ATTACK, AttackEventHandler.getHandler());
+
+        mServerProvider.on(Events.QUIT_GAME, QuitGameEventHandler.getHandler());
     }
 
     // startServer starts up the SocketIO server.

@@ -17,4 +17,6 @@ public class Events {
     public static final String DRAW = "Draw";
     public static final String PLAY_CARD = "PlayCard";
     public static final String PASS_TURN = "PassTurn";
+    public static final String ATTACK = "Attack";
+    public static final String QUIT_GAME = "QuitGame";
 }

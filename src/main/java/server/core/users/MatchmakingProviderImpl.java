@@ -96,7 +96,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
 
     private void updateRequestsOnCreate(GameServer.User requestingUser, GameServer.User requestedUser, GameRequest request) {
         mPlayerSentRequests.put(requestingUser.getClient().getSessionId().toString(), request);
-        clearOutboundRequests(requestingUser);
+        clearReceivedRequests(requestingUser);
         //Add a pending request to the requested users invites.
         if (!mPlayerReceivedRequests.containsKey(requestedUser.getClient().getSessionId().toString())) {
             mPlayerReceivedRequests.put(requestedUser.getClient().getSessionId().toString(), new ArrayList<>());
@@ -130,7 +130,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
     private void updateRequestsOnJoin(GameServer.User requestingUser, GameServer.User requestedUser, GameRequest gameRequest) {
         mPlayerSentRequests.remove(requestedUser.getClient().getSessionId().toString());
         mPlayerSentRequests.remove(requestingUser.getClient().getSessionId().toString());
-        clearOutboundRequests(requestingUser);
+        clearReceivedRequests(requestingUser);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
 
     }
 
-    private void clearOutboundRequests(GameServer.User user) {
+    private void clearReceivedRequests(GameServer.User user) {
         //If the requesting guy had some pending invites, cancel those.
         if (mPlayerReceivedRequests.containsKey(user.getClient().getSessionId().toString())) {
             List<GameRequest> requests = mPlayerReceivedRequests.get(user.getClient().getSessionId().toString());
@@ -146,8 +146,12 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
             for (GameRequest req : requests) {
                 //All the people that are waiting on the requesting guy to join will be kicked back to the lobby.
                 GameServer.User u = mUsersProvider.getUserByUsername(req.getFromPlayer().getUsername());
-                u.getClient().sendEvent(Events.START_GAME, new GameState());
-                u.getClient().sendEvent(Events.INVITE_REQUEST, getPendingRequestsForClient(u.getClient()));
+
+                //We don't need to send this to the player we are starting the game with.
+                if (!user.getPlayer().getUsername().equals(req.getToPlayer().getUsername())) {
+                    u.getClient().sendEvent(Events.START_GAME, new GameState());
+                    u.getClient().sendEvent(Events.INVITE_REQUEST, getPendingRequestsForClient(u.getClient()));
+                }
             }
         }
     }

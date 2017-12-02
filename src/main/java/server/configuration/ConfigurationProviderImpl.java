@@ -36,6 +36,6 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 
     @Override
     public int getMaxHandSize() {
-        return 7;
+        return 5;
     }
 }
