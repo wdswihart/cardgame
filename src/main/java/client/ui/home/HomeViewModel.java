@@ -3,6 +3,7 @@ package client.ui.home;
 import client.core.ConnectionProvider;
 import client.core.GameProvider;
 import client.ui.game.GameView;
+import javafx.collections.FXCollections;
 import models.Player;
 import client.ui.login.LoginView;
 import com.google.inject.Inject;
@@ -20,8 +21,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import models.responses.GameState;
-
-import java.util.concurrent.Executor;
 
 public class HomeViewModel extends BaseViewModel {
     private GameProvider mGameProvider;
@@ -44,6 +43,7 @@ public class HomeViewModel extends BaseViewModel {
 
     private Property<ObservableList<Player>> mPendingInvitesProperty = new SimpleObjectProperty<>();
     private Property<Player> mSelectedInviteProperty = new SimpleObjectProperty<>();
+    private Property<ObservableList<GameState>> mActiveGamesProperty = new SimpleObjectProperty<>();
 
     @Inject
     public HomeViewModel(ConnectionProvider connectionProvider,
@@ -70,6 +70,7 @@ public class HomeViewModel extends BaseViewModel {
         mActiveUsersProperty = mConnectionProvider.getActiveUsers();
         mMessagesListProperty = mConnectionProvider.getMessages();
         mPendingInvitesProperty = mGameProvider.getPendingInvitesProperty();
+        mActiveGamesProperty = mGameProvider.getActiveGames();
     }
 
     private void setupCommands() {
@@ -195,5 +196,9 @@ public class HomeViewModel extends BaseViewModel {
 
     public Command getAcceptInviteCommand() {
         return mAcceptInviteCommand;
+    }
+
+    public Property<ObservableList<GameState>> getActiveGamesProperty() {
+        return mActiveGamesProperty;
     }
 }

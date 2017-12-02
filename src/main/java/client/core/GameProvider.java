@@ -24,4 +24,6 @@ public interface GameProvider {
     void attack(List<Card> attackers);
 
     void quitGame();
+
+    Property<ObservableList<GameState>> getActiveGames();
 }

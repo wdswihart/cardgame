@@ -15,6 +15,7 @@ import models.requests.DrawRequest;
 import models.requests.GameRequest;
 import models.requests.PlayCardRequest;
 import models.responses.GameState;
+import models.responses.GameStateList;
 import models.responses.PlayerList;
 import util.JSONUtils;
 
@@ -25,8 +26,9 @@ public class GameProviderImpl implements GameProvider {
     private SocketIOClientProvider mClientProvider;
     private ConnectionProvider mConnectionProvider;
 
-    Property<GameState> mGameStateProperty = new SimpleObjectProperty<>();
-    Property<ObservableList<Player>> mPendingInvitesProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
+    private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>();
+    private Property<ObservableList<Player>> mPendingInvitesProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
+    private Property<ObservableList<GameState>> mActiveGamesProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
 
     @Inject
     public GameProviderImpl(SocketIOClientProvider clientProvider, ConnectionProvider connectionProvider) {
@@ -61,6 +63,15 @@ public class GameProviderImpl implements GameProvider {
             synchronized (this) {
                 mGameStateProperty.setValue(game);
             }
+        });
+
+        mClientProvider.getClient().on(Events.ACTIVE_GAMES, params -> {
+            System.out.println("[ACTIVE_GAMES]: " + params[0]);
+
+            GameStateList list = JSONUtils.fromJson(params[0], GameStateList.class);
+            list = (list == null) ? new GameStateList() : list;
+
+            mActiveGamesProperty.setValue(FXCollections.observableArrayList(list.getGameStates()));
         });
     }
 
@@ -110,5 +121,10 @@ public class GameProviderImpl implements GameProvider {
     @Override
     public void quitGame() {
         mClientProvider.getClient().emit(Events.QUIT_GAME, "{}");
+    }
+
+    @Override
+    public Property<ObservableList<GameState>> getActiveGames() {
+        return mActiveGamesProperty;
     }
 }

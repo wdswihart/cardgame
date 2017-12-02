@@ -138,9 +138,9 @@ public class GameViewModel extends BaseViewModel {
     }
 
     private void updateVisibleComponents(GameState gameState) {
-        boolean isGameOver = gameState.getState() == GameState.State.EndGame;
-        boolean isDrawState = gameState.getState() == GameState.State.Draw;
-        boolean isMainState = gameState.getState() == GameState.State.Main;
+        boolean isGameOver = gameState.getStateEnum() == GameState.State.EndGame;
+        boolean isDrawState = gameState.getStateEnum() == GameState.State.Draw;
+        boolean isMainState = gameState.getStateEnum() == GameState.State.Main;
         boolean isActivePlayer = gameState.getActivePlayer().getUsername().equals(mConnectionProvider.getAuthenticatedUser().getValue().getUsername());
 
         mDrawButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isDrawState);

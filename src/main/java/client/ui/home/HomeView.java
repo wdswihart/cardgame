@@ -2,6 +2,7 @@ package client.ui.home;
 
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import models.Card;
 import models.Player;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
@@ -11,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import models.responses.GameState;
 
 public class HomeView implements FxmlView<HomeViewModel> {
     @InjectViewModel
@@ -28,7 +30,13 @@ public class HomeView implements FxmlView<HomeViewModel> {
     @FXML
     public ListView mPendingInvitesListView;
 
+    @FXML
+    public ListView<GameState> mActiveGamesListView;
+
     public void initialize() {
+        mActiveGamesListView.itemsProperty().bind(mHomeViewModel.getActiveGamesProperty());
+        mActiveGamesListView.setCellFactory(this::activeGameCellFactory);
+
         mHomeViewModel.getActiveUserProperty().addListener((observable, oldValue, newValue) -> {
             //Have to invoke setItems on the UI thread.
             //This is only an issue because SocketIO runs on a background thread.
@@ -94,6 +102,22 @@ public class HomeView implements FxmlView<HomeViewModel> {
         });
 
         mMessageField.textProperty().bindBidirectional(mHomeViewModel.getMessageProperty());
+    }
+
+    private ListCell<GameState> activeGameCellFactory(ListView<GameState> param) {
+        return new ListCell<GameState>() {
+            @Override
+            protected void updateItem(GameState gameState, boolean b) {
+                super.updateItem(gameState, b);
+
+                if (gameState != null) {
+                    setText(gameState.getPlayerOne().getUsername() + " vs " + gameState.getPlayerTwo().getUsername());
+                }
+                else {
+                    setText("");
+                }
+            }
+        };
     }
 
 
