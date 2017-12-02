@@ -110,7 +110,7 @@ public class GameProviderImpl implements GameProvider {
 
     @Override
     public void passTurn() {
-        mClientProvider.getClient().emit(Events.PASS_TURN, "{}");
+        mClientProvider.getClient().emit(Events.PASS_TURN, "string");
     }
 
     @Override
@@ -120,7 +120,7 @@ public class GameProviderImpl implements GameProvider {
 
     @Override
     public void quitGame() {
-        mClientProvider.getClient().emit(Events.QUIT_GAME, "{}");
+        mClientProvider.getClient().emit(Events.QUIT_GAME, "string");
     }
 
     @Override

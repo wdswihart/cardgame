@@ -4,6 +4,8 @@ import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.google.inject.Inject;
+import de.saxsys.mvvmfx.InjectViewModel;
+import server.core.users.MatchmakingProvider;
 import server.core.users.UsersProvider;
 import storage.StorageProvider;
 import util.JSONUtils;
@@ -13,6 +15,9 @@ public abstract class BaseEventHandler <T> implements DataListener<String>{
     protected StorageProvider mStorageProvider;
     @Inject
     protected UsersProvider mUsersProvider;
+
+    @Inject
+    protected MatchmakingProvider mMatchmakingProvider;
 
     @Override
     public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {

@@ -34,9 +34,33 @@ public class HomeView implements FxmlView<HomeViewModel> {
     public ListView<GameState> mActiveGamesListView;
 
     public void initialize() {
-        mActiveGamesListView.itemsProperty().bind(mHomeViewModel.getActiveGamesProperty());
-        mActiveGamesListView.setCellFactory(this::activeGameCellFactory);
+        setupMessages();
+        setupUsers();
+        setupInvites();
+        setupActiveGames();
+    }
 
+    private void setupMessages() {
+        Platform.runLater(() -> {
+            mMessagesList.setItems(mHomeViewModel.getMessagesListProperty().getValue());
+        });
+        mHomeViewModel.getMessagesListProperty().getValue().addListener(new ListChangeListener<String>() {
+            @Override
+            public void onChanged(Change<? extends String> c) {
+                Platform.runLater(() -> {
+                    if (c.next()) {
+                        mMessagesList.getItems().addAll(c.getAddedSubList());
+                    }
+                });
+            }
+        });
+
+        mMessageField.textProperty().bindBidirectional(mHomeViewModel.getMessageProperty());
+    }
+    private void setupUsers() {
+        Platform.runLater(() -> {
+            mActiveUsersListView.setItems(mHomeViewModel.getActiveUserProperty().getValue());
+        });
         mHomeViewModel.getActiveUserProperty().addListener((observable, oldValue, newValue) -> {
             //Have to invoke setItems on the UI thread.
             //This is only an issue because SocketIO runs on a background thread.
@@ -65,10 +89,15 @@ public class HomeView implements FxmlView<HomeViewModel> {
                 }
             };
         });
-
+    }
+    private void setupInvites() {
         mHomeViewModel.getSelectedInviteProperty().bind(mPendingInvitesListView.getSelectionModel().selectedItemProperty());
         mHomeViewModel.getSelectedActiveUserProperty().bind(mActiveUsersListView.getSelectionModel().selectedItemProperty());
 
+        //Prime the pump here.
+        Platform.runLater(() -> {
+            mPendingInvitesListView.setItems(mHomeViewModel.getPendingInvitesProperty().getValue());
+        });
         mHomeViewModel.getPendingInvitesProperty().addListener((observable, oldValue, newValue) -> {
             Platform.runLater(() -> {
                 mPendingInvitesListView.setItems(newValue);
@@ -89,19 +118,10 @@ public class HomeView implements FxmlView<HomeViewModel> {
                 }
             };
         });
-
-        mHomeViewModel.getMessagesListProperty().getValue().addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(Change<? extends String> c) {
-                Platform.runLater(() -> {
-                    if (c.next()) {
-                        mMessagesList.getItems().addAll(c.getAddedSubList());
-                    }
-                });
-            }
-        });
-
-        mMessageField.textProperty().bindBidirectional(mHomeViewModel.getMessageProperty());
+    }
+    private void setupActiveGames() {
+        mActiveGamesListView.itemsProperty().bind(mHomeViewModel.getActiveGamesProperty());
+        mActiveGamesListView.setCellFactory(this::activeGameCellFactory);
     }
 
     private ListCell<GameState> activeGameCellFactory(ListView<GameState> param) {
@@ -110,12 +130,14 @@ public class HomeView implements FxmlView<HomeViewModel> {
             protected void updateItem(GameState gameState, boolean b) {
                 super.updateItem(gameState, b);
 
-                if (gameState != null) {
-                    setText(gameState.getPlayerOne().getUsername() + " vs " + gameState.getPlayerTwo().getUsername());
-                }
-                else {
-                    setText("");
-                }
+                Platform.runLater(() -> {
+                    if (gameState != null) {
+                        setText(gameState.getPlayerOne().getUsername() + " vs " + gameState.getPlayerTwo().getUsername());
+                    }
+                    else {
+                        setText("");
+                    }
+                });
             }
         };
     }

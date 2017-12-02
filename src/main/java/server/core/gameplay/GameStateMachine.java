@@ -112,7 +112,7 @@ public class GameStateMachine {
     }
 
     private void enterDraw() {
-        mGameState.setState(State.Draw);
+        mGameState.setStateEnum(State.Draw);
 
         //Set the default active player to player 1.
         if (!mGameState.getActivePlayer().equals(mGameState.getPlayerOne())) {
@@ -137,7 +137,7 @@ public class GameStateMachine {
     }
 
     private void enterMain() {
-        mGameState.setState(State.Main);
+        mGameState.setStateEnum(State.Main);
 
         //TODO: Send list of actions player is able to do.
 
@@ -201,7 +201,7 @@ public class GameStateMachine {
     //endregion
 
     private void enterEndGame() {
-        mGameState.setState(State.EndGame);
+        mGameState.setStateEnum(State.EndGame);
         broadcastToPlayers(Events.UPDATE_GAME, mGameState);
     }
 
@@ -254,6 +254,8 @@ public class GameStateMachine {
         else if (player.getUsername().equals(mGameState.getPlayerTwo().getUsername())) {
             mUserTwo.getClient().sendEvent(Events.UPDATE_GAME, new GameState());
         }
+
+        //TODO: Add for spectators.
     }
 
 

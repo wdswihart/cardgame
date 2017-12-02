@@ -4,6 +4,7 @@ import client.core.ConnectionProvider;
 import client.core.GameProvider;
 import client.core.navigation.INavigationProvider;
 import client.ui.BaseViewModel;
+import client.ui.home.HomeView;
 import com.google.inject.Inject;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.Command;
@@ -119,7 +120,7 @@ public class GameViewModel extends BaseViewModel {
     private void onGameStateUpdated(Observable observable, GameState oldVal, GameState newVal) {
         if (newVal.isDefault()) {
             //Game is over here or something went wrong.
-            mNavigationProvider.navigatePrevious();
+            mNavigationProvider.navigateTo(HomeView.class);
             return;
         }
 

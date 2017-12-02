@@ -11,17 +11,21 @@ import java.util.List;
 public class GameState extends ModelBase {
 
     public enum State {
-        Waiting,
-        Draw,
-        Main,
-        Attack,
-        PlayingCard, EndGame,
-//        End,
-//        Refresh,
-//        Maintain,
-//        Attackers,
-//        Defenders,
-//        Damage,
+        Waiting("Waiting"),
+        Draw("Draw"),
+        Main("Main"),
+        Attack("Attack"),
+        PlayingCard("PlayingCard"),
+        EndGame("EndGame");
+
+        private String mState = "";
+        State(String state) {
+            mState = state;
+        }
+
+        public String toString() {
+            return mState;
+        }
     }
 
     private State mState = State.Waiting;
@@ -114,12 +118,22 @@ public class GameState extends ModelBase {
         this.mPlayerOneDeck = playerOneDeck;
     }
 
-    public State getState() {
-        return mState;
+    public String getState() {
+        return mState.toString();
     }
 
-    public void setState(State state) {
-        this.mState = state;
+    public void setState(String state) {
+        mState = State.valueOf(state);
+    }
+
+    @JsonIgnore
+    public void setStateEnum(State state) {
+        mState = state;
+    }
+
+    @JsonIgnore
+    public State getStateEnum() {
+        return mState;
     }
 
     public List<Card> getPlayerOneField() {
