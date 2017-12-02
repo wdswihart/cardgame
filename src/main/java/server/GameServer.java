@@ -81,9 +81,15 @@ public class GameServer {
 
                     buf = (InetAddress.getLocalHost().getHostAddress() + ":" + mConfigurationProvider.getPort()).getBytes();
 
-                    DatagramPacket packetOut = new DatagramPacket(buf, buf.length, dgp.getAddress(), dgp.getPort());
-                    mDatagramSocket.send(packetOut);
+                    for (int i = 0; i < 10; i++) {
+                        System.out.println("[DiscoveryServer]: Sending packet to address: " + dgp.getAddress());
+                        DatagramPacket packetOut = new DatagramPacket(buf, buf.length, dgp.getAddress(), dgp.getPort());
+                        mDatagramSocket.send(packetOut);
+                        Thread.sleep(i * 500);
+                    }
                 } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
