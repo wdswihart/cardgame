@@ -40,7 +40,12 @@ public class SocketIOClientProviderImpl implements SocketIOClientProvider {
             mIsConnected = true;
 
             try {
-                sSocketIOClient = IO.socket("http://" + mServerAddress);
+                IO.Options opts = new IO.Options();
+                opts.reconnectionDelay = 0;
+                opts.reconnectionAttempts = 0;
+                opts.forceNew = true;
+
+                sSocketIOClient = IO.socket("http://" + mServerAddress, opts);
                 sSocketIOClient.connect();
             } catch (URISyntaxException e) {
                 e.printStackTrace();
@@ -57,8 +62,34 @@ public class SocketIOClientProviderImpl implements SocketIOClientProvider {
         }
 
         mServerAddress = host;
-        sSocketIOClient.disconnect();
-        sSocketIOClient.io().socket("http://" + host);
+        Socket oldSocket = sSocketIOClient.disconnect();
+
+        IO.Options opts = new IO.Options();
+        opts.reconnectionDelay = 0;
+        opts.reconnectionAttempts = 0;
+        opts.forceNew = true;
+
+        sSocketIOClient = IO.socket("http://" + host, opts);
+
+        transferListeners(oldSocket, sSocketIOClient);
+
+        sSocketIOClient.on(Socket.EVENT_CONNECT, s -> {
+            System.out.println("[CLIENT] EVENT CONNECT");
+        });
+
+        sSocketIOClient.on(Socket.EVENT_CONNECTING, s -> {
+            System.out.println("[CLIENT] EVENT CONNECTING");
+        });
+
+        sSocketIOClient.on(Socket.EVENT_CONNECT_TIMEOUT, s -> {
+            System.out.println("[CLIENT] CONNECT TIMEOUT");
+        });
+
+        sSocketIOClient.on(Socket.EVENT_ERROR, s -> {
+            System.out.println("[CLIENT] EVENT ERROR");
+        });
+
+        sSocketIOClient.connect();
 
         return sSocketIOClient;
     }
