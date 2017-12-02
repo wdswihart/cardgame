@@ -78,83 +78,99 @@
 </GridPane>-->
 
 <?import javafx.scene.control.TextArea?>
-<GridPane fx:id="mRootPane" fx:controller="client.ui.game.GameView" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="mRootPane" fx:controller="client.ui.game.GameView" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER">
 
     <columnConstraints>
-        <ColumnConstraints percentWidth="20"/>
-        <ColumnConstraints percentWidth="60"/>
+        <ColumnConstraints percentWidth="10"/>
+        <ColumnConstraints percentWidth="70"/>
         <ColumnConstraints percentWidth="20"/>
     </columnConstraints>
 
-    <!--Opponent info-->
-    <VBox GridPane.rowIndex="0" GridPane.columnIndex="0">
-        <HBox>
-            <Text text="Opponent:"/>
-            <Text fx:id="mOpponentNameText" text="Opponent" />
-        </HBox>
-        <HBox>
-            <Text text="Health:"/>
-            <Text text="20"/>
-        </HBox>
-        <HBox>
-            <Text text="Deck Count:"/>
-            <Text fx:id="mOpponentDeckCountText" text="0"/>
-        </HBox>
-    </VBox>
-
-    <!--Player info-->
-    <VBox GridPane.rowIndex="1" GridPane.columnIndex="0">
-        <HBox>
-            <Text text="Player:"/>
-            <Text fx:id="mPlayerNameText" text="Player"/>
-        </HBox>
-        <HBox>
-            <Text text="Health:"/>
-            <Text text="20"/>
-        </HBox>
-        <HBox>
-            <Text text="Deck Count:"/>
-            <Text fx:id="mPlayerDeckCountText" text="0"/>
-        </HBox>
-        <VBox fx:id="mGameControlBox">
-            <Button fx:id="mDrawButton" onAction="#drawButtonAction" text="Draw"/>
-            <Button fx:id="mPlayCardButton" onAction="#playCardButtonAction" text="Play Card"/>
-            <Button fx:id="mPassTurnButton" onAction="#passTurnAction" text="Pass Turn"/>
+    <children>
+        <!--Opponent info-->
+        <VBox GridPane.rowIndex="0" GridPane.columnIndex="0">
+            <HBox>
+                <Text text="Opponent:"/>
+                <Text fx:id="mOpponentNameText" text="Opponent" />
+            </HBox>
+            <HBox>
+                <Text text="Health:"/>
+                <Text text="20"/>
+            </HBox>
+            <HBox>
+                <Text text="Deck Count:"/>
+                <Text fx:id="mOpponentDeckCountText" text="0"/>
+            </HBox>
         </VBox>
-        <HBox>
-            <Text text="Phase: "/>
-            <Text fx:id="mPhaseText"/>
-        </HBox>
-    </VBox>
 
-    <!--Opponent Hand & Field-->
-    <GridPane GridPane.rowIndex="0" GridPane.columnIndex="1">
-        <rowConstraints>
-            <RowConstraints percentHeight="10"/>
-            <RowConstraints percentHeight="90"/>
-        </rowConstraints>
+        <!--Player info-->
+        <VBox GridPane.rowIndex="1" GridPane.columnIndex="0">
+            <HBox>
+                <Text text="Player:"/>
+                <Text fx:id="mPlayerNameText" text="Player"/>
+            </HBox>
+            <HBox>
+                <Text text="Health:"/>
+                <Text text="20"/>
+            </HBox>
+            <HBox>
+                <Text text="Deck Count:"/>
+                <Text fx:id="mPlayerDeckCountText" text="0"/>
+            </HBox>
+            <VBox fx:id="mGameControlBox">
+                <Button fx:id="mDrawButton" onAction="#drawButtonAction" text="Draw"/>
+                <Button fx:id="mPlayCardButton" onAction="#playCardButtonAction" text="Play Card"/>
+                <Button fx:id="mPassTurnButton" onAction="#passTurnAction" text="Pass Turn"/>
+            </VBox>
+            <HBox>
+                <Text text="Phase: "/>
+                <Text fx:id="mPhaseText"/>
+            </HBox>
+        </VBox>
 
-        <ListView fx:id="mOpponentsHandListView" GridPane.rowIndex="0" orientation="HORIZONTAL"/>
-        <ListView fx:id="mOpponentFieldListView" GridPane.rowIndex="1" orientation="HORIZONTAL"/>
+        <!--Opponent Hand & Field-->
+        <GridPane GridPane.rowIndex="0" GridPane.columnIndex="1">
+            <rowConstraints>
+                <RowConstraints percentHeight="10"/>
+                <RowConstraints percentHeight="90"/>
+            </rowConstraints>
 
-    </GridPane>
+            <children>
+                <VBox GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                    <ListView fx:id="mOpponentsHandListView" GridPane.rowIndex="0" orientation="HORIZONTAL"/>
+                </VBox>
 
-    <!--Player Hand & Field-->
-    <GridPane GridPane.rowIndex="1" GridPane.columnIndex="1">
-        <rowConstraints>
-            <RowConstraints percentHeight="90"/>
-            <RowConstraints percentHeight="10"/>
-        </rowConstraints>
+                <VBox GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                    <ListView fx:id="mOpponentFieldListView" GridPane.rowIndex="1" orientation="HORIZONTAL"/>
+                </VBox>
+            </children>
 
-        <ListView fx:id="mPlayerFieldListViewr" GridPane.rowIndex="0" orientation="HORIZONTAL"/>
-        <ListView fx:id="mPlayersHandListView" GridPane.rowIndex="1" orientation="HORIZONTAL"/>
+        </GridPane>
 
-    </GridPane>
+        <!--Player Hand & Field-->
+        <GridPane GridPane.rowIndex="1" GridPane.columnIndex="1">
+            <rowConstraints>
+                <RowConstraints percentHeight="90"/>
+                <RowConstraints percentHeight="10"/>
+            </rowConstraints>
 
-    <!--Card Display & Chat-->
-    <VBox GridPane.rowIndex="0" GridPane.columnIndex="2">
-        <Text text="TO-DO: Card display"/>
-    </VBox>
-    <TextArea GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+            <children>
+                <VBox GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" alignment="CENTER">
+                    <ListView fx:id="mPlayerFieldListView" GridPane.rowIndex="0" orientation="HORIZONTAL"/>
+                </VBox>
+
+                <VBox GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" alignment="CENTER">
+                    <ListView fx:id="mPlayersHandListView" GridPane.rowIndex="1" orientation="HORIZONTAL"/>
+                </VBox>
+            </children>
+
+        </GridPane>
+
+        <!--Card Display & Chat-->
+        <VBox GridPane.rowIndex="0" GridPane.columnIndex="2">
+            <Text text="TO-DO: Card display"/>
+        </VBox>
+        <TextArea GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+    </children>
 
 </GridPane>
