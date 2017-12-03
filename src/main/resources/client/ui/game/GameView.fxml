@@ -100,7 +100,7 @@
         </GridPane>
 
         <!--Card Display & Chat-->
-        <VBox fx:id="mCardDetailBox" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+        <VBox alignment="CENTER" fx:id="mCardDetailBox" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
         <TextArea GridPane.rowIndex="1" GridPane.columnIndex="2"/>
 
         <!--Winning Text Display-->

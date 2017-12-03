@@ -26,7 +26,7 @@ public class GameProviderImpl implements GameProvider {
     private SocketIOClientProvider mClientProvider;
     private ConnectionProvider mConnectionProvider;
 
-    private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>();
+    private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>(new GameState());
     private Property<ObservableList<Player>> mPendingInvitesProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
     private Property<ObservableList<GameState>> mActiveGamesProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
 

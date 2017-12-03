@@ -29,21 +29,21 @@ public class GameViewModel extends BaseViewModel {
     private Property<ObservableList<Card>> mPlayerHandProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
     private Property<ObservableList<Card>> mOpponentHandProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
 
-    private Property<Player> mPlayerProperty = new SimpleObjectProperty<>();
-    private Property<Player> mOpponentProperty = new SimpleObjectProperty<>();
+    private Property<Player> mPlayerProperty = new SimpleObjectProperty<>(new Player());
+    private Property<Player> mOpponentProperty = new SimpleObjectProperty<>(new Player());
 
     private Property<String> mPhaseProperty = new SimpleStringProperty();
 
     //Probably not going to expose this via a getter.
-    private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>();
+    private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>(new GameState());
 
     //region Player Infos
 
-    private Property<ObservableList<Card>> mPlayerDeckProperty = new SimpleObjectProperty<>();
-    private Property<ObservableList<Card>> mOpponentDeckProperty = new SimpleObjectProperty<>();
+    private Property<ObservableList<Card>> mPlayerDeckProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
+    private Property<ObservableList<Card>> mOpponentDeckProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
 
-    private Property<ObservableList<Card>> mPlayerFieldProperty = new SimpleObjectProperty<>();
-    private Property<ObservableList<Card>> mOpponentFieldProperty = new SimpleObjectProperty<>();
+    private Property<ObservableList<Card>> mPlayerFieldProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
+    private Property<ObservableList<Card>> mOpponentFieldProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
 
     private Property<String> mPlayerHealthProperty = new SimpleStringProperty();
     private Property<String> mOpponentHealthProperty = new SimpleStringProperty();
@@ -51,7 +51,7 @@ public class GameViewModel extends BaseViewModel {
     private Property<String> mWinnerProperty = new SimpleStringProperty();
     //endregion
 
-    private Property<Card> mSelectedPlayerCardProperty = new SimpleObjectProperty<>();
+    private Property<Card> mSelectedPlayerCardProperty = new SimpleObjectProperty<>(new Card());
 
     //region UI State Visibility
     private Property<Boolean> mDrawButtonDisabledProperty = new SimpleBooleanProperty(false);
