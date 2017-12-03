@@ -11,7 +11,7 @@
           xmlns:fx="http://javafx.com/fxml"
           alignment="CENTER"
           fx:controller="client.ui.controls.SmallCardControl"
-          prefHeight="20" prefWidth="50.0">
+          prefHeight="20" prefWidth="100.0">
     <rowConstraints>
         <RowConstraints percentHeight="50"/>
         <RowConstraints percentHeight="50"/>
