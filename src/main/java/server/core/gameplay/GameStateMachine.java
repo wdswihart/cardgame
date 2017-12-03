@@ -7,12 +7,18 @@ import models.Card;
 import models.Events;
 import models.Player;
 import models.requests.AttackRequest;
+import models.responses.CardList;
 import models.responses.GameState;
+import org.apache.commons.io.IOUtils;
 import server.GameServer;
 import server.configuration.ConfigurationProvider;
 import server.core.users.UsersProvider;
 import models.responses.GameState.State;
+import util.JSONUtils;
 
+import java.io.BufferedInputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -96,20 +102,30 @@ public class GameStateMachine {
 
     private void exitWaiting() {
         //TODO: Maybe assign a random deck for now? (shrug)
-        addCardsToDeck(mGameState.getPlayerOneDeck(), 50);
-        addCardsToDeck(mGameState.getPlayerTwoDeck(), 45);
+        addCardsToDeck(mGameState.getPlayerOneDeck());
+        addCardsToDeck(mGameState.getPlayerTwoDeck());
 
         dealCards();
 
         broadcastToPlayers(Events.UPDATE_GAME, mGameState);
     }
 
-    private void addCardsToDeck(List<Card> playerOneDeck, int i) {
-        Random r = new Random();
-        for (int x = 0; x < i; x++) {
-            Card c = new Card("monster " + x);
-            c.setPower(r.nextInt(5));
-            c.setToughness(r.nextInt(5));
+    private void addCardsToDeck(List<Card> playerOneDeck) {
+        String jsonString = null;
+        try {
+            jsonString = new String(IOUtils.toString(getClass().getResourceAsStream("/cards.json"), "UTF-8"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        CardList list = JSONUtils.fromJson(jsonString, CardList.class);
+
+        if (list == null) {
+            System.out.println("Error parsing cardList.");
+            return;
+        }
+
+        for (Card c : list.getCards()) {
             playerOneDeck.add(c);
         }
     }
