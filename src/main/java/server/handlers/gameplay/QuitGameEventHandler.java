@@ -30,12 +30,11 @@ public class QuitGameEventHandler extends BaseEventHandler<String> {
     @Override
     protected void handle(SocketIOClient client, String model) {
         //For now, remove the guy from the game.
-        GameStateMachine gsm = mMatchmakingProvider.getGameStateMachine(client.getSessionId().toString());
         GameServer.User user = mUserProvider.getUsers().get(client.getSessionId().toString());
-        if (gsm == null || user == null) {
+        if (user == null) {
             return;
         }
 
-        gsm.removePlayer(user.getPlayer());
+        mMatchmakingProvider.quitGame(client);
     }
 }

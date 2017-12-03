@@ -41,10 +41,13 @@ public class NavigationProvider implements INavigationProvider {
 
         ViewTuple<DraggableView, DraggableViewModel> vm = FluentViewLoader.fxmlView(view).load();
         if (sStage.getScene() != null) {
-            //Remember previous view if it existed.
-            sRootStack.push(sStage.getScene().getRoot());
-            sStage.getScene().setRoot(vm.getView());
-
+            Platform.runLater(() -> {
+                synchronized (this) {
+                    //Remember previous view if it existed.
+                    sRootStack.push(sStage.getScene().getRoot());
+                    sStage.getScene().setRoot(vm.getView());
+                }
+            });
         } else {
             //Init scene since this is the first time.
             sStage.setScene(new Scene(vm.getView()));
@@ -55,11 +58,14 @@ public class NavigationProvider implements INavigationProvider {
 
     @Override
     public boolean navigatePrevious() {
-        if (sRootStack.empty()) {
-            System.out.println("No previous view.");
-            return false;
+        synchronized (this) {
+            sPreviousClass = null;
+            if (sRootStack.empty()) {
+                System.out.println("No previous view.");
+                return false;
+            }
+            sStage.getScene().setRoot(sRootStack.pop());
         }
-        sStage.getScene().setRoot(sRootStack.pop());
         return true;
     }
 }

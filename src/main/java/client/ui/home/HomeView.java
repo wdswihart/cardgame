@@ -1,7 +1,11 @@
 package client.ui.home;
 
+import javafx.beans.Observable;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import models.Card;
 import models.Player;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
@@ -11,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import models.responses.GameState;
 
 public class HomeView implements FxmlView<HomeViewModel> {
     @InjectViewModel
@@ -28,7 +33,37 @@ public class HomeView implements FxmlView<HomeViewModel> {
     @FXML
     public ListView mPendingInvitesListView;
 
+    @FXML
+    public ListView<GameState> mActiveGamesListView;
+
     public void initialize() {
+        setupMessages();
+        setupUsers();
+        setupInvites();
+        setupActiveGames();
+    }
+
+    private void setupMessages() {
+        Platform.runLater(() -> {
+            mMessagesList.setItems(mHomeViewModel.getMessagesListProperty().getValue());
+        });
+        mHomeViewModel.getMessagesListProperty().getValue().addListener(new ListChangeListener<String>() {
+            @Override
+            public void onChanged(Change<? extends String> c) {
+                Platform.runLater(() -> {
+                    if (c.next()) {
+                        mMessagesList.getItems().addAll(c.getAddedSubList());
+                    }
+                });
+            }
+        });
+
+        mMessageField.textProperty().bindBidirectional(mHomeViewModel.getMessageProperty());
+    }
+    private void setupUsers() {
+        Platform.runLater(() -> {
+            mActiveUsersListView.setItems(mHomeViewModel.getActiveUserProperty().getValue());
+        });
         mHomeViewModel.getActiveUserProperty().addListener((observable, oldValue, newValue) -> {
             //Have to invoke setItems on the UI thread.
             //This is only an issue because SocketIO runs on a background thread.
@@ -57,10 +92,15 @@ public class HomeView implements FxmlView<HomeViewModel> {
                 }
             };
         });
-
+    }
+    private void setupInvites() {
         mHomeViewModel.getSelectedInviteProperty().bind(mPendingInvitesListView.getSelectionModel().selectedItemProperty());
         mHomeViewModel.getSelectedActiveUserProperty().bind(mActiveUsersListView.getSelectionModel().selectedItemProperty());
 
+        //Prime the pump here.
+        Platform.runLater(() -> {
+            mPendingInvitesListView.setItems(mHomeViewModel.getPendingInvitesProperty().getValue());
+        });
         mHomeViewModel.getPendingInvitesProperty().addListener((observable, oldValue, newValue) -> {
             Platform.runLater(() -> {
                 mPendingInvitesListView.setItems(newValue);
@@ -81,19 +121,40 @@ public class HomeView implements FxmlView<HomeViewModel> {
                 }
             };
         });
+    }
+    private void setupActiveGames() {
+        mHomeViewModel.getActiveGamesProperty().addListener(this::updateActiveGames);
+        mActiveGamesListView.setCellFactory(ActiveGameCell.getFactory(gameState -> {
+            if (gameState.isDefault()) {
+                return;
+            }
+            mHomeViewModel.setTargetGame(gameState);
+            mHomeViewModel.getSpectateCommand().execute();
+        }));
+    }
 
-        mHomeViewModel.getMessagesListProperty().getValue().addListener(new ListChangeListener<String>() {
+    private void updateActiveGames(Observable observable, ObservableList<GameState> oldVal, ObservableList<GameState> newVal) {
+        Platform.runLater(() -> {
+            mActiveGamesListView.setItems(newVal);
+        });
+    }
+
+    private ListCell<GameState> activeGameCellFactory(ListView<GameState> param) {
+        return new ListCell<GameState>() {
             @Override
-            public void onChanged(Change<? extends String> c) {
+            protected void updateItem(GameState gameState, boolean b) {
+                super.updateItem(gameState, b);
+
                 Platform.runLater(() -> {
-                    if (c.next()) {
-                        mMessagesList.getItems().addAll(c.getAddedSubList());
+                    if (gameState != null) {
+                        setText(gameState.getPlayerOne().getUsername() + " vs " + gameState.getPlayerTwo().getUsername());
+                    }
+                    else {
+                        setText("");
                     }
                 });
             }
-        });
-
-        mMessageField.textProperty().bindBidirectional(mHomeViewModel.getMessageProperty());
+        };
     }
 
 

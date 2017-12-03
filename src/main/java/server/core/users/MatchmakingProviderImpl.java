@@ -3,14 +3,18 @@ package server.core.users;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import javafx.collections.*;
 import models.Events;
 import models.Player;
 import models.requests.GameRequest;
 import models.responses.GameState;
+import models.responses.GameStateList;
 import models.responses.PlayerList;
 import server.GameServer;
 import server.configuration.ConfigurationProvider;
 import server.core.gameplay.GameStateMachine;
+import server.core.socketio.SocketIOServerProvider;
+import util.JSONUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,9 +29,35 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
     @Inject
     ConfigurationProvider mConfigurationProvider;
 
+    @Inject
+    SocketIOServerProvider mServerProvider;
+
+    public MatchmakingProviderImpl() {
+        mGameMap.addListener(new MapChangeListener<String, GameStateMachine>() {
+            @Override
+            public void onChanged(Change<? extends String, ? extends GameStateMachine> change) {
+                notifyActiveGames();
+            }
+        });
+
+        mPlayerReceivedRequests.addListener(new MapChangeListener<String, List<GameRequest>>() {
+            @Override
+            public void onChanged(Change<? extends String, ? extends List<GameRequest>> change) {
+                GameServer.User user = mUsersProvider.getUsers().get(change.getKey());
+                mPlayerReceivedRequests.get(change.getKey()).addListener(new ListChangeListener<GameRequest>() {
+                    @Override
+                    public void onChanged(Change<? extends GameRequest> c) {
+                        user.getClient().sendEvent(Events.INVITE_REQUEST, getPendingRequestsForClient(change.getKey()));
+                    }
+                });
+                user.getClient().sendEvent(Events.INVITE_REQUEST, getPendingRequestsForClient(change.getKey()));
+            }
+        });
+    }
+
     private Map<String, GameRequest> mPlayerSentRequests = new HashMap<>();
-    private Map<String, List<GameRequest>> mPlayerReceivedRequests = new HashMap<>();
-    private Map<String, GameStateMachine> mGameMap = new HashMap<>();
+    private ObservableMap<String, ObservableList<GameRequest>> mPlayerReceivedRequests = FXCollections.observableHashMap();
+    private ObservableMap<String, GameStateMachine> mGameMap = FXCollections.observableHashMap();
 
     @Override
     public boolean isGameCreated(GameRequest gameRequest) {
@@ -76,14 +106,14 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         //Send GameState to joined player.
         requestingUser.getClient().sendEvent(Events.START_GAME, mGameMap.get(requestingUser.getClient().getSessionId().toString()).getGameState());
         //Update the requested players invites.
-        requestedUser.getClient().sendEvent(Events.INVITE_REQUEST, getPendingRequestsForClient(requestedUser.getClient()));
+        requestedUser.getClient().sendEvent(Events.INVITE_REQUEST, getPendingRequestsForClient(requestedUser.getClient().getSessionId().toString()));
     }
 
-    private PlayerList getPendingRequestsForClient(SocketIOClient client) {
+    private PlayerList getPendingRequestsForClient(String clientId) {
         PlayerList playerList = new PlayerList();
         List<Player> list = playerList.getPlayers();
 
-        List<GameRequest> requests = mPlayerReceivedRequests.get(client.getSessionId().toString());
+        List<GameRequest> requests = mPlayerReceivedRequests.get(clientId);
 
         if (requests != null) {
             for (GameRequest req : requests) {
@@ -99,7 +129,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         clearReceivedRequests(requestingUser);
         //Add a pending request to the requested users invites.
         if (!mPlayerReceivedRequests.containsKey(requestedUser.getClient().getSessionId().toString())) {
-            mPlayerReceivedRequests.put(requestedUser.getClient().getSessionId().toString(), new ArrayList<>());
+            mPlayerReceivedRequests.put(requestedUser.getClient().getSessionId().toString(), FXCollections.observableArrayList());
         }
         mPlayerReceivedRequests.get(requestedUser.getClient().getSessionId().toString()).add(request);
     }
@@ -135,8 +165,74 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
 
     @Override
     public void spectate(SocketIOClient client, GameRequest gameRequest) {
+        GameServer.User user = mUsersProvider.getUsers().get(client.getSessionId().toString());
+        GameServer.User playerOne = mUsersProvider.getUserByUsername(gameRequest.getToPlayer().getUsername());
+        GameServer.User playerTwo = mUsersProvider.getUserByUsername(gameRequest.getFromPlayer().getUsername());
 
+
+        if ((mGameMap.get(playerOne.getClient().getSessionId().toString()) == null ||
+                mGameMap.get(playerTwo.getClient().getSessionId().toString()) == null) &&
+                mGameMap.get(user.getClient().getSessionId().toString()) != null) {
+            //Error, game not found or already in a game.
+            return;
+        }
+
+        GameStateMachine gsm = mGameMap.get(playerOne.getClient().getSessionId().toString());
+        gsm = (gsm == null) ? mGameMap.get(playerTwo.getClient().getSessionId().toString()) : gsm;
+
+        mGameMap.put(client.getSessionId().toString(), gsm);
+        clearReceivedRequests(user);
+
+        gsm.addSpectator(user);
     }
+
+    @Override
+    public List<GameState> getActiveGames() {
+        HashMap<String, GameState> activeGames = new HashMap<>();
+        List<GameState> activeGameList = new ArrayList<>();
+
+        for (Map.Entry<String, GameStateMachine> entry : mGameMap.entrySet()) {
+            if (!activeGames.containsKey(entry.getKey())) {
+                GameServer.User userOne = mUsersProvider.getUserByUsername(entry.getValue().getGameState().getPlayerOne().getUsername());
+                GameServer.User userTwo = mUsersProvider.getUserByUsername(entry.getValue().getGameState().getPlayerTwo().getUsername());
+
+                activeGames.put(userOne.getClient().getSessionId().toString(), new GameState());
+                activeGames.put(userTwo.getClient().getSessionId().toString(), new GameState());
+
+                for (Player player : entry.getValue().getGameState().getSpectatorList()) {
+                    GameServer.User user = mUsersProvider.getUserByUsername(player.getUsername());
+
+                    if (user == null) {
+                        continue;
+                    }
+
+                    activeGames.put(user.getClient().getSessionId().toString(), new GameState());
+                }
+
+                activeGameList.add(entry.getValue().getGameState());
+            }
+        }
+
+        return activeGameList;
+    }
+
+    @Override
+    public void quitGame(SocketIOClient client) {
+        GameStateMachine gsm = mGameMap.get(client.getSessionId().toString());
+
+        if (gsm == null) {
+            return;
+        }
+
+        GameServer.User user = mUsersProvider.getUsers().get(client.getSessionId().toString());
+        gsm.removeUser(user);
+        mGameMap.remove(client.getSessionId().toString());
+    }
+
+    private void notifyActiveGames() {
+        mServerProvider.broadcast(Events.ACTIVE_GAMES, JSONUtils.toJson(new GameStateList(getActiveGames())));
+    }
+
 
     private void clearReceivedRequests(GameServer.User user) {
         //If the requesting guy had some pending invites, cancel those.
@@ -150,9 +246,11 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
                 //We don't need to send this to the player we are starting the game with.
                 if (!user.getPlayer().getUsername().equals(req.getToPlayer().getUsername())) {
                     u.getClient().sendEvent(Events.START_GAME, new GameState());
-                    u.getClient().sendEvent(Events.INVITE_REQUEST, getPendingRequestsForClient(u.getClient()));
+                    u.getClient().sendEvent(Events.INVITE_REQUEST, getPendingRequestsForClient(u.getClient().getSessionId().toString()));
                 }
             }
+
+            mPlayerReceivedRequests.put(user.getClient().getSessionId().toString(), FXCollections.observableArrayList());
         }
     }
 }

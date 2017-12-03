@@ -4,6 +4,7 @@ import client.core.ConnectionProvider;
 import client.core.GameProvider;
 import client.core.navigation.INavigationProvider;
 import client.ui.BaseViewModel;
+import client.ui.home.HomeView;
 import com.google.inject.Inject;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.Command;
@@ -73,6 +74,7 @@ public class GameViewModel extends BaseViewModel {
         super(connectionProvider, navigationProvider);
         mGameProvider = gameProvider;
         mGameStateProperty = mGameProvider.getGameStateProperty();
+        onGameStateUpdated(mGameStateProperty, null, mGameStateProperty.getValue());
         mGameStateProperty.addListener(this::onGameStateUpdated);
 
         mDrawCommand = new DelegateCommand(() -> new Action() {
@@ -119,7 +121,7 @@ public class GameViewModel extends BaseViewModel {
     private void onGameStateUpdated(Observable observable, GameState oldVal, GameState newVal) {
         if (newVal.isDefault()) {
             //Game is over here or something went wrong.
-            mNavigationProvider.navigatePrevious();
+            mNavigationProvider.navigateTo(HomeView.class);
             return;
         }
 
@@ -138,9 +140,9 @@ public class GameViewModel extends BaseViewModel {
     }
 
     private void updateVisibleComponents(GameState gameState) {
-        boolean isGameOver = gameState.getState() == GameState.State.EndGame;
-        boolean isDrawState = gameState.getState() == GameState.State.Draw;
-        boolean isMainState = gameState.getState() == GameState.State.Main;
+        boolean isGameOver = gameState.getStateEnum() == GameState.State.EndGame;
+        boolean isDrawState = gameState.getStateEnum() == GameState.State.Draw;
+        boolean isMainState = gameState.getStateEnum() == GameState.State.Main;
         boolean isActivePlayer = gameState.getActivePlayer().getUsername().equals(mConnectionProvider.getAuthenticatedUser().getValue().getUsername());
 
         mDrawButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isDrawState);
