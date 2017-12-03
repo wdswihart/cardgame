@@ -66,27 +66,31 @@ public class GameServer {
             e.printStackTrace();
         }
 
-        new Thread(() -> {
 
-            while (true) {
-                byte[] buf = new byte[1000];
-                DatagramPacket dgp = new DatagramPacket(buf, buf.length);
+        if (mDatagramSocket == null) {
+            new Thread(() -> {
 
-                try {
-                    System.out.println("[DiscoveryServer]: Waiting for data.");
-                    mDatagramSocket.receive(dgp);
+                while (true) {
+                    byte[] buf = new byte[1000];
+                    DatagramPacket dgp = new DatagramPacket(buf, buf.length);
 
-                    System.out.println("[DiscoveryServer]: Received discovery request.");
+                    try {
+                        System.out.println("[DiscoveryServer]: Waiting for data.");
+                        mDatagramSocket.receive(dgp);
 
-                    new Thread(() -> {
-                        sendAddress(dgp.getAddress().getHostAddress(), dgp.getPort());
-                    }).start();;
+                        System.out.println("[DiscoveryServer]: Received discovery request.");
 
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        new Thread(() -> {
+                            sendAddress(dgp.getAddress().getHostAddress(), dgp.getPort());
+                        }).start();
+                        ;
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        }).start();
+            }).start();
+        }
     }
 
     private void sendAddress(String clientAddress, int clientPort) {
