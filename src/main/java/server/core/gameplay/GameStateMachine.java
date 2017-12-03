@@ -285,9 +285,9 @@ public class GameStateMachine {
     }
 
     public void addSpectator(GameServer.User user) {
-        user.getClient().sendEvent(Events.START_GAME, mGameState);
         mSpectatorList.add(user);
         mGameState.addSpectator(user.getPlayer());
+        user.getClient().sendEvent(Events.START_GAME, mGameState);
     }
 
 

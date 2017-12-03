@@ -180,10 +180,9 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         GameStateMachine gsm = mGameMap.get(playerOne.getClient().getSessionId().toString());
         gsm = (gsm == null) ? mGameMap.get(playerTwo.getClient().getSessionId().toString()) : gsm;
 
-        mGameMap.put(client.getSessionId().toString(), gsm);
         clearReceivedRequests(user);
-
         gsm.addSpectator(user);
+        mGameMap.put(client.getSessionId().toString(), gsm);
     }
 
     @Override

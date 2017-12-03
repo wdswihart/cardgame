@@ -284,6 +284,11 @@ public class GameViewModel extends BaseViewModel {
     }
 
     public Boolean isSpectator() {
-        return mGameStateProperty.getValue().getSpectatorList().contains(mConnectionProvider.getAuthenticatedUser().getValue());
+        for (Player spectator : mGameStateProperty.getValue().getSpectatorList()) {
+            if (spectator.getUsername().equals(mConnectionProvider.getAuthenticatedUser().getValue().getUsername())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
