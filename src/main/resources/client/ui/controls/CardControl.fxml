@@ -37,4 +37,8 @@
             <Text fx:id="mToughness" text="-1"/>
         </HBox>
     </AnchorPane>
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
 </GridPane>
