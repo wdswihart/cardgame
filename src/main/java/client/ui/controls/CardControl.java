@@ -40,6 +40,7 @@ public class CardControl {
         try {
             Image image = new Image("/images/" + card.getName().replaceAll(" ", "") + "_image.jpg");
             mImage.setImage(image);
+            mImage.fitWidthProperty().bind(mRoot.prefWidthProperty());
         }
         catch (Exception e) {
             e.printStackTrace();

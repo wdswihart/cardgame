@@ -13,6 +13,7 @@
           fx:controller="client.ui.controls.CardControl"
           fx:id="mRoot"
           styleClass="card"
+          maxHeight="300.0" maxWidth="200.0"
           prefHeight="300.0" prefWidth="200.0">
 
     <rowConstraints>
@@ -27,7 +28,7 @@
         <Text fx:id="mName" text="cardname"/>
     </GridPane>
     <!--Image should use row 1-->
-    <ImageView fx:id="mImage" fitWidth="200" fitHeight="120" GridPane.rowIndex="1"/>
+    <ImageView fx:id="mImage" fitHeight="120" GridPane.rowIndex="1"/>
 
     <!--Description-->
     <TextArea fx:id="mDescription" text="description is here asldfasdfasdfasdfasdfasdfasdfasdf" wrapText="true" GridPane.rowIndex="2"/>
