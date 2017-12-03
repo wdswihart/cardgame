@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
+<?import java.net.URL?>
 <GridPane styleClass="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.home.HomeView">
     <rowConstraints>
         <RowConstraints percentHeight="5" />
@@ -68,6 +69,7 @@
             </GridPane>
         </VBox>
 
+        <!--Active Games-->
         <VBox GridPane.columnIndex="2">
             <Text text="Active Games:" />
             <ListView fx:id="mActiveGamesListView" VBox.vgrow="ALWAYS" />
@@ -77,9 +79,12 @@
       </rowConstraints>
     </GridPane>
 
-    <!--Active Games-->
 
    <columnConstraints>
       <ColumnConstraints />
    </columnConstraints>
+
+    <stylesheets>
+        <URL value="@/style.css"/>
+    </stylesheets>
 </GridPane>

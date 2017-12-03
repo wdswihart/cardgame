@@ -57,6 +57,7 @@ public class GameViewModel extends BaseViewModel {
     private Property<Boolean> mDrawButtonDisabledProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mPlayCardButtonVisibleProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mAttackButtonDisabledProperty = new SimpleBooleanProperty(false);
+    private Property<Boolean> mPassTurnButtonDisabledProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mGameControlVisibleProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mWinningDisplayBoxVisibleProperty = new SimpleBooleanProperty(false);
     //endregion
@@ -148,6 +149,7 @@ public class GameViewModel extends BaseViewModel {
         mDrawButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isDrawState);
         mPlayCardButtonVisibleProperty.setValue(isGameOver || !isActivePlayer || !isMainState);
         mAttackButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isMainState);
+        mPassTurnButtonDisabledProperty.setValue(isGameOver || !isMainState);
 
         if (isGameOver) {
             String winnerName = "";
@@ -275,5 +277,9 @@ public class GameViewModel extends BaseViewModel {
 
     public Property<String> getWinnerProperty() {
         return mWinnerProperty;
+    }
+
+    public Property<Boolean> getPassTurnButtonDisabledProperty() {
+        return mPassTurnButtonDisabledProperty;
     }
 }

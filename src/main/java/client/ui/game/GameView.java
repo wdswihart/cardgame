@@ -165,6 +165,7 @@ public class GameView implements FxmlView<GameViewModel> {
         mDrawButton.disableProperty().bind(mGameViewModel.getDrawButtonDisabledProperty());
         mPlayCardButton.disableProperty().bind(mGameViewModel.getPlayCardButtonDisabledProperty());
         mAttackButton.disableProperty().bind(mGameViewModel.getAttackButtonDisabledProperty());
+        mPassTurnButton.disableProperty().bind(mGameViewModel.getPassTurnButtonDisabledProperty());
         mGameControlBox.visibleProperty().bind(mGameViewModel.getGameControlVisibleProperty());
         mWinningDisplayBox.visibleProperty().bind(mGameViewModel.getWinningDisplayBoxVisibleProperty());
     }
