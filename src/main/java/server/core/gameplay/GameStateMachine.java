@@ -13,6 +13,7 @@ import server.configuration.ConfigurationProvider;
 import server.core.users.UsersProvider;
 import models.responses.GameState.State;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -23,6 +24,8 @@ public class GameStateMachine {
 
     private GameServer.User mUserOne;
     private GameServer.User mUserTwo;
+
+    private List<GameServer.User> mSpectatorList = new ArrayList<>();
 
     //region StateMachine States/Triggers
 
@@ -225,6 +228,10 @@ public class GameStateMachine {
     private void broadcastToPlayers(String event, GameState mGameState) {
         mUserOne.getClient().sendEvent(event, mGameState);
         mUserTwo.getClient().sendEvent(event, mGameState);
+
+        for (GameServer.User user : mSpectatorList) {
+            user.getClient().sendEvent(event, mGameState);
+        }
     }
 
     private void dealCards() {
@@ -247,15 +254,24 @@ public class GameStateMachine {
 
     //Takes care of removing a player from the game.
     //Notifying an empty GameState will signal that the user should no longer be in the GameView.
-    public void removePlayer(Player player) {
-        if (player.getUsername().equals(mGameState.getPlayerOne().getUsername())) {
+    public void removeUser(GameServer.User user) {
+        if (user.getPlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
             mUserOne.getClient().sendEvent(Events.UPDATE_GAME, new GameState());
         }
-        else if (player.getUsername().equals(mGameState.getPlayerTwo().getUsername())) {
+        else if (user.getPlayer().getUsername().equals(mGameState.getPlayerTwo().getUsername())) {
             mUserTwo.getClient().sendEvent(Events.UPDATE_GAME, new GameState());
         }
+        else {
+            user.getClient().sendEvent(Events.UPDATE_GAME, new GameState());
+            mSpectatorList.remove(user);
+            mGameState.removeSpectator(user.getPlayer());
+        }
+    }
 
-        //TODO: Add for spectators.
+    public void addSpectator(GameServer.User user) {
+        user.getClient().sendEvent(Events.START_GAME, mGameState);
+        mSpectatorList.add(user);
+        mGameState.addSpectator(user.getPlayer());
     }
 
 

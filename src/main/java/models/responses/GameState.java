@@ -47,6 +47,8 @@ public class GameState extends ModelBase {
     private List<Card> mPlayerOneField = new ArrayList<>();
     private List<Card> mPlayerTwoField = new ArrayList<>();
 
+    private List<Player> mSpectatorList = new ArrayList<>();
+
     public GameState(Player playerOne, Player playerTwo) {
         mPlayerOne = playerOne;
         mPlayerTwo = playerTwo;
@@ -167,5 +169,21 @@ public class GameState extends ModelBase {
     public void setPlayerTwoHealth(int playerTwoHealth) {
         this.mPlayerTwoHealth = playerTwoHealth;
     }
+
+    public List<Player> getSpectatorList() {
+        return mSpectatorList;
+    }
+
+    public void setSpectatorList(List<Player> spectatorList) {
+        mSpectatorList = spectatorList;
+    }
     //endregion
+
+    public void addSpectator(Player player) {
+        mSpectatorList.add(player);
+    }
+
+    public void removeSpectator(Player player) {
+        mSpectatorList.remove(player);
+    }
 }

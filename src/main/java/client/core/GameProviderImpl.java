@@ -95,10 +95,6 @@ public class GameProviderImpl implements GameProvider {
     }
 
     @Override
-    public void leaveGame() {
-    }
-
-    @Override
     public void drawCard() {
         mClientProvider.getClient().emit(Events.DRAW, JSONUtils.toJson(new DrawRequest()));
     }
@@ -126,5 +122,10 @@ public class GameProviderImpl implements GameProvider {
     @Override
     public Property<ObservableList<GameState>> getActiveGames() {
         return mActiveGamesProperty;
+    }
+
+    @Override
+    public void spectateGame(GameState targetGame) {
+        mClientProvider.getClient().emit(Events.SPECTATE_GAME, JSONUtils.toJson(targetGame));
     }
 }

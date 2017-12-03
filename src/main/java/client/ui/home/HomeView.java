@@ -121,7 +121,13 @@ public class HomeView implements FxmlView<HomeViewModel> {
     }
     private void setupActiveGames() {
         mActiveGamesListView.itemsProperty().bind(mHomeViewModel.getActiveGamesProperty());
-        mActiveGamesListView.setCellFactory(this::activeGameCellFactory);
+        mActiveGamesListView.setCellFactory(ActiveGameCell.getFactory(gameState -> {
+            if (gameState.isDefault()) {
+                return;
+            }
+            mHomeViewModel.setTargetGame(gameState);
+            mHomeViewModel.getSpectateCommand().execute();
+        }));
     }
 
     private ListCell<GameState> activeGameCellFactory(ListView<GameState> param) {

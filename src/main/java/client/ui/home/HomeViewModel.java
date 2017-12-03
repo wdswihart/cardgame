@@ -3,7 +3,6 @@ package client.ui.home;
 import client.core.ConnectionProvider;
 import client.core.GameProvider;
 import client.ui.game.GameView;
-import javafx.collections.FXCollections;
 import models.Player;
 import client.ui.login.LoginView;
 import com.google.inject.Inject;
@@ -44,6 +43,8 @@ public class HomeViewModel extends BaseViewModel {
     private Property<ObservableList<Player>> mPendingInvitesProperty = new SimpleObjectProperty<>();
     private Property<Player> mSelectedInviteProperty = new SimpleObjectProperty<>();
     private Property<ObservableList<GameState>> mActiveGamesProperty = new SimpleObjectProperty<>();
+    private Command mSpectateCommand;
+    private GameState mTargetGame;
 
     @Inject
     public HomeViewModel(ConnectionProvider connectionProvider,
@@ -127,6 +128,13 @@ public class HomeViewModel extends BaseViewModel {
                 mGameProvider.joinGame(mSelectedInviteProperty.getValue());
             }
         });
+
+        mSpectateCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                mGameProvider.spectateGame(mTargetGame);
+            }
+        });
     }
 
     public ObjectProperty<ObservableList<Player>> getActiveUserProperty() {
@@ -200,5 +208,13 @@ public class HomeViewModel extends BaseViewModel {
 
     public Property<ObservableList<GameState>> getActiveGamesProperty() {
         return mActiveGamesProperty;
+    }
+
+    public Command getSpectateCommand() {
+        return mSpectateCommand;
+    }
+
+    public void setTargetGame(GameState targetGame) {
+        this.mTargetGame = targetGame;
     }
 }

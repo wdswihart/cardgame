@@ -165,7 +165,25 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
 
     @Override
     public void spectate(SocketIOClient client, GameRequest gameRequest) {
+        GameServer.User user = mUsersProvider.getUsers().get(client.getSessionId().toString());
+        GameServer.User playerOne = mUsersProvider.getUserByUsername(gameRequest.getToPlayer().getUsername());
+        GameServer.User playerTwo = mUsersProvider.getUserByUsername(gameRequest.getFromPlayer().getUsername());
 
+
+        if ((mGameMap.get(playerOne.getClient().getSessionId().toString()) == null ||
+                mGameMap.get(playerTwo.getClient().getSessionId().toString()) == null) &&
+                mGameMap.get(user.getClient().getSessionId().toString()) != null) {
+            //Error, game not found or already in a game.
+            return;
+        }
+
+        GameStateMachine gsm = mGameMap.get(playerOne.getClient().getSessionId().toString());
+        gsm = (gsm == null) ? mGameMap.get(playerTwo.getClient().getSessionId().toString()) : gsm;
+
+        mGameMap.put(client.getSessionId().toString(), gsm);
+        clearReceivedRequests(user);
+
+        gsm.addSpectator(user);
     }
 
     @Override
@@ -180,6 +198,11 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
 
                 activeGames.put(userOne.getClient().getSessionId().toString(), null);
                 activeGames.put(userTwo.getClient().getSessionId().toString(), null);
+
+                for (Player player : entry.getValue().getGameState().getSpectatorList()) {
+                    GameServer.User user = mUsersProvider.getUserByUsername(player.getUsername());
+                    activeGames.put(user.getClient().getSessionId().toString(), null);
+                }
 
                 activeGameList.add(entry.getValue().getGameState());
             }
@@ -197,7 +220,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         }
 
         GameServer.User user = mUsersProvider.getUsers().get(client.getSessionId().toString());
-        gsm.removePlayer(user.getPlayer());
+        gsm.removeUser(user);
         mGameMap.remove(client.getSessionId().toString());
     }
 
