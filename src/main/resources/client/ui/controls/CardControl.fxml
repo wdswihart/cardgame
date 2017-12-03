@@ -7,15 +7,16 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Text?>
-<GridPane  xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-           fx:controller="client.ui.controls.CardControl"
-           fx:id="mRoot"
-            prefHeight="300.0" prefWidth="200.0">
+<?import javafx.scene.image.ImageView?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="client.ui.controls.CardControl"
+          fx:id="mRoot"
+          prefHeight="300.0" prefWidth="200.0">
 
     <rowConstraints>
-        <RowConstraints percentHeight="20"/>
-        <RowConstraints percentHeight="35"/>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="45"/>
         <RowConstraints percentHeight="40"/>
         <RowConstraints percentHeight="5"/>
     </rowConstraints>
@@ -25,6 +26,7 @@
         <Text fx:id="mName" text="cardname"/>
     </GridPane>
     <!--Image should use row 1-->
+    <ImageView fx:id="mImage" fitWidth="200" fitHeight="120" GridPane.rowIndex="1"/>
 
     <!--Description-->
     <TextArea fx:id="mDescription" text="description is here asldfasdfasdfasdfasdfasdfasdfasdf" wrapText="true" GridPane.rowIndex="2"/>
