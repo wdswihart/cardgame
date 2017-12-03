@@ -11,17 +11,21 @@ import java.util.List;
 public class GameState extends ModelBase {
 
     public enum State {
-        Waiting,
-        Draw,
-        Main,
-        Attack,
-        PlayingCard, EndGame,
-//        End,
-//        Refresh,
-//        Maintain,
-//        Attackers,
-//        Defenders,
-//        Damage,
+        Waiting("Waiting"),
+        Draw("Draw"),
+        Main("Main"),
+        Attack("Attack"),
+        PlayingCard("PlayingCard"),
+        EndGame("EndGame");
+
+        private String mState = "";
+        State(String state) {
+            mState = state;
+        }
+
+        public String toString() {
+            return mState;
+        }
     }
 
     private State mState = State.Waiting;
@@ -42,6 +46,8 @@ public class GameState extends ModelBase {
 
     private List<Card> mPlayerOneField = new ArrayList<>();
     private List<Card> mPlayerTwoField = new ArrayList<>();
+
+    private List<Player> mSpectatorList = new ArrayList<>();
 
     public GameState(Player playerOne, Player playerTwo) {
         mPlayerOne = playerOne;
@@ -114,12 +120,22 @@ public class GameState extends ModelBase {
         this.mPlayerOneDeck = playerOneDeck;
     }
 
-    public State getState() {
-        return mState;
+    public String getState() {
+        return mState.toString();
     }
 
-    public void setState(State state) {
-        this.mState = state;
+    public void setState(String state) {
+        mState = State.valueOf(state);
+    }
+
+    @JsonIgnore
+    public void setStateEnum(State state) {
+        mState = state;
+    }
+
+    @JsonIgnore
+    public State getStateEnum() {
+        return mState;
     }
 
     public List<Card> getPlayerOneField() {
@@ -153,5 +169,21 @@ public class GameState extends ModelBase {
     public void setPlayerTwoHealth(int playerTwoHealth) {
         this.mPlayerTwoHealth = playerTwoHealth;
     }
+
+    public List<Player> getSpectatorList() {
+        return mSpectatorList;
+    }
+
+    public void setSpectatorList(List<Player> spectatorList) {
+        mSpectatorList = spectatorList;
+    }
     //endregion
+
+    public void addSpectator(Player player) {
+        mSpectatorList.add(player);
+    }
+
+    public void removeSpectator(Player player) {
+        mSpectatorList.remove(player);
+    }
 }

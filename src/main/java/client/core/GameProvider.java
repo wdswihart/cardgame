@@ -13,7 +13,6 @@ public interface GameProvider {
     Property<ObservableList<Player>> getPendingInvitesProperty();
 
     void joinGame(Player player);
-    void leaveGame();
 
     void drawCard();
 
@@ -24,4 +23,8 @@ public interface GameProvider {
     void attack(List<Card> attackers);
 
     void quitGame();
+
+    Property<ObservableList<GameState>> getActiveGames();
+
+    void spectateGame(GameState targetGame);
 }

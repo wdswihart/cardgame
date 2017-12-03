@@ -6,6 +6,8 @@ import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.application.Platform;
 import javafx.beans.Observable;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -94,31 +96,57 @@ public class GameView implements FxmlView<GameViewModel> {
     //endregion
 
     public void initialize() {
-        mGameViewModel.getOpponentProperty().addListener(this::updateOpponent);
-        mGameViewModel.getPlayerProperty().addListener(this::updatePlayer);
-
-        mGameViewModel.getPlayerHandProperty().addListener(this::updatePlayerHand);
-        mGameViewModel.getSelectedPlayerCardProperty().bind(mPlayersHandListView.getSelectionModel().selectedItemProperty());
-        mPlayersHandListView.setCellFactory(GameView::smallCardCellFactory);
-
-        mGameViewModel.getOpponentHandProperty().addListener(this::updateOpponentHand);
-        //TODO: Make this a stock card.
-        mOpponentsHandListView.setCellFactory(GameView::smallCardCellFactory);
-
-        mGameViewModel.getPlayerDeckProperty().addListener(this::updatePlayerDeck);
-        mGameViewModel.getOpponentDeckProperty().addListener(this::updateOpponentDeck);
-
-        mPlayerFieldListView.setCellFactory(GameView::cardCellFactory);
-        mOpponentFieldListView.setCellFactory(GameView::cardCellFactory);
-        mGameViewModel.getPlayerFieldProperty().addListener(this::updatePlayerField);
-        mGameViewModel.getOpponentFieldProperty().addListener(this::updateOpponentField);
-
-        mPlayerHealthText.textProperty().bind(mGameViewModel.getPlayerHealthProperty());
-        mOpponentHealthText.textProperty().bind(mGameViewModel.getOpponentHealthProperty());
         mPhaseText.textProperty().bind(mGameViewModel.getPhaseProperty());
         mWinnerText.textProperty().bind(mGameViewModel.getWinnerProperty());
 
+        setupOpponentProperties();
+        setupPlayerProperties();
         setupVisibility();
+    }
+
+    private void setupPlayerProperties() {
+        updatePlayer(mGameViewModel.getPlayerProperty(), null, mGameViewModel.getPlayerProperty().getValue());
+        mGameViewModel.getPlayerProperty().addListener(this::updatePlayer);
+
+        Property<ObservableList<Card>> playerHandProperty = mGameViewModel.getPlayerHandProperty();
+        updatePlayerHand(playerHandProperty, null, playerHandProperty.getValue());
+        playerHandProperty.addListener(this::updatePlayerHand);
+        mGameViewModel.getSelectedPlayerCardProperty().bind(mPlayersHandListView.getSelectionModel().selectedItemProperty());
+
+        mPlayersHandListView.setCellFactory(GameView::smallCardCellFactory);
+        Property<ObservableList<Card>> playerDeckProperty = mGameViewModel.getPlayerDeckProperty();
+        updatePlayerDeck(playerDeckProperty, null, playerDeckProperty.getValue());
+        playerDeckProperty.addListener(this::updatePlayerDeck);
+
+
+        Property<ObservableList<Card>> playerFieldProperty = mGameViewModel.getPlayerFieldProperty();
+        updatePlayerField(playerFieldProperty, null, playerFieldProperty.getValue());
+        mPlayerFieldListView.setCellFactory(GameView::cardCellFactory);
+        mGameViewModel.getPlayerFieldProperty().addListener(this::updatePlayerField);
+
+        mPlayerHealthText.textProperty().bind(mGameViewModel.getPlayerHealthProperty());
+    }
+
+    private void setupOpponentProperties() {
+        updateOpponent(mGameViewModel.getOpponentProperty(), null, mGameViewModel.getOpponentProperty().getValue());
+        mGameViewModel.getOpponentProperty().addListener(this::updateOpponent);
+
+        Property<ObservableList<Card>> opponentHandProperty = mGameViewModel.getOpponentHandProperty();
+        updateOpponentHand(opponentHandProperty, null, opponentHandProperty.getValue());
+        opponentHandProperty.addListener(this::updateOpponentHand);
+
+        mOpponentsHandListView.setCellFactory(GameView::smallCardCellFactory);
+        Property<ObservableList<Card>> opponentDeckProperty = mGameViewModel.getOpponentDeckProperty();
+        updateOpponentDeck(opponentDeckProperty, null, opponentDeckProperty.getValue());
+        opponentDeckProperty.addListener(this::updateOpponentDeck);
+
+
+        Property<ObservableList<Card>> opponentFieldProperty = mGameViewModel.getOpponentFieldProperty();
+        updateOpponentField(opponentFieldProperty, null, opponentFieldProperty.getValue());
+        mOpponentFieldListView.setCellFactory(GameView::cardCellFactory);
+        mGameViewModel.getOpponentFieldProperty().addListener(this::updateOpponentField);
+
+        mOpponentHealthText.textProperty().bind(mGameViewModel.getOpponentHealthProperty());
     }
 
     private void updatePlayerField(Observable observable, ObservableList<Card> oldVal, ObservableList<Card> newVal) {

@@ -29,7 +29,7 @@ public class SocketIOServerProviderImpl implements SocketIOServerProvider {
 
     @Override
     public void broadcast(String event, Object obj) {
-        mServer.getBroadcastOperations().sendEvent(event, obj);
+        mServer.getRoomOperations("lobby").sendEvent(event, obj);
     }
 
     @Override

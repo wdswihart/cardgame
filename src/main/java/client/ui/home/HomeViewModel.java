@@ -21,8 +21,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import models.responses.GameState;
 
-import java.util.concurrent.Executor;
-
 public class HomeViewModel extends BaseViewModel {
     private GameProvider mGameProvider;
 
@@ -44,6 +42,9 @@ public class HomeViewModel extends BaseViewModel {
 
     private Property<ObservableList<Player>> mPendingInvitesProperty = new SimpleObjectProperty<>();
     private Property<Player> mSelectedInviteProperty = new SimpleObjectProperty<>();
+    private Property<ObservableList<GameState>> mActiveGamesProperty = new SimpleObjectProperty<>();
+    private Command mSpectateCommand;
+    private GameState mTargetGame;
 
     @Inject
     public HomeViewModel(ConnectionProvider connectionProvider,
@@ -70,6 +71,7 @@ public class HomeViewModel extends BaseViewModel {
         mActiveUsersProperty = mConnectionProvider.getActiveUsers();
         mMessagesListProperty = mConnectionProvider.getMessages();
         mPendingInvitesProperty = mGameProvider.getPendingInvitesProperty();
+        mActiveGamesProperty = mGameProvider.getActiveGames();
     }
 
     private void setupCommands() {
@@ -124,6 +126,13 @@ public class HomeViewModel extends BaseViewModel {
                 }
 
                 mGameProvider.joinGame(mSelectedInviteProperty.getValue());
+            }
+        });
+
+        mSpectateCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                mGameProvider.spectateGame(mTargetGame);
             }
         });
     }
@@ -195,5 +204,17 @@ public class HomeViewModel extends BaseViewModel {
 
     public Command getAcceptInviteCommand() {
         return mAcceptInviteCommand;
+    }
+
+    public Property<ObservableList<GameState>> getActiveGamesProperty() {
+        return mActiveGamesProperty;
+    }
+
+    public Command getSpectateCommand() {
+        return mSpectateCommand;
+    }
+
+    public void setTargetGame(GameState targetGame) {
+        this.mTargetGame = targetGame;
     }
 }

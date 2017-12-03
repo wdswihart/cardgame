@@ -15,6 +15,7 @@ import models.requests.DrawRequest;
 import models.requests.GameRequest;
 import models.requests.PlayCardRequest;
 import models.responses.GameState;
+import models.responses.GameStateList;
 import models.responses.PlayerList;
 import util.JSONUtils;
 
@@ -25,8 +26,9 @@ public class GameProviderImpl implements GameProvider {
     private SocketIOClientProvider mClientProvider;
     private ConnectionProvider mConnectionProvider;
 
-    Property<GameState> mGameStateProperty = new SimpleObjectProperty<>();
-    Property<ObservableList<Player>> mPendingInvitesProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
+    private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>();
+    private Property<ObservableList<Player>> mPendingInvitesProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
+    private Property<ObservableList<GameState>> mActiveGamesProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
 
     @Inject
     public GameProviderImpl(SocketIOClientProvider clientProvider, ConnectionProvider connectionProvider) {
@@ -62,6 +64,15 @@ public class GameProviderImpl implements GameProvider {
                 mGameStateProperty.setValue(game);
             }
         });
+
+        mClientProvider.getClient().on(Events.ACTIVE_GAMES, params -> {
+            System.out.println("[ACTIVE_GAMES]: " + params[0]);
+
+            GameStateList list = JSONUtils.fromJson(params[0], GameStateList.class);
+            list = (list == null) ? new GameStateList() : list;
+
+            mActiveGamesProperty.setValue(FXCollections.observableArrayList(list.getGameStates()));
+        });
     }
 
     @Override
@@ -84,10 +95,6 @@ public class GameProviderImpl implements GameProvider {
     }
 
     @Override
-    public void leaveGame() {
-    }
-
-    @Override
     public void drawCard() {
         mClientProvider.getClient().emit(Events.DRAW, JSONUtils.toJson(new DrawRequest()));
     }
@@ -99,7 +106,7 @@ public class GameProviderImpl implements GameProvider {
 
     @Override
     public void passTurn() {
-        mClientProvider.getClient().emit(Events.PASS_TURN, "{}");
+        mClientProvider.getClient().emit(Events.PASS_TURN, "string");
     }
 
     @Override
@@ -109,6 +116,16 @@ public class GameProviderImpl implements GameProvider {
 
     @Override
     public void quitGame() {
-        mClientProvider.getClient().emit(Events.QUIT_GAME, "{}");
+        mClientProvider.getClient().emit(Events.QUIT_GAME, "string");
+    }
+
+    @Override
+    public Property<ObservableList<GameState>> getActiveGames() {
+        return mActiveGamesProperty;
+    }
+
+    @Override
+    public void spectateGame(GameState targetGame) {
+        mClientProvider.getClient().emit(Events.SPECTATE_GAME, JSONUtils.toJson(targetGame));
     }
 }
