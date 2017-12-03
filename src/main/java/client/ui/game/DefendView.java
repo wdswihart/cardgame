@@ -41,6 +41,8 @@ public class DefendView implements FxmlView<DefendViewModel> {
         mViewModel.getAttackerList().addListener(this::attackerListChangeListener);
         mViewModel.getDefenderList().addListener(this::defenderListChangeListener);
         mViewModel.getSelectedFieldCard().bind(mFieldBox.getSelectionModel().selectedItemProperty());
+
+
     }
 
     private void defenderListChangeListener(ListChangeListener.Change<? extends Card> c) {

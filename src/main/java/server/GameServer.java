@@ -136,6 +136,7 @@ public class GameServer {
         mServerProvider.on(Events.PLAY_CARD, PlayCardEventHandler.getHandler());
         mServerProvider.on(Events.PASS_TURN, PassTurnEventHandler.getHandler());
         mServerProvider.on(Events.ATTACK, AttackEventHandler.getHandler());
+        mServerProvider.on(Events.DEFEND, DefendEventHandler.getHandler());
 
         mServerProvider.on(Events.QUIT_GAME, QuitGameEventHandler.getHandler());
         mServerProvider.on(Events.SPECTATE_GAME, SpectateGameEventHandler.getHandler());

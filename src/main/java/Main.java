@@ -53,22 +53,6 @@ public class Main extends MvvmfxGuiceApplication {
         NavigationProvider.getInstance().navigateTo(DiscoveryView.class);
         stage.show();
 
-        List<Card> cards = new ArrayList<Card>();
-        cards.add(new Card("card1"));
-        cards.add(new Card("card1"));
-        cards.add(new Card("card1"));
-        cards.add(new Card("card1"));
-        cards.add(new Card("card1"));
-
-        List<Card> field = new ArrayList<>();
-        field.add(new Card("defender"));
-        field.add(new Card("defender"));
-        field.add(new Card("defender"));
-        field.add(new Card("defender"));
-
-
-        new DefendDialog(cards, field).show();
-
 //        FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/game/DefendView.fxml"));
 //        try {
 //            Parent node = loader.load();

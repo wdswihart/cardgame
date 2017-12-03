@@ -16,11 +16,14 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Dialog;
 import javafx.scene.layout.VBox;
 import models.Card;
 import models.Player;
+import models.requests.DefendRequest;
 import models.responses.GameState;
 
+import java.awt.*;
 import java.util.List;
 
 public class GameViewModel extends BaseViewModel {
@@ -143,11 +146,28 @@ public class GameViewModel extends BaseViewModel {
         boolean isGameOver = gameState.getStateEnum() == GameState.State.EndGame;
         boolean isDrawState = gameState.getStateEnum() == GameState.State.Draw;
         boolean isMainState = gameState.getStateEnum() == GameState.State.Main;
+        boolean isDefendState = gameState.getStateEnum() == GameState.State.Defend;
         boolean isActivePlayer = gameState.getActivePlayer().getUsername().equals(mConnectionProvider.getAuthenticatedUser().getValue().getUsername());
+        boolean isPlayerOne = gameState.getPlayerOne().getUsername().equals(mConnectionProvider.getAuthenticatedUser().getValue().getUsername());
 
         mDrawButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isDrawState);
         mPlayCardButtonVisibleProperty.setValue(isGameOver || !isActivePlayer || !isMainState);
         mAttackButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isMainState);
+
+        if (isDefendState && isActivePlayer && !isGameOver) {
+            DefendDialog defendDialog;
+
+            if (isPlayerOne) {
+                 defendDialog = new DefendDialog(gameState.getPlayerTwoField(), gameState.getPlayerOneField());
+            } else {
+                defendDialog = new DefendDialog(gameState.getPlayerOneField(), gameState.getPlayerTwoField());
+            }
+
+            defendDialog.resultProperty().addListener((obs, oldVal, newVal) -> {
+                mGameProvider.defend((DefendRequest)newVal);
+            });
+            defendDialog.show();
+        }
 
         if (isGameOver) {
             String winnerName = "";

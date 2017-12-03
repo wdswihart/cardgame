@@ -5,8 +5,8 @@ import com.github.oxo42.stateless4j.StateMachineConfig;
 import com.google.inject.Inject;
 import models.Card;
 import models.Events;
-import models.Player;
-import models.requests.AttackRequest;
+import models.requests.DefendPair;
+import models.requests.DefendRequest;
 import models.responses.GameState;
 import server.GameServer;
 import server.configuration.ConfigurationProvider;
@@ -28,7 +28,6 @@ public class GameStateMachine {
     private List<GameServer.User> mSpectatorList = new ArrayList<>();
 
     //region StateMachine States/Triggers
-
     private StateMachine<GameState.State, Trigger> mStateMachine;
     private Object mTriggeredValue = new Object();
 
@@ -40,7 +39,7 @@ public class GameStateMachine {
         PassMain,
         PlayedCard,
         Defend,
-        GameOver,
+        GameOver, Damage,
     }
     //endregion
 
@@ -78,9 +77,14 @@ public class GameStateMachine {
                 .onEntry(this::enterPlayingCard);
 
         config.configure(State.Attack)
-                .permit(Trigger.Defend, State.Main)
+                .permit(Trigger.Defend, State.Defend)
                 .permit(Trigger.GameOver, State.EndGame)
                 .onEntry(this::enterAttack);
+
+        config.configure(State.Defend)
+                .permit(Trigger.Damage, State.Main)
+                .permit(Trigger.GameOver, State.EndGame)
+                .onEntry(this::enterDefend);
 
         config.configure(State.EndGame)
                 .onEntry(this::enterEndGame);
@@ -164,21 +168,40 @@ public class GameStateMachine {
         mStateMachine.fire(Trigger.PlayedCard);
     }
 
-    //region Attack
+    //region Attacking & Defending
     private void enterAttack() {
-        AttackRequest request = (AttackRequest)mTriggeredValue;
+        System.out.println("ENTERING ATTACK PHASE");
 
-        for (Card card : request.getAttackingMonsters()) {
-            if (canAttack(card)) {
-                //For now we're just applying damage to other player.
-                dealDamage(card);
+        // For now, change active player and let defending player choose defenders.
+        swapActivePlayer();
+        broadcastToPlayers(Events.DEFEND, mGameState);
+        mStateMachine.fire(Trigger.Defend);
+    }
+
+    private void enterDefend() {
+        System.out.println("ENTERING DEFEND PHASE");
+
+        for (DefendPair dp : ((DefendRequest)mTriggeredValue).getDefendPairs()) {
+            if (dp.getDefender().isDefault()) {
+                dealDamage(dp.getAttacker());
+            } else {
+                if (dp.getAttacker().getPower() >= dp.getDefender().getToughness()) {
+                    if (mGameState.getActivePlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
+                        mGameState.getPlayerOneField().remove(dp.getDefender());
+                    } else {
+                        mGameState.getPlayerTwoField().remove(dp.getDefender());
+                    }
+                }
+
+                if (dp.getDefender().getPower() >= dp.getAttacker().getToughness()) {
+                    if (mGameState.getActivePlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
+                        mGameState.getPlayerOneField().remove(dp.getAttacker());
+                    } else {
+                        mGameState.getPlayerTwoField().remove(dp.getAttacker());
+                    }
+                }
             }
         }
-        broadcastToPlayers(Events.UPDATE_GAME, mGameState);
-
-        //Allow to directly return to main and pass for now.
-        mStateMachine.fire(Trigger.Defend);
-        mStateMachine.fire(Trigger.PassMain);
     }
 
     private void dealDamage(Card card) {
@@ -195,6 +218,15 @@ public class GameStateMachine {
         }
         if (mGameState.getPlayerTwoHealth() == 0 || mGameState.getPlayerOneHealth() == 0) {
             mStateMachine.fire(Trigger.GameOver);
+        }
+    }
+
+    private void swapActivePlayer() {
+        // If player one is active:
+        if (mGameState.getActivePlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
+            mGameState.setActivePlayer(mGameState.getPlayerTwo());
+        } else {
+            mGameState.setActivePlayer(mGameState.getPlayerOne());
         }
     }
 
@@ -231,6 +263,14 @@ public class GameStateMachine {
 
         for (GameServer.User user : mSpectatorList) {
             user.getClient().sendEvent(event, mGameState);
+        }
+    }
+
+    private void broadcastToInactivePlayer(String event) {
+        if (mUserOne.getPlayer().getUsername().equals(mGameState.getActivePlayer().getUsername())) {
+            mUserOne.getClient().sendEvent(event);
+        } else {
+            mUserTwo.getClient().sendEvent(event);
         }
     }
 

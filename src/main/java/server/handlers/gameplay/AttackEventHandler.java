@@ -13,7 +13,7 @@ public class AttackEventHandler extends BaseGameplayEventHandler<AttackRequest>{
 
     @Override
     protected void handle(AttackRequest model) {
-        getGameStateMachine().fireWith(GameStateMachine.Trigger.Attack, model);
+        getGameStateMachine().fireWith(GameStateMachine.Trigger.Defend, model);
     }
 
     @Override

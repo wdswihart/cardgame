@@ -104,7 +104,6 @@
 
         <!--Winning Text Display-->
         <HBox fx:id="mWinningDisplayBox" GridPane.rowIndex="0" GridPane.rowSpan="2" GridPane.columnIndex="0" GridPane.columnSpan="3" style="-fx-background-color: #FFFFFF">
-            <Text text="Winner: "/>
             <Text fx:id="mWinnerText"/>
         </HBox>
     </children>
