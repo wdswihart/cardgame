@@ -9,6 +9,7 @@ import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -84,5 +85,10 @@ public class DefendView implements FxmlView<DefendViewModel> {
             e.printStackTrace();
         }
         return nodes;
+    }
+
+    @FXML
+    public void defendAction() {
+        mViewModel.getDefendCommand().execute();
     }
 }

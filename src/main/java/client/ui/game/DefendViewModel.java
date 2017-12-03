@@ -4,13 +4,17 @@ import client.core.ConnectionProvider;
 import client.core.navigation.INavigationProvider;
 import client.ui.BaseViewModel;
 import com.google.inject.Inject;
+import de.saxsys.mvvmfx.utils.commands.Action;
+import de.saxsys.mvvmfx.utils.commands.Command;
+import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import models.Card;
-
-import java.util.List;
+import models.requests.DefendPair;
+import models.requests.DefendRequest;
+import util.JSONUtils;
 
 public class DefendViewModel extends BaseViewModel {
 
@@ -19,11 +23,31 @@ public class DefendViewModel extends BaseViewModel {
     private ObservableList<Card> mFieldList = FXCollections.observableArrayList();
 
     private Property<Card> mSelectedFieldCard = new SimpleObjectProperty<>(new Card());
+    private Command mDefendCommand;
+
+    //A notification on this will be the exit from the dialog.
+    private Property<DefendRequest> mDefendRequestProperty = new SimpleObjectProperty<>();
 
     @Inject
     public DefendViewModel(ConnectionProvider connectionProvider, INavigationProvider navigationProvider) {
         super(connectionProvider, navigationProvider);
 
+        mDefendCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                DefendRequest request = new DefendRequest();
+
+                for (int i = 0; i < mAttackerList.size(); i++) {
+                    Card attacker = mAttackerList.get(i);
+                    Card defender = mDefenderList.get(i);
+
+                    request.addDefendPair(new DefendPair(attacker, defender));
+                }
+
+                System.out.println(JSONUtils.toJson(request));
+                mDefendRequestProperty.setValue(request);
+            }
+        });
     }
 
     public void setAttackerList(ObservableList<Card> cards) {
@@ -72,5 +96,13 @@ public class DefendViewModel extends BaseViewModel {
                 mFieldList.remove(mSelectedFieldCard.getValue());
             }
         };
+    }
+
+    public Command getDefendCommand() {
+        return mDefendCommand;
+    }
+
+    public Property<DefendRequest> getDefendRequestProperty() {
+        return mDefendRequestProperty;
     }
 }

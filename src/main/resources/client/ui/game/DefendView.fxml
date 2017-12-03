@@ -10,11 +10,13 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import com.sun.javafx.scene.control.skin.TableHeaderRow?>
+<?import javafx.scene.control.Button?>
 <GridPane alignment="CENTER" styleClass="root" prefWidth="1000" prefHeight="800" vgap="30" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.game.DefendView">
         <rowConstraints>
-            <RowConstraints percentHeight="40" vgrow="NEVER"/>
-            <RowConstraints percentHeight="40" vgrow="ALWAYS"/>
+            <RowConstraints percentHeight="35" vgrow="NEVER"/>
+            <RowConstraints percentHeight="35" vgrow="ALWAYS"/>
             <RowConstraints percentHeight="20" vgrow="ALWAYS"/>
+            <RowConstraints percentHeight="10" />
         </rowConstraints>
 
         <VBox>
@@ -28,10 +30,12 @@
 
         <ListView fx:id="mFieldBox" orientation="HORIZONTAL" GridPane.rowIndex="2" />
 
+        <Button text="Defend" onAction="#defendAction" GridPane.rowIndex="3"/>
+
         <stylesheets>
             <URL value="@/style.css" />
         </stylesheets>
        <columnConstraints>
-          <ColumnConstraints/>
+          <ColumnConstraints halignment="CENTER"/>
        </columnConstraints>
 </GridPane>

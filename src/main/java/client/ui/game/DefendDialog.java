@@ -20,5 +20,10 @@ public class DefendDialog extends Dialog {
         tuple.getViewModel().setAttackerList(FXCollections.observableArrayList(attackers));
         tuple.getViewModel().setFieldList(FXCollections.observableArrayList(field));
         getDialogPane().setContent(tuple.getView());
+
+        tuple.getViewModel().getDefendRequestProperty().addListener((obs, oldVal, newVal) -> {
+            resultProperty().setValue(newVal);
+            this.close();
+        });
     }
 }
