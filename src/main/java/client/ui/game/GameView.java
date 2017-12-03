@@ -8,6 +8,8 @@ import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -98,6 +100,32 @@ public class GameView implements FxmlView<GameViewModel> {
     public void initialize() {
         mPhaseText.textProperty().bind(mGameViewModel.getPhaseProperty());
         mWinnerText.textProperty().bind(mGameViewModel.getWinnerProperty());
+
+        mGameViewModel.getSelectedPlayerCardProperty().addListener(new ChangeListener<Card>() {
+            Node graphic = null;
+            CardControl controller = null;
+
+            {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/controls/CardControl.fxml"));
+                    graphic = loader.load();
+                    controller = loader.getController();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void changed(ObservableValue<? extends Card> observable, Card oldValue, Card newValue) {
+                if (newValue == null || newValue.isDefault()) {
+                    mCardDetailBox.getChildren().clear();
+                }
+                else  {
+                    controller.setCard(newValue);
+                    mCardDetailBox.getChildren().setAll(graphic);
+                }
+            }
+        });
 
         setupOpponentProperties();
         setupPlayerProperties();

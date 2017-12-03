@@ -35,3 +35,7 @@
 .stats {
     -fx-fill: whitesmoke;
 }
+
+.card {
+    -fx-background-color: ghostwhite;
+}
