@@ -104,7 +104,9 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         updateRequestsOnCreate(requestingUser, requestedUser, gameRequest);
 
         //Send GameState to joined player.
-        requestingUser.getClient().sendEvent(Events.START_GAME, mGameMap.get(requestingUser.getClient().getSessionId().toString()).getGameState());
+        GameStateMachine gsm = mGameMap.get(requestingUser.getClient().getSessionId().toString());
+        requestingUser.getClient().sendEvent(Events.START_GAME, gsm.getGameState());
+        requestingUser.getClient().joinRoom(gsm.getGuid());
         //Update the requested players invites.
         requestedUser.getClient().sendEvent(Events.INVITE_REQUEST, getPendingRequestsForClient(requestedUser.getClient().getSessionId().toString()));
     }
@@ -154,6 +156,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
 
         //Send GameState to joined player.
         requestingUser.getClient().sendEvent(Events.START_GAME, game.getGameState());
+        requestingUser.getClient().joinRoom(game.getGuid());
         game.fire(GameStateMachine.Trigger.PlayersReady);
     }
 
@@ -183,6 +186,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
         clearReceivedRequests(user);
         gsm.addSpectator(user);
         mGameMap.put(client.getSessionId().toString(), gsm);
+        client.joinRoom(gsm.getGuid());
     }
 
     @Override
@@ -225,6 +229,7 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
 
         GameServer.User user = mUsersProvider.getUsers().get(client.getSessionId().toString());
         gsm.removeUser(user);
+        client.leaveRoom(gsm.getGuid());
         mGameMap.remove(client.getSessionId().toString());
     }
 

@@ -13,6 +13,7 @@
 
 <?import javafx.scene.control.TextArea?>
 <?import java.net.URL?>
+<?import javafx.scene.control.TextField?>
 <GridPane fx:id="mRootPane" fx:controller="client.ui.game.GameView" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" styleClass="root">
 
     <columnConstraints>
@@ -101,7 +102,13 @@
 
         <!--Card Display & Chat-->
         <VBox alignment="CENTER" fx:id="mCardDetailBox" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
-        <TextArea GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+        <VBox GridPane.rowIndex="1" GridPane.columnIndex="2">
+            <ListView fx:id="mGameChatList" style="-fx-fill: black"/>
+            <HBox>
+                <TextField fx:id="mMessageField" HBox.hgrow="ALWAYS"/>
+                <Button text="Send" onAction="#onMessageAction"/>
+            </HBox>
+        </VBox>
 
         <!--Winning Text Display-->
         <HBox fx:id="mWinningDisplayBox" GridPane.rowIndex="0" GridPane.rowSpan="2" GridPane.columnIndex="0" GridPane.columnSpan="3" style="-fx-background-color: #FFFFFF">

@@ -27,4 +27,8 @@ public interface GameProvider {
     Property<ObservableList<GameState>> getActiveGames();
 
     void spectateGame(GameState targetGame);
+
+    Property<ObservableList<String>> getGameMessages();
+
+    void sendChat(String message);
 }

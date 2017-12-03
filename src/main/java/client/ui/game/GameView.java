@@ -7,17 +7,17 @@ import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -38,6 +38,12 @@ public class GameView implements FxmlView<GameViewModel> {
     public VBox mCardDetailBox;
 
     @FXML
+    public TextField mMessageField;
+
+    @FXML
+    public ListView mGameChatList;
+
+    @FXML
     public HBox mWinningDisplayBox;
 
     //region Hands & Fields
@@ -52,6 +58,7 @@ public class GameView implements FxmlView<GameViewModel> {
 
     @FXML
     public ListView<Card> mPlayerFieldListView;
+
     //endregion
 
     //region Player Info
@@ -130,6 +137,18 @@ public class GameView implements FxmlView<GameViewModel> {
         setupOpponentProperties();
         setupPlayerProperties();
         setupVisibility();
+
+        mGameViewModel.getMessageProperty().bind(mMessageField.textProperty());
+        mGameViewModel.getGameMessagesProperty().getValue().addListener(new ListChangeListener<String>() {
+            @Override
+            public void onChanged(Change<? extends String> c) {
+                Platform.runLater(() -> {
+                    if (c.next()) {
+                        mGameChatList.getItems().addAll(c.getAddedSubList());
+                    }
+                });
+            }
+        });
     }
 
     private void setupPlayerProperties() {
@@ -345,5 +364,11 @@ public class GameView implements FxmlView<GameViewModel> {
     @FXML
     public void quitGameAction() {
         mGameViewModel.getQuitGameCommand().execute();
+    }
+
+    @FXML
+    public void onMessageAction() {
+        mGameViewModel.getSendChatCommand().execute();
+        mMessageField.setText("");
     }
 }
