@@ -9,24 +9,10 @@
     },
     {
       "default": false,
-      "name": "Assassin Cat",
-      "description": "Very good at keeping the cats inside the bag.",
-      "power": 4,
-      "toughness": 2
-    },
-    {
-      "default": false,
-      "name": "Balanced Cat",
-      "description": "Pretty much just a normal cat",
-      "power": 3,
-      "toughness": 3
-    },
-    {
-      "default": false,
-      "name": "Happy Kitty",
-      "description": "Unexpicably warm and fuzzy.",
-      "power": 6,
-      "toughness": 6
+      "name": "Fat Cat",
+      "description": "Has lost a few of its nine lives in a battle against obesity.",
+      "power": 1,
+      "toughness": 5
     },
     {
       "default": false,
@@ -44,24 +30,10 @@
     },
     {
       "default": false,
-      "name": "Balanced Cat",
-      "description": "Pretty much just a normal cat",
-      "power": 3,
-      "toughness": 3
-    },
-    {
-      "default": false,
-      "name": "Happy Kitty",
-      "description": "Unexpicably warm and fuzzy.",
-      "power": 6,
-      "toughness": 6
-    },
-    {
-      "default": false,
-      "name": "Fat Cat",
-      "description": "Has lost a few of its nine lives in a battle against obesity.",
-      "power": 1,
-      "toughness": 5
+      "name": "Assassin Cat",
+      "description": "Very good at keeping the cats inside the bag.",
+      "power": 4,
+      "toughness": 2
     },
     {
       "default": false,
@@ -73,16 +45,176 @@
     {
       "default": false,
       "name": "Balanced Cat",
-      "description": "Pretty much just a normal cat",
+      "description": "Just your average tabby.",
+      "power": 3,
+      "toughness": 3
+    },
+    {
+      "default": false,
+      "name": "Balanced Cat",
+      "description": "Just your average tabby.",
+      "power": 3,
+      "toughness": 3
+    },
+    {
+      "default": false,
+      "name": "Balanced Cat",
+      "description": "Just your average tabby.",
+      "power": 3,
+      "toughness": 3
+    },{
+      "default": false,
+      "name": "Balanced Cat",
+      "description": "Just your average tabby.",
       "power": 3,
       "toughness": 3
     },
     {
       "default": false,
       "name": "Happy Kitty",
-      "description": "Unexpicably warm and fuzzy.",
-      "power": 6,
+      "description": "Unexplicably warm and fuzzy.",
+      "power": 5,
+      "toughness": 5
+    },
+    {
+      "default": false,
+      "name": "Alpha Dog",
+      "description": "His name is Chad.",
+      "power": 5,
+      "toughness": 5
+    },
+    {
+      "default": false,
+      "name": "Rabid Mutt",
+      "description": "What a vicious killer!... No actually.",
+      "power": 5,
+      "toughness": 1
+    },
+    {
+      "default": false,
+      "name": "Rabid Mutt",
+      "description": "What a vicious killer!... No actually.",
+      "power": 5,
+      "toughness": 1
+    },
+    {
+      "default": false,
+      "name": "Rabid Mutt",
+      "description": "What a vicious killer!... No actually.",
+      "power": 5,
+      "toughness": 1
+    },
+    {
+      "default": false,
+      "name": "Cute Pup",
+      "description": "Look at that tail wiggle!",
+      "power": 1,
       "toughness": 6
+    },
+    {
+      "default": false,
+      "name": "Cute Pup",
+      "description": "Look at that tail wiggle!",
+      "power": 1,
+      "toughness": 6
+    },
+    {
+      "default": false,
+      "name": "Cute Pup",
+      "description": "Look at that tail wiggle!",
+      "power": 1,
+      "toughness": 6
+    },
+    {
+      "default": false,
+      "name": "St. Bernard Runt",
+      "description": "Still bigger than a lot of dogs.",
+      "power": 3,
+      "toughness": 4
+    },
+    {
+      "default": false,
+      "name": "St. Bernard Runt",
+      "description": "Still bigger than a lot of dogs.",
+      "power": 3,
+      "toughness": 4
+    },
+    {
+      "default": false,
+      "name": "St. Bernard Runt",
+      "description": "Still bigger than a lot of dogs.",
+      "power": 3,
+      "toughness": 4
+    },
+    {
+      "default": false,
+      "name": "St. Bernard Runt",
+      "description": "Still bigger than a lot of dogs.",
+      "power": 3,
+      "toughness": 4
+    },
+    {
+      "default": false,
+      "name": "Ham Sandwich",
+      "description": "With Swiss cheese and Mayonnaise.",
+      "power": 2,
+      "toughness": 2
+    },
+    {
+      "default": false,
+      "name": "Ham Sandwich",
+      "description": "With Swiss cheese and Mayonnaise.",
+      "power": 2,
+      "toughness": 2
+    },
+    {
+      "default": false,
+      "name": "Ham Sandwich",
+      "description": "With Swiss cheese and Mayonnaise.",
+      "power": 2,
+      "toughness": 2
+    },
+    {
+      "default": false,
+      "name": "Turkey Panini",
+      "description": "Grilled to perfection.",
+      "power": 3,
+      "toughness": 1
+    },
+    {
+      "default": false,
+      "name": "Turkey Panini",
+      "description": "Grilled to perfection.",
+      "power": 3,
+      "toughness": 1
+    },
+    {
+      "default": false,
+      "name": "Cheeseburger",
+      "description": "An American staple.",
+      "power": 1,
+      "toughness": 4
+    },
+    {
+      "default": false,
+      "name": "Cheeseburger",
+      "description": "An American staple.",
+      "power": 1,
+      "toughness": 4
+    },
+    {
+      "default": false,
+      "name": "Tuna Sub",
+      "description": "Classic from Scrubway.",
+      "power": 2,
+      "toughness": 3
+    },
+    {
+      "default": false,
+      "name": "Tuna Sub",
+      "description": "Classic from Scrubway.",
+      "power": 2,
+      "toughness": 3
     }
   ]
 }

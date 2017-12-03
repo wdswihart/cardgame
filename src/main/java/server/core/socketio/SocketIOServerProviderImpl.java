@@ -56,4 +56,9 @@ public class SocketIOServerProviderImpl implements SocketIOServerProvider {
     public void stop() {
         mServer.stop();
     }
+
+    @Override
+    public void broadcastRoom(String room, String event, String message) {
+        mServer.getRoomOperations(room).sendEvent(event, message);
+    }
 }

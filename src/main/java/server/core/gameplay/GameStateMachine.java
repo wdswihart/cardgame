@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 public class GameStateMachine {
     private ConfigurationProvider mConfigurationProvider;
@@ -37,6 +38,12 @@ public class GameStateMachine {
 
     private StateMachine<GameState.State, Trigger> mStateMachine;
     private Object mTriggeredValue = new Object();
+
+    private String mGuid = UUID.randomUUID().toString();
+
+    public String getGuid() {
+        return mGuid;
+    }
 
     public enum Trigger {
         PlayersReady,
