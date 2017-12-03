@@ -12,4 +12,6 @@ public interface SocketIOServerProvider {
 
     void start();
     void stop();
+
+    void broadcastRoom(String room, String event, String message);
 }

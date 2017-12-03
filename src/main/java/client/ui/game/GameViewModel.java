@@ -16,7 +16,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.layout.VBox;
 import models.Card;
 import models.Player;
 import models.responses.GameState;
@@ -53,6 +52,9 @@ public class GameViewModel extends BaseViewModel {
 
     private Property<Card> mSelectedPlayerCardProperty = new SimpleObjectProperty<>(new Card());
 
+    private Property<ObservableList<String>> mGameMessagesProperty = new SimpleObjectProperty<>();
+    private Property<String> mMessageProperty = new SimpleStringProperty();
+
     //region UI State Visibility
     private Property<Boolean> mDrawButtonDisabledProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mPlayCardButtonVisibleProperty = new SimpleBooleanProperty(false);
@@ -68,6 +70,7 @@ public class GameViewModel extends BaseViewModel {
     private Command mPassTurnCommand;
     private Command mAttackCommand;
     private Command mQuitGameCommand;
+    private Command mSendChatCommand;
     //endregion
 
     @Inject
@@ -77,6 +80,7 @@ public class GameViewModel extends BaseViewModel {
         mGameStateProperty = mGameProvider.getGameStateProperty();
         onGameStateUpdated(mGameStateProperty, null, mGameStateProperty.getValue());
         mGameStateProperty.addListener(this::onGameStateUpdated);
+        mGameMessagesProperty = mGameProvider.getGameMessages();
 
         mDrawCommand = new DelegateCommand(() -> new Action() {
             @Override
@@ -115,6 +119,17 @@ public class GameViewModel extends BaseViewModel {
             @Override
             protected void action() throws Exception {
                 mGameProvider.quitGame();
+            }
+        });
+
+        mSendChatCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                if (mMessageProperty.getValue().isEmpty()) {
+                    return;
+                }
+
+                mGameProvider.sendChat(mMessageProperty.getValue());
             }
         });
     }
@@ -290,5 +305,17 @@ public class GameViewModel extends BaseViewModel {
             }
         }
         return false;
+    }
+
+    public Property<ObservableList<String>> getGameMessagesProperty() {
+        return mGameMessagesProperty;
+    }
+
+    public Command getSendChatCommand() {
+        return mSendChatCommand;
+    }
+
+    public Property<String> getMessageProperty() {
+        return mMessageProperty;
     }
 }
