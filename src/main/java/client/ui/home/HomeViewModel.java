@@ -110,7 +110,7 @@ public class HomeViewModel extends BaseViewModel {
         mInviteCommand = new DelegateCommand(() -> new Action() {
             @Override
             protected void action() throws Exception {
-                if (mSelectedActiveUserProperty.getValue().isDefault()) {
+                if (mSelectedActiveUserProperty.getValue().isDefault() || mSelectedActiveUserProperty.getValue().getUsername().equals(getActiveUsername())) {
                     return;
                 }
 
@@ -121,7 +121,7 @@ public class HomeViewModel extends BaseViewModel {
         mAcceptInviteCommand = new DelegateCommand(() -> new Action() {
             @Override
             protected void action() throws Exception {
-                if (mSelectedInviteProperty.getValue().isDefault()) {
+                if (mSelectedInviteProperty.getValue(). isDefault()) {
                     return;
                 }
 

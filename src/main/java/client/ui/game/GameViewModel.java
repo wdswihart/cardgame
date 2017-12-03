@@ -32,21 +32,21 @@ public class GameViewModel extends BaseViewModel {
     private Property<ObservableList<Card>> mPlayerHandProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
     private Property<ObservableList<Card>> mOpponentHandProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
 
-    private Property<Player> mPlayerProperty = new SimpleObjectProperty<>();
-    private Property<Player> mOpponentProperty = new SimpleObjectProperty<>();
+    private Property<Player> mPlayerProperty = new SimpleObjectProperty<>(new Player());
+    private Property<Player> mOpponentProperty = new SimpleObjectProperty<>(new Player());
 
     private Property<String> mPhaseProperty = new SimpleStringProperty();
 
     //Probably not going to expose this via a getter.
-    private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>();
+    private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>(new GameState());
 
     //region Player Infos
 
-    private Property<ObservableList<Card>> mPlayerDeckProperty = new SimpleObjectProperty<>();
-    private Property<ObservableList<Card>> mOpponentDeckProperty = new SimpleObjectProperty<>();
+    private Property<ObservableList<Card>> mPlayerDeckProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
+    private Property<ObservableList<Card>> mOpponentDeckProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
 
-    private Property<ObservableList<Card>> mPlayerFieldProperty = new SimpleObjectProperty<>();
-    private Property<ObservableList<Card>> mOpponentFieldProperty = new SimpleObjectProperty<>();
+    private Property<ObservableList<Card>> mPlayerFieldProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
+    private Property<ObservableList<Card>> mOpponentFieldProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
 
     private Property<String> mPlayerHealthProperty = new SimpleStringProperty();
     private Property<String> mOpponentHealthProperty = new SimpleStringProperty();
@@ -54,12 +54,16 @@ public class GameViewModel extends BaseViewModel {
     private Property<String> mWinnerProperty = new SimpleStringProperty();
     //endregion
 
-    private Property<Card> mSelectedPlayerCardProperty = new SimpleObjectProperty<>();
+    private Property<Card> mSelectedPlayerCardProperty = new SimpleObjectProperty<>(new Card());
+
+    private Property<ObservableList<String>> mGameMessagesProperty = new SimpleObjectProperty<>();
+    private Property<String> mMessageProperty = new SimpleStringProperty();
 
     //region UI State Visibility
     private Property<Boolean> mDrawButtonDisabledProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mPlayCardButtonVisibleProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mAttackButtonDisabledProperty = new SimpleBooleanProperty(false);
+    private Property<Boolean> mPassTurnButtonDisabledProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mGameControlVisibleProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mWinningDisplayBoxVisibleProperty = new SimpleBooleanProperty(false);
     //endregion
@@ -70,6 +74,7 @@ public class GameViewModel extends BaseViewModel {
     private Command mPassTurnCommand;
     private Command mAttackCommand;
     private Command mQuitGameCommand;
+    private Command mSendChatCommand;
     //endregion
 
     @Inject
@@ -79,6 +84,7 @@ public class GameViewModel extends BaseViewModel {
         mGameStateProperty = mGameProvider.getGameStateProperty();
         onGameStateUpdated(mGameStateProperty, null, mGameStateProperty.getValue());
         mGameStateProperty.addListener(this::onGameStateUpdated);
+        mGameMessagesProperty = mGameProvider.getGameMessages();
 
         mDrawCommand = new DelegateCommand(() -> new Action() {
             @Override
@@ -119,6 +125,17 @@ public class GameViewModel extends BaseViewModel {
                 mGameProvider.quitGame();
             }
         });
+
+        mSendChatCommand = new DelegateCommand(() -> new Action() {
+            @Override
+            protected void action() throws Exception {
+                if (mMessageProperty.getValue().isEmpty()) {
+                    return;
+                }
+
+                mGameProvider.sendChat(mMessageProperty.getValue());
+            }
+        });
     }
 
     private void onGameStateUpdated(Observable observable, GameState oldVal, GameState newVal) {
@@ -153,6 +170,7 @@ public class GameViewModel extends BaseViewModel {
         mDrawButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isDrawState);
         mPlayCardButtonVisibleProperty.setValue(isGameOver || !isActivePlayer || !isMainState);
         mAttackButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isMainState);
+        mPassTurnButtonDisabledProperty.setValue(isGameOver || !isMainState);
 
         if (isDefendState && isActivePlayer && !isGameOver) {
             DefendDialog defendDialog;
@@ -295,5 +313,30 @@ public class GameViewModel extends BaseViewModel {
 
     public Property<String> getWinnerProperty() {
         return mWinnerProperty;
+    }
+
+    public Property<Boolean> getPassTurnButtonDisabledProperty() {
+        return mPassTurnButtonDisabledProperty;
+    }
+
+    public Boolean isSpectator() {
+        for (Player spectator : mGameStateProperty.getValue().getSpectatorList()) {
+            if (spectator.getUsername().equals(mConnectionProvider.getAuthenticatedUser().getValue().getUsername())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Property<ObservableList<String>> getGameMessagesProperty() {
+        return mGameMessagesProperty;
+    }
+
+    public Command getSendChatCommand() {
+        return mSendChatCommand;
+    }
+
+    public Property<String> getMessageProperty() {
+        return mMessageProperty;
     }
 }

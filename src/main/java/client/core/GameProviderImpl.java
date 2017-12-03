@@ -23,9 +23,10 @@ public class GameProviderImpl implements GameProvider {
     private SocketIOClientProvider mClientProvider;
     private ConnectionProvider mConnectionProvider;
 
-    private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>();
+    private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>(new GameState());
     private Property<ObservableList<Player>> mPendingInvitesProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
     private Property<ObservableList<GameState>> mActiveGamesProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
+    private Property<ObservableList<String>> mGameMessagesProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
 
     @Inject
     public GameProviderImpl(SocketIOClientProvider clientProvider, ConnectionProvider connectionProvider) {
@@ -69,6 +70,11 @@ public class GameProviderImpl implements GameProvider {
             list = (list == null) ? new GameStateList() : list;
 
             mActiveGamesProperty.setValue(FXCollections.observableArrayList(list.getGameStates()));
+        });
+
+        mClientProvider.getClient().on(Events.GAME_CHAT, params -> {
+            System.out.println("[GAME_CHAT]: " + params[0]);
+            mGameMessagesProperty.getValue().add(params[0].toString());
         });
     }
 
@@ -129,5 +135,15 @@ public class GameProviderImpl implements GameProvider {
     @Override
     public void defend(DefendRequest request) {
         mClientProvider.getClient().emit(Events.DAMAGE, JSONUtils.toJson(request));
+    }
+
+    @Override
+    public Property<ObservableList<String>> getGameMessages() {
+        return mGameMessagesProperty;
+    }
+
+    @Override
+    public void sendChat(String message) {
+        mClientProvider.getClient().emit(Events.GAME_CHAT, message);
     }
 }

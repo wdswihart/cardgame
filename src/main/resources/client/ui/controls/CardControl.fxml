@@ -24,7 +24,8 @@
         <Text fx:id="mName" text="cardname" />
     </GridPane>
     <!--Image should use row 1-->
-    <ImageView GridPane.rowIndex="1" />
+    <ImageView fx:id="mImage" fitHeight="120" GridPane.rowIndex="1"/>
+
     <!--Description-->
     <TextArea fx:id="mDescription" text="description is here asldfasdfasdfasdfasdfasdfasdfasdf" wrapText="true" GridPane.rowIndex="2" />
 

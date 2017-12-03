@@ -30,4 +30,8 @@ public interface GameProvider {
     void spectateGame(GameState targetGame);
 
     void defend(DefendRequest request);
+
+    Property<ObservableList<String>> getGameMessages();
+
+    void sendChat(String message);
 }

@@ -23,4 +23,5 @@ public class Events {
     public static final String ACTIVE_GAMES = "ActiveGames";
     public static final String SPECTATE_GAME = "SpectateGame";
     public static final String DAMAGE = "Damage";
+    public static final String GAME_CHAT = "GameChat";
 }

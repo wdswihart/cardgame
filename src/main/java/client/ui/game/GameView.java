@@ -7,15 +7,17 @@ import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -36,6 +38,12 @@ public class GameView implements FxmlView<GameViewModel> {
     public VBox mCardDetailBox;
 
     @FXML
+    public TextField mMessageField;
+
+    @FXML
+    public ListView mGameChatList;
+
+    @FXML
     public HBox mWinningDisplayBox;
 
     //region Hands & Fields
@@ -50,6 +58,7 @@ public class GameView implements FxmlView<GameViewModel> {
 
     @FXML
     public ListView<Card> mPlayerFieldListView;
+
     //endregion
 
     //region Player Info
@@ -99,9 +108,47 @@ public class GameView implements FxmlView<GameViewModel> {
         mPhaseText.textProperty().bind(mGameViewModel.getPhaseProperty());
         mWinnerText.textProperty().bind(mGameViewModel.getWinnerProperty());
 
+        mGameViewModel.getSelectedPlayerCardProperty().addListener(new ChangeListener<Card>() {
+            Node graphic = null;
+            CardControl controller = null;
+
+            {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/controls/CardControl.fxml"));
+                    graphic = loader.load();
+                    controller = loader.getController();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void changed(ObservableValue<? extends Card> observable, Card oldValue, Card newValue) {
+                if (newValue == null || newValue.isDefault()) {
+                    mCardDetailBox.getChildren().clear();
+                }
+                else  {
+                    controller.setCard(newValue);
+                    mCardDetailBox.getChildren().setAll(graphic);
+                }
+            }
+        });
+
         setupOpponentProperties();
         setupPlayerProperties();
         setupVisibility();
+
+        mGameViewModel.getMessageProperty().bind(mMessageField.textProperty());
+        mGameViewModel.getGameMessagesProperty().getValue().addListener(new ListChangeListener<String>() {
+            @Override
+            public void onChanged(Change<? extends String> c) {
+                Platform.runLater(() -> {
+                    if (c.next()) {
+                        mGameChatList.getItems().addAll(c.getAddedSubList());
+                    }
+                });
+            }
+        });
     }
 
     private void setupPlayerProperties() {
@@ -135,7 +182,13 @@ public class GameView implements FxmlView<GameViewModel> {
         updateOpponentHand(opponentHandProperty, null, opponentHandProperty.getValue());
         opponentHandProperty.addListener(this::updateOpponentHand);
 
-        mOpponentsHandListView.setCellFactory(GameView::smallCardCellFactory);
+        if (mGameViewModel.isSpectator()) {
+            mOpponentsHandListView.setCellFactory(GameView::smallCardCellFactory);
+        }
+        else {
+            mOpponentsHandListView.setCellFactory(GameView::smallCardBackCellFactory);
+        }
+
         Property<ObservableList<Card>> opponentDeckProperty = mGameViewModel.getOpponentDeckProperty();
         updateOpponentDeck(opponentDeckProperty, null, opponentDeckProperty.getValue());
         opponentDeckProperty.addListener(this::updateOpponentDeck);
@@ -165,6 +218,7 @@ public class GameView implements FxmlView<GameViewModel> {
         mDrawButton.disableProperty().bind(mGameViewModel.getDrawButtonDisabledProperty());
         mPlayCardButton.disableProperty().bind(mGameViewModel.getPlayCardButtonDisabledProperty());
         mAttackButton.disableProperty().bind(mGameViewModel.getAttackButtonDisabledProperty());
+        mPassTurnButton.disableProperty().bind(mGameViewModel.getPassTurnButtonDisabledProperty());
         mGameControlBox.visibleProperty().bind(mGameViewModel.getGameControlVisibleProperty());
         mWinningDisplayBox.visibleProperty().bind(mGameViewModel.getWinningDisplayBoxVisibleProperty());
     }
@@ -261,6 +315,31 @@ public class GameView implements FxmlView<GameViewModel> {
         };
     }
 
+    private static ListCell<Card> smallCardBackCellFactory(ListView<Card> cardListView) {
+        return new ListCell<Card>() {
+
+            Node graphic;
+
+            {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/controls/SmallCardBackControl.fxml"));
+                    graphic = loader.load();
+                } catch (IOException exc) {
+                    throw new RuntimeException(exc);
+                }
+            }
+
+            @Override
+            protected void updateItem(Card card, boolean empty) {
+                super.updateItem(card, empty);
+                if (card != null) {
+                    setGraphic(graphic);
+                } else {
+                    setGraphic(null);
+                }
+            }
+        };
+    }
 
     @FXML
     public void drawButtonAction() {
@@ -285,5 +364,11 @@ public class GameView implements FxmlView<GameViewModel> {
     @FXML
     public void quitGameAction() {
         mGameViewModel.getQuitGameCommand().execute();
+    }
+
+    @FXML
+    public void onMessageAction() {
+        mGameViewModel.getSendChatCommand().execute();
+        mMessageField.setText("");
     }
 }

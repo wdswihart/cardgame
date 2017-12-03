@@ -144,6 +144,7 @@ public class GameServer {
 
         mServerProvider.on(Events.QUIT_GAME, QuitGameEventHandler.getHandler());
         mServerProvider.on(Events.SPECTATE_GAME, SpectateGameEventHandler.getHandler());
+        mServerProvider.on(Events.GAME_CHAT, GameChatEventHandler.getHandler());
     }
 
     // startServer starts up the SocketIO server.
