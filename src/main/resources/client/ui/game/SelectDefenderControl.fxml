@@ -19,7 +19,7 @@
     </columnConstraints>
 
     <Text text="No Defender Selected" textAlignment="CENTER" style="-fx-fill: grey"/>
-    <Button alignment="CENTER" text="Add" GridPane.rowIndex="1" />
+    <Button alignment="CENTER" text="Add" GridPane.rowIndex="1" onAction="#addAction"/>
 
     <stylesheets>
         <URL value="@/style.css"/>

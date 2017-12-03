@@ -15,9 +15,10 @@ import java.util.List;
 public class DefendDialog extends Dialog {
 
     //TODO: Include hands in this.
-    public DefendDialog(List<Card> attackers) {
+    public DefendDialog(List<Card> attackers, List<Card> field) {
         ViewTuple<DefendView, DefendViewModel> tuple = FluentViewLoader.fxmlView(DefendView.class).load();
         tuple.getViewModel().setAttackerList(FXCollections.observableArrayList(attackers));
+        tuple.getViewModel().setFieldList(FXCollections.observableArrayList(field));
         getDialogPane().setContent(tuple.getView());
     }
 }

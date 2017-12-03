@@ -45,6 +45,11 @@ public class Card extends ModelBase {
             return false;
         }
 
+        if (card.isDefault()) {
+            //If the objects are default, check by addresses.
+            return this == obj;
+        }
+
         return true;
     }
 

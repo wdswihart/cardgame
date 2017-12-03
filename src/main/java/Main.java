@@ -59,7 +59,15 @@ public class Main extends MvvmfxGuiceApplication {
         cards.add(new Card("card1"));
         cards.add(new Card("card1"));
         cards.add(new Card("card1"));
-        new DefendDialog(cards).show();
+
+        List<Card> field = new ArrayList<>();
+        field.add(new Card("defender"));
+        field.add(new Card("defender"));
+        field.add(new Card("defender"));
+        field.add(new Card("defender"));
+
+
+        new DefendDialog(cards, field).show();
 
 //        FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/game/DefendView.fxml"));
 //        try {

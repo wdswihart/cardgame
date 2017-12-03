@@ -39,6 +39,7 @@ public class DefendView implements FxmlView<DefendViewModel> {
         mFieldBox.setItems(mViewModel.getFieldList());
         mViewModel.getAttackerList().addListener(this::attackerListChangeListener);
         mViewModel.getDefenderList().addListener(this::defenderListChangeListener);
+        mViewModel.getSelectedFieldCard().bind(mFieldBox.getSelectionModel().selectedItemProperty());
     }
 
     private void defenderListChangeListener(ListChangeListener.Change<? extends Card> c) {
@@ -72,6 +73,9 @@ public class DefendView implements FxmlView<DefendViewModel> {
                 else {
                     loader = new FXMLLoader(getClass().getResource("/client/ui/game/SelectDefenderControl.fxml"));
                     view = loader.load();
+                    SelectDefenderControl controller = loader.getController();
+                    controller.setCard(card);
+                    controller.setAddCallback(mViewModel.getAddDefenderCallback());
                 }
 
                 nodes.add(view);
