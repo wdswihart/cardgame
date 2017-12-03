@@ -39,3 +39,7 @@
 .card {
     -fx-background-color: ghostwhite;
 }
+
+.card-back {
+    -fx-background-color: linear-gradient(blue, darkblue);
+}

@@ -163,7 +163,13 @@ public class GameView implements FxmlView<GameViewModel> {
         updateOpponentHand(opponentHandProperty, null, opponentHandProperty.getValue());
         opponentHandProperty.addListener(this::updateOpponentHand);
 
-        mOpponentsHandListView.setCellFactory(GameView::smallCardCellFactory);
+        if (mGameViewModel.isSpectator()) {
+            mOpponentsHandListView.setCellFactory(GameView::smallCardCellFactory);
+        }
+        else {
+            mOpponentsHandListView.setCellFactory(GameView::smallCardBackCellFactory);
+        }
+
         Property<ObservableList<Card>> opponentDeckProperty = mGameViewModel.getOpponentDeckProperty();
         updateOpponentDeck(opponentDeckProperty, null, opponentDeckProperty.getValue());
         opponentDeckProperty.addListener(this::updateOpponentDeck);
@@ -290,6 +296,31 @@ public class GameView implements FxmlView<GameViewModel> {
         };
     }
 
+    private static ListCell<Card> smallCardBackCellFactory(ListView<Card> cardListView) {
+        return new ListCell<Card>() {
+
+            Node graphic;
+
+            {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/controls/SmallCardBackControl.fxml"));
+                    graphic = loader.load();
+                } catch (IOException exc) {
+                    throw new RuntimeException(exc);
+                }
+            }
+
+            @Override
+            protected void updateItem(Card card, boolean empty) {
+                super.updateItem(card, empty);
+                if (card != null) {
+                    setGraphic(graphic);
+                } else {
+                    setGraphic(null);
+                }
+            }
+        };
+    }
 
     @FXML
     public void drawButtonAction() {

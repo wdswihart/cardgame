@@ -282,4 +282,8 @@ public class GameViewModel extends BaseViewModel {
     public Property<Boolean> getPassTurnButtonDisabledProperty() {
         return mPassTurnButtonDisabledProperty;
     }
+
+    public Boolean isSpectator() {
+        return mGameStateProperty.getValue().getSpectatorList().contains(mConnectionProvider.getAuthenticatedUser().getValue());
+    }
 }
