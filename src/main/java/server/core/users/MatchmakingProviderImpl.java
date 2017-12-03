@@ -196,12 +196,17 @@ public class MatchmakingProviderImpl implements MatchmakingProvider {
                 GameServer.User userOne = mUsersProvider.getUserByUsername(entry.getValue().getGameState().getPlayerOne().getUsername());
                 GameServer.User userTwo = mUsersProvider.getUserByUsername(entry.getValue().getGameState().getPlayerTwo().getUsername());
 
-                activeGames.put(userOne.getClient().getSessionId().toString(), null);
-                activeGames.put(userTwo.getClient().getSessionId().toString(), null);
+                activeGames.put(userOne.getClient().getSessionId().toString(), new GameState());
+                activeGames.put(userTwo.getClient().getSessionId().toString(), new GameState());
 
                 for (Player player : entry.getValue().getGameState().getSpectatorList()) {
                     GameServer.User user = mUsersProvider.getUserByUsername(player.getUsername());
-                    activeGames.put(user.getClient().getSessionId().toString(), null);
+
+                    if (user == null) {
+                        continue;
+                    }
+
+                    activeGames.put(user.getClient().getSessionId().toString(), new GameState());
                 }
 
                 activeGameList.add(entry.getValue().getGameState());

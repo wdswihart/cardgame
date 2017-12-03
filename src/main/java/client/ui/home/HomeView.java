@@ -1,5 +1,8 @@
 package client.ui.home;
 
+import javafx.beans.Observable;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import models.Card;
@@ -120,7 +123,7 @@ public class HomeView implements FxmlView<HomeViewModel> {
         });
     }
     private void setupActiveGames() {
-        mActiveGamesListView.itemsProperty().bind(mHomeViewModel.getActiveGamesProperty());
+        mHomeViewModel.getActiveGamesProperty().addListener(this::updateActiveGames);
         mActiveGamesListView.setCellFactory(ActiveGameCell.getFactory(gameState -> {
             if (gameState.isDefault()) {
                 return;
@@ -128,6 +131,12 @@ public class HomeView implements FxmlView<HomeViewModel> {
             mHomeViewModel.setTargetGame(gameState);
             mHomeViewModel.getSpectateCommand().execute();
         }));
+    }
+
+    private void updateActiveGames(Observable observable, ObservableList<GameState> oldVal, ObservableList<GameState> newVal) {
+        Platform.runLater(() -> {
+            mActiveGamesListView.setItems(newVal);
+        });
     }
 
     private ListCell<GameState> activeGameCellFactory(ListView<GameState> param) {

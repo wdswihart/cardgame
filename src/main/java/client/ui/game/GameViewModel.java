@@ -74,6 +74,7 @@ public class GameViewModel extends BaseViewModel {
         super(connectionProvider, navigationProvider);
         mGameProvider = gameProvider;
         mGameStateProperty = mGameProvider.getGameStateProperty();
+        onGameStateUpdated(mGameStateProperty, null, mGameStateProperty.getValue());
         mGameStateProperty.addListener(this::onGameStateUpdated);
 
         mDrawCommand = new DelegateCommand(() -> new Action() {
