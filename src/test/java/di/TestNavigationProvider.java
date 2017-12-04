@@ -1,51 +1,28 @@
 package di;
 
 import client.core.navigation.INavigationProvider;
+import client.core.navigation.NavigationProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public class TestNavigationProvider implements INavigationProvider {
+import static org.mockito.Mockito.mock;
+
+public class TestNavigationProvider {
     private List<Class> mNavigationHistory = new ArrayList<>();
     private Stack<Class> mNavigationStack = new Stack<>();
 
-    private static TestNavigationProvider sTestNavigationProvider = new TestNavigationProvider();
+    private static INavigationProvider sTestNavigationProvider;
 
-    public static TestNavigationProvider getInstance() {
+    public static INavigationProvider getInstance() {
+        if (sTestNavigationProvider == null) {
+            sTestNavigationProvider = mock(INavigationProvider.class);
+        }
         return sTestNavigationProvider;
     }
 
     public static void resetInstance() {
-        sTestNavigationProvider.mNavigationStack.clear();
-        sTestNavigationProvider.mNavigationHistory.clear();
-    }
-
-    private TestNavigationProvider() {}
-
-    @Override
-    public boolean navigateTo(Class view) {
-        mNavigationStack.push(view);
-        mNavigationHistory.add(view);
-
-        return true;
-    }
-
-    @Override
-    public boolean navigatePrevious() {
-        if (mNavigationStack.size() > 1) {
-
-            //Remove current view.
-            mNavigationStack.pop();
-            //Add the one we're navigating to to the history.
-            mNavigationHistory.add(mNavigationStack.peek());
-
-            return true;
-        }
-        return false;
-    }
-
-    public List<Class> getNavigationHistory(){
-        return mNavigationHistory;
+        sTestNavigationProvider = null;
     }
 }

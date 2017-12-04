@@ -150,4 +150,8 @@ public class GameServer {
     public void startServer() {
         mServerProvider.start();
     }
+
+    public void stopServer() {
+        mServerProvider.stop();
+    }
 }
