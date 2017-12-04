@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Text?>
 
 <?import java.net.URL?>
-<GridPane alignment="CENTER" prefHeight="250.0" prefWidth="150.0" style="-fx-border-width: 5px; -fx-border-color: grey;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.game.SelectDefenderControl" styleClass="card">
+<GridPane alignment="CENTER" prefHeight="250.0" prefWidth="150.0" maxHeight="250.0" maxWidth="150.0" style="-fx-border-width: 5px; -fx-border-color: grey;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.game.SelectDefenderControl" styleClass="card">
 
     <rowConstraints>
         <RowConstraints percentHeight="30" />

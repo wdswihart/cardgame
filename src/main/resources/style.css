@@ -32,6 +32,11 @@
     -fx-fill: whitesmoke;
 }
 
+.heading2 {
+    -fx-font-size: 1.2em;
+    -fx-fill: whitesmoke;
+}
+
 .stats {
     -fx-fill: whitesmoke;
 }
@@ -53,7 +58,7 @@
 
 #mWinningDisplayBox {
     -fx-background-color: grey;
-    -fx-text-fill: lime;
+    -fx-fill: lime;
     -fx-font-size: 5em;
     -fx-alignment: center;
 }

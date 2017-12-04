@@ -286,8 +286,12 @@ public class GameStateMachine {
     }
 
     private void broadcastToPlayers(String event, GameState mGameState) {
-        mUserOne.getClient().sendEvent(event, mGameState);
-        mUserTwo.getClient().sendEvent(event, mGameState);
+        if (mUserOne != null) {
+            mUserOne.getClient().sendEvent(event, mGameState);
+        }
+        if (mUserTwo != null) {
+            mUserTwo.getClient().sendEvent(event, mGameState);
+        }
 
         for (GameServer.User user : mSpectatorList) {
             user.getClient().sendEvent(event, mGameState);
@@ -295,9 +299,9 @@ public class GameStateMachine {
     }
 
     private void broadcastToInactivePlayer(String event) {
-        if (mUserOne.getPlayer().getUsername().equals(mGameState.getActivePlayer().getUsername())) {
+        if (mUserOne != null && mUserOne.getPlayer().getUsername().equals(mGameState.getActivePlayer().getUsername())) {
             mUserOne.getClient().sendEvent(event);
-        } else {
+        } else if (mUserTwo != null) {
             mUserTwo.getClient().sendEvent(event);
         }
     }
@@ -323,11 +327,14 @@ public class GameStateMachine {
     //Takes care of removing a player from the game.
     //Notifying an empty GameState will signal that the user should no longer be in the GameView.
     public void removeUser(GameServer.User user) {
-        if (user.getPlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
+        if (mUserOne != null && user.getPlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
             mUserOne.getClient().sendEvent(Events.UPDATE_GAME, new GameState());
+            mUserOne = null;
+
         }
-        else if (user.getPlayer().getUsername().equals(mGameState.getPlayerTwo().getUsername())) {
+        else if (mUserTwo != null && user.getPlayer().getUsername().equals(mGameState.getPlayerTwo().getUsername())) {
             mUserTwo.getClient().sendEvent(Events.UPDATE_GAME, new GameState());
+            mUserTwo = null;
         }
         else {
             user.getClient().sendEvent(Events.UPDATE_GAME, new GameState());
@@ -337,8 +344,17 @@ public class GameStateMachine {
     }
 
     public void addSpectator(GameServer.User user) {
-        mSpectatorList.add(user);
-        mGameState.addSpectator(user.getPlayer());
+        //Allow players to get back into the game.
+        if (user.getPlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
+            mUserOne = user;
+        }
+        if (user.getPlayer().getUsername().equals(mGameState.getPlayerTwo().getUsername())) {
+            mUserTwo = user;
+        }
+        else {
+            mSpectatorList.add(user);
+            mGameState.addSpectator(user.getPlayer());
+        }
         user.getClient().sendEvent(Events.START_GAME, mGameState);
     }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
@@ -10,7 +11,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<?import java.net.URL?>
 <GridPane styleClass="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.home.HomeView">
     <rowConstraints>
         <RowConstraints percentHeight="5" />
@@ -25,8 +25,8 @@
     <GridPane GridPane.rowIndex="1">
         <columnConstraints>
             <ColumnConstraints percentWidth="20" />
-            <ColumnConstraints percentWidth="60" />
-            <ColumnConstraints percentWidth="20" />
+            <ColumnConstraints percentWidth="50" />
+            <ColumnConstraints percentWidth="30" />
         </columnConstraints>
 
         <!-- Invites/ActiveUsers -->
@@ -36,16 +36,23 @@
                 <RowConstraints percentHeight="50" />
             </rowConstraints>
             <VBox GridPane.rowIndex="0">
-                <Text text="Active Users:" />
+                <Text styleClass="heading2" text="Active Users:" />
                 <ListView fx:id="mActiveUsersListView" />
             </VBox>
             <VBox GridPane.rowIndex="1">
-                <Text text="Pending Invites:" />
+                <Text styleClass="heading2" text="Pending Invites:" />
                 <ListView fx:id="mPendingInvitesListView" />
-                <HBox>
-                    <Button onAction="#inviteUserAction" text="Invite User" />
-                    <Button onAction="#acceptInviteAction" text="Accept Invite" />
-                </HBox>
+                <GridPane alignment="CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50" />
+                        <ColumnConstraints percentWidth="50" />
+                    </columnConstraints>
+                    <Button alignment="CENTER" onAction="#inviteUserAction" text="Invite User" GridPane.halignment="CENTER" prefWidth="200"/>
+                    <Button onAction="#acceptInviteAction" text="Accept Invite" GridPane.columnIndex="1" GridPane.halignment="CENTER" prefWidth="200" />
+               <rowConstraints>
+                  <RowConstraints />
+               </rowConstraints>
+                </GridPane>
             </VBox>
          <columnConstraints>
             <ColumnConstraints />
@@ -54,7 +61,7 @@
 
         <!-- Chat -->
         <VBox GridPane.columnIndex="1">
-            <Text text="Lobby Chat:" />
+            <Text styleClass="heading2" text="Lobby Chat:" />
             <ListView fx:id="mMessagesList" VBox.vgrow="ALWAYS" />
             <GridPane>
                 <columnConstraints>
@@ -71,7 +78,7 @@
 
         <!--Active Games-->
         <VBox GridPane.columnIndex="2">
-            <Text text="Active Games:" />
+            <Text styleClass="heading2" text="Active Games:" />
             <ListView fx:id="mActiveGamesListView" VBox.vgrow="ALWAYS" />
         </VBox>
       <rowConstraints>
@@ -85,6 +92,6 @@
    </columnConstraints>
 
     <stylesheets>
-        <URL value="@/style.css"/>
+        <URL value="@/style.css" />
     </stylesheets>
 </GridPane>
