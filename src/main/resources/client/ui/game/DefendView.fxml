@@ -21,7 +21,7 @@
 
         <VBox>
             <Label styleClass="heading" text="Attackers" />
-            <HBox fx:id="mAttackersBox" spacing="20"/>
+            <HBox fx:id="mAttackersBox" spacing="20" />
         </VBox>
         <VBox GridPane.rowIndex="1">
             <Label styleClass="heading" text="Defenders" />
