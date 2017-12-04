@@ -18,8 +18,10 @@ public class Events {
     public static final String PLAY_CARD = "PlayCard";
     public static final String PASS_TURN = "PassTurn";
     public static final String ATTACK = "Attack";
+    public static final String DEFEND = "Defend";
     public static final String QUIT_GAME = "QuitGame";
     public static final String ACTIVE_GAMES = "ActiveGames";
     public static final String SPECTATE_GAME = "SpectateGame";
+    public static final String DAMAGE = "Damage";
     public static final String GAME_CHAT = "GameChat";
 }

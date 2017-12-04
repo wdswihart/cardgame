@@ -4,6 +4,7 @@ import javafx.beans.property.Property;
 import javafx.collections.ObservableList;
 import models.Card;
 import models.Player;
+import models.requests.DefendRequest;
 import models.responses.GameState;
 
 import java.util.List;
@@ -27,6 +28,8 @@ public interface GameProvider {
     Property<ObservableList<GameState>> getActiveGames();
 
     void spectateGame(GameState targetGame);
+
+    void defend(DefendRequest request);
 
     Property<ObservableList<String>> getGameMessages();
 

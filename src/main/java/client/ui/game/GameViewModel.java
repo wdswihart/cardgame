@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -18,6 +19,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import models.Card;
 import models.Player;
+import models.requests.DefendRequest;
 import models.responses.GameState;
 
 import java.util.List;
@@ -57,7 +59,7 @@ public class GameViewModel extends BaseViewModel {
 
     //region UI State Visibility
     private Property<Boolean> mDrawButtonDisabledProperty = new SimpleBooleanProperty(false);
-    private Property<Boolean> mPlayCardButtonVisibleProperty = new SimpleBooleanProperty(false);
+    private Property<Boolean> mPlayCardButtonDisabledProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mAttackButtonDisabledProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mPassTurnButtonDisabledProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mGameControlVisibleProperty = new SimpleBooleanProperty(false);
@@ -95,7 +97,7 @@ public class GameViewModel extends BaseViewModel {
                 if (mSelectedPlayerCardProperty.getValue().isDefault()) {
                     return;
                 }
-
+                mHasPlayedCard = true;
                 mGameProvider.playCard(mSelectedPlayerCardProperty.getValue());
             }
         });
@@ -155,16 +157,46 @@ public class GameViewModel extends BaseViewModel {
         updateVisibleComponents(newVal);
     }
 
+
+    //TODO: REmove this.
+    private boolean mHasPlayedCard = false;
     private void updateVisibleComponents(GameState gameState) {
         boolean isGameOver = gameState.getStateEnum() == GameState.State.EndGame;
         boolean isDrawState = gameState.getStateEnum() == GameState.State.Draw;
         boolean isMainState = gameState.getStateEnum() == GameState.State.Main;
+        boolean isDefendState = gameState.getStateEnum() == GameState.State.Defend;
         boolean isActivePlayer = gameState.getActivePlayer().getUsername().equals(mConnectionProvider.getAuthenticatedUser().getValue().getUsername());
+        boolean isPlayerOne = gameState.getPlayerOne().getUsername().equals(mConnectionProvider.getAuthenticatedUser().getValue().getUsername());
+
+        if (isDrawState) {
+            mHasPlayedCard = false;
+        }
 
         mDrawButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isDrawState);
-        mPlayCardButtonVisibleProperty.setValue(isGameOver || !isActivePlayer || !isMainState);
+        mPlayCardButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isMainState || mHasPlayedCard);
         mAttackButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isMainState);
         mPassTurnButtonDisabledProperty.setValue(isGameOver || !isMainState);
+
+        if (isDefendState && isActivePlayer && !isGameOver) {
+            System.out.println("Showing defend dialog.");
+            Platform.runLater(() -> {
+                DefendDialog defendDialog = null;
+
+                if (isPlayerOne) {
+                    defendDialog = new DefendDialog(gameState.getPlayerTwoField(), gameState.getPlayerOneField());
+                } else {
+                    defendDialog = new DefendDialog(gameState.getPlayerOneField(), gameState.getPlayerTwoField());
+                }
+
+                DefendDialog finalDefendDialog = defendDialog;
+                defendDialog.resultProperty().addListener((obs, oldVal, newVal) -> {
+                    System.out.printf("Setting result property.");
+                    mGameProvider.defend((DefendRequest) newVal);
+                    finalDefendDialog.close();
+                });
+                defendDialog.show();
+            });
+        }
 
         if (isGameOver) {
             String winnerName = "";
@@ -243,7 +275,7 @@ public class GameViewModel extends BaseViewModel {
     }
 
     public Property<Boolean> getPlayCardButtonDisabledProperty() {
-        return mPlayCardButtonVisibleProperty;
+        return mPlayCardButtonDisabledProperty;
     }
 
     public Property<Boolean> getGameControlVisibleProperty() {

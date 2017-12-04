@@ -8,7 +8,8 @@
 
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
-<GridPane xmlns="http://javafx.com/javafx"
+<GridPane fx:id="gridPane"
+          xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="client.ui.discovery.DiscoveryView"
           alignment="CENTER"

@@ -4,8 +4,10 @@ import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.GridPane;
 
 public class DiscoveryView implements FxmlView<DiscoveryViewModel> {
+    public GridPane gridPane;
     @InjectViewModel
     DiscoveryViewModel mViewModel;
 

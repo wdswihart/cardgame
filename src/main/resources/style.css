@@ -38,6 +38,9 @@
 
 .card {
     -fx-background-color: ghostwhite;
+    -fx-border-width: 5px;
+    -fx-border-color: grey;
+    -fx-background-color: chartreuse;
 }
 
 .card-back {

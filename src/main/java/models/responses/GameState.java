@@ -16,7 +16,9 @@ public class GameState extends ModelBase {
         Main("Main"),
         Attack("Attack"),
         PlayingCard("PlayingCard"),
-        EndGame("EndGame");
+        EndGame("EndGame"),
+        Defend("Defend"),
+        Damage("Damage");
 
         private String mState = "";
         State(String state) {

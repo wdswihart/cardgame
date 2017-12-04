@@ -1,15 +1,24 @@
 import client.ui.discovery.DiscoveryView;
+import client.ui.game.DefendDialog;
 import client.ui.login.LoginView;
 import com.google.inject.Module;
 import client.core.navigation.NavigationProvider;
 import de.saxsys.mvvmfx.guice.MvvmfxGuiceApplication;
 import di.DependencyModules;
+import io.netty.util.internal.EmptyPriorityQueue;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.ParallelCamera;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
+import models.Card;
 import server.GameServer;
 import util.GuiceUtils;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends MvvmfxGuiceApplication {

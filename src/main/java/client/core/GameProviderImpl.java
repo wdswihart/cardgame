@@ -10,10 +10,7 @@ import javafx.collections.ObservableList;
 import models.Card;
 import models.Events;
 import models.Player;
-import models.requests.AttackRequest;
-import models.requests.DrawRequest;
-import models.requests.GameRequest;
-import models.requests.PlayCardRequest;
+import models.requests.*;
 import models.responses.GameState;
 import models.responses.GameStateList;
 import models.responses.PlayerList;
@@ -133,6 +130,11 @@ public class GameProviderImpl implements GameProvider {
     @Override
     public void spectateGame(GameState targetGame) {
         mClientProvider.getClient().emit(Events.SPECTATE_GAME, JSONUtils.toJson(targetGame));
+    }
+
+    @Override
+    public void defend(DefendRequest request) {
+        mClientProvider.getClient().emit(Events.DEFEND, JSONUtils.toJson(request));
     }
 
     @Override

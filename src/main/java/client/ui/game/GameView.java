@@ -259,7 +259,7 @@ public class GameView implements FxmlView<GameViewModel> {
         });
     }
 
-    private static ListCell<Card> cardCellFactory(ListView<Card> param) {
+    public static ListCell<Card> cardCellFactory(ListView<Card> param) {
         return new ListCell<Card>() {
             private CardControl controller;
             Node graphic;
@@ -287,7 +287,7 @@ public class GameView implements FxmlView<GameViewModel> {
         };
     }
 
-    private static ListCell<Card> smallCardCellFactory(ListView<Card> param) {
+    public static ListCell<Card> smallCardCellFactory(ListView<Card> param) {
         return new ListCell<Card>() {
             private SmallCardControl controller;
             Node graphic;

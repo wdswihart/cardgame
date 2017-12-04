@@ -1,48 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.ImageView?>
-<GridPane xmlns="http://javafx.com/javafx"
-          xmlns:fx="http://javafx.com/fxml"
-          fx:controller="client.ui.controls.CardControl"
-          fx:id="mRoot"
-          styleClass="card"
-          maxHeight="300.0" maxWidth="200.0"
-          prefHeight="300.0" prefWidth="200.0">
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
+
+<GridPane fx:id="mRoot" alignment="CENTER" prefHeight="250.0" prefWidth="150.0" styleClass="card" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.controls.CardControl">
 
     <rowConstraints>
-        <RowConstraints percentHeight="10"/>
-        <RowConstraints percentHeight="45"/>
-        <RowConstraints percentHeight="40"/>
-        <RowConstraints percentHeight="5"/>
+        <RowConstraints prefHeight="50"/>
+        <RowConstraints prefHeight="88"/>
+        <RowConstraints prefHeight="100"/>
+        <RowConstraints prefHeight="12"/>
     </rowConstraints>
 
     <!-- Top of the card. Right now just a name-->
     <GridPane alignment="CENTER_LEFT" GridPane.rowIndex="0">
-        <Text fx:id="mName" text="cardname"/>
+        <Text fx:id="mName" text="cardname" />
     </GridPane>
     <!--Image should use row 1-->
     <ImageView fx:id="mImage" fitHeight="120" GridPane.rowIndex="1"/>
 
     <!--Description-->
-    <TextArea fx:id="mDescription" text="description is here asldfasdfasdfasdfasdfasdfasdfasdf" wrapText="true" GridPane.rowIndex="2"/>
+    <TextArea fx:id="mDescription" text="description is here asldfasdfasdfasdfasdfasdfasdfasdf" wrapText="true" GridPane.rowIndex="2" />
 
     <!--Power Toughness-->
     <AnchorPane GridPane.rowIndex="3">
-        <HBox AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
-            <Text fx:id="mPower" text="-1"/>
-            <Text text="/"/>
-            <Text fx:id="mToughness" text="-1"/>
+        <HBox AnchorPane.bottomAnchor="0" AnchorPane.rightAnchor="0">
+            <Text fx:id="mPower" text="-1" />
+            <Text text="/" />
+            <Text fx:id="mToughness" text="-1" />
         </HBox>
     </AnchorPane>
 
-    <columnConstraints>
-        <ColumnConstraints hgrow="ALWAYS"/>
-    </columnConstraints>
+    <stylesheets>
+        <URL value="@/style.css" />
+    </stylesheets>
+   <columnConstraints>
+      <ColumnConstraints hgrow="ALWAYS" />
+   </columnConstraints>
 </GridPane>

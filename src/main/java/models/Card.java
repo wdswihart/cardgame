@@ -1,9 +1,9 @@
 package models;
 
 public class Card extends ModelBase {
-    private String mName = "test-name";
+    private String mName = "";
 
-    private String mDescription = "test-desc";
+    private String mDescription = "";
 
     private int mPower = 0;
 
@@ -43,6 +43,11 @@ public class Card extends ModelBase {
                 card.getPower() != mPower ||
                 card.getToughness() != mToughness) {
             return false;
+        }
+
+        if (card.isDefault()) {
+            //If the objects are default, check by addresses.
+            return this == obj;
         }
 
         return true;

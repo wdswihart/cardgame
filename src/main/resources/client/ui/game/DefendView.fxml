@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<?import com.sun.javafx.scene.control.skin.TableHeaderRow?>
+<?import javafx.scene.control.Button?>
+<GridPane alignment="CENTER" styleClass="root" prefWidth="1000" prefHeight="800" vgap="30" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.game.DefendView">
+        <rowConstraints>
+            <RowConstraints percentHeight="35" vgrow="NEVER"/>
+            <RowConstraints percentHeight="35" vgrow="ALWAYS"/>
+            <RowConstraints percentHeight="20" vgrow="ALWAYS"/>
+            <RowConstraints percentHeight="10" />
+        </rowConstraints>
+
+        <VBox>
+            <Label styleClass="heading" text="Attackers" />
+            <HBox fx:id="mAttackersBox" spacing="20"/>
+        </VBox>
+        <VBox GridPane.rowIndex="1">
+            <Label styleClass="heading" text="Defenders" />
+            <HBox fx:id="mDefendersBox" spacing="20" />
+        </VBox>
+
+        <ListView fx:id="mFieldBox" orientation="HORIZONTAL" GridPane.rowIndex="2" />
+
+        <Button text="Defend" onAction="#defendAction" GridPane.rowIndex="3"/>
+
+        <stylesheets>
+            <URL value="@/style.css" />
+        </stylesheets>
+       <columnConstraints>
+          <ColumnConstraints halignment="CENTER"/>
+       </columnConstraints>
+</GridPane>
