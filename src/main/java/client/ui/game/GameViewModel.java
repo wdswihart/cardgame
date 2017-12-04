@@ -17,14 +17,11 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Dialog;
-import javafx.scene.layout.VBox;
 import models.Card;
 import models.Player;
 import models.requests.DefendRequest;
 import models.responses.GameState;
 
-import java.awt.*;
 import java.util.List;
 
 public class GameViewModel extends BaseViewModel {
@@ -62,7 +59,7 @@ public class GameViewModel extends BaseViewModel {
 
     //region UI State Visibility
     private Property<Boolean> mDrawButtonDisabledProperty = new SimpleBooleanProperty(false);
-    private Property<Boolean> mPlayCardButtonVisibleProperty = new SimpleBooleanProperty(false);
+    private Property<Boolean> mPlayCardButtonDisabledProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mAttackButtonDisabledProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mPassTurnButtonDisabledProperty = new SimpleBooleanProperty(false);
     private Property<Boolean> mGameControlVisibleProperty = new SimpleBooleanProperty(false);
@@ -100,7 +97,7 @@ public class GameViewModel extends BaseViewModel {
                 if (mSelectedPlayerCardProperty.getValue().isDefault()) {
                     return;
                 }
-
+                mHasPlayedCard = true;
                 mGameProvider.playCard(mSelectedPlayerCardProperty.getValue());
             }
         });
@@ -160,6 +157,9 @@ public class GameViewModel extends BaseViewModel {
         updateVisibleComponents(newVal);
     }
 
+
+    //TODO: REmove this.
+    private boolean mHasPlayedCard = false;
     private void updateVisibleComponents(GameState gameState) {
         boolean isGameOver = gameState.getStateEnum() == GameState.State.EndGame;
         boolean isDrawState = gameState.getStateEnum() == GameState.State.Draw;
@@ -168,8 +168,12 @@ public class GameViewModel extends BaseViewModel {
         boolean isActivePlayer = gameState.getActivePlayer().getUsername().equals(mConnectionProvider.getAuthenticatedUser().getValue().getUsername());
         boolean isPlayerOne = gameState.getPlayerOne().getUsername().equals(mConnectionProvider.getAuthenticatedUser().getValue().getUsername());
 
+        if (isDrawState) {
+            mHasPlayedCard = false;
+        }
+
         mDrawButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isDrawState);
-        mPlayCardButtonVisibleProperty.setValue(isGameOver || !isActivePlayer || !isMainState);
+        mPlayCardButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isMainState || mHasPlayedCard);
         mAttackButtonDisabledProperty.setValue(isGameOver || !isActivePlayer || !isMainState);
         mPassTurnButtonDisabledProperty.setValue(isGameOver || !isMainState);
 
@@ -271,7 +275,7 @@ public class GameViewModel extends BaseViewModel {
     }
 
     public Property<Boolean> getPlayCardButtonDisabledProperty() {
-        return mPlayCardButtonVisibleProperty;
+        return mPlayCardButtonDisabledProperty;
     }
 
     public Property<Boolean> getGameControlVisibleProperty() {

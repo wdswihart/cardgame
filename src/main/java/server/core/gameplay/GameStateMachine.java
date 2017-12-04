@@ -204,30 +204,25 @@ public class GameStateMachine {
 
     private void exitDefend() {
         System.out.println("EXITING DEFEND PHASE");
+        swapActivePlayer();
 
         for (DefendPair dp : ((DefendRequest)mTriggeredValue).getDefendPairs()) {
             if (dp.getDefender().isDefault()) {
                 dealDamage(dp.getAttacker());
             } else {
                 if (dp.getAttacker().getPower() >= dp.getDefender().getToughness()) {
-                    if (mGameState.getActivePlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
-                        mGameState.getPlayerOneField().remove(dp.getDefender());
-                    } else {
-                        mGameState.getPlayerTwoField().remove(dp.getDefender());
-                    }
+                    getInactivePlayerField().remove(dp.getDefender());
                 }
 
                 if (dp.getDefender().getPower() >= dp.getAttacker().getToughness()) {
-                    if (mGameState.getActivePlayer().getUsername().equals(mGameState.getPlayerOne().getUsername())) {
-                        mGameState.getPlayerOneField().remove(dp.getAttacker());
-                    } else {
-                        mGameState.getPlayerTwoField().remove(dp.getAttacker());
-                    }
+                    getActivePlayerField().remove(dp.getAttacker());
                 }
             }
         }
 
+        mGameState.setStateEnum(State.Main);
         broadcastToPlayers(Events.UPDATE_GAME, mGameState);
+        mStateMachine.fire(Trigger.PassMain);
     }
 
     private void dealDamage(Card card) {
