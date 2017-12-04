@@ -20,9 +20,12 @@ public class TestConnectionProviderImpl {
         if (sInstance == null) {
             sInstance = mock(ConnectionProvider.class);
             when(sInstance.getAuthenticatedUser()).thenReturn(mAuthenticatedUser);
+            when(sInstance.getCreatedUser()).thenReturn(mCreatedUser);
         }
         return sInstance;
     }
 
     private static ObjectProperty<Player> mAuthenticatedUser = new SimpleObjectProperty<>();
+    private static ObjectProperty<Player> mCreatedUser = new SimpleObjectProperty<>();
+
 }

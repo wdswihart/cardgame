@@ -1,3 +1,5 @@
+import client.ui.DraggableView.DraggableView;
+import client.ui.home.HomeView;
 import client.ui.login.LoginViewModel;
 import models.Player;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,4 +31,13 @@ public class LoginViewModelTest extends BaseTest {
         verify(navigationProvider, never()).navigateTo(any());
         assertEquals(errorMessage, loginViewModel.getErrorProperty().getValue());
     }
+
+    @Test
+    public void successfulLogin_navigatesToHomeView() {
+        connectionProvider.getAuthenticatedUser().setValue(new Player("test", "test"));
+        verify(navigationProvider).navigateTo(DraggableView.class);
+        assertEquals(errorMessage, "");
+    }
+
+
 }
