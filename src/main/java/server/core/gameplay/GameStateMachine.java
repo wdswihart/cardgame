@@ -73,6 +73,7 @@ public class GameStateMachine {
 
         config.configure(State.Draw)
                 .permit(Trigger.Draw, State.Main)
+                .permit(Trigger.GameOver, State.EndGame)
                 .onEntry(this::enterDraw)
                 .onExit(this::exitDraw);
 
@@ -95,7 +96,7 @@ public class GameStateMachine {
                 .onEntry(this::enterAttack);
 
         config.configure(State.Defend)
-                .permit(Trigger.Defend, State.Main)
+                .permit(Trigger.Defend, State.Draw)
                 .permit(Trigger.GameOver, State.EndGame)
                 .onExit(this::exitDefend);
 
@@ -141,7 +142,14 @@ public class GameStateMachine {
         }
     }
 
+    private boolean mGameOver = false;
     private void enterDraw() {
+        if (mGameOver) {
+            mStateMachine.fire(Trigger.GameOver);
+            return;
+        }
+        mGameOver = false;
+
         mGameState.setStateEnum(State.Draw);
 
         //Set the default active player to player 1.
@@ -222,7 +230,6 @@ public class GameStateMachine {
 
         mGameState.setStateEnum(State.Main);
         broadcastToPlayers(Events.UPDATE_GAME, mGameState);
-        mStateMachine.fire(Trigger.PassMain);
     }
 
     private void dealDamage(Card card) {
@@ -238,7 +245,7 @@ public class GameStateMachine {
             mGameState.setPlayerOneHealth(newHealth);
         }
         if (mGameState.getPlayerTwoHealth() == 0 || mGameState.getPlayerOneHealth() == 0) {
-            mStateMachine.fire(Trigger.GameOver);
+            mGameOver = true;
         }
     }
 
