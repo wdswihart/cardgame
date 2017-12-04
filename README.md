@@ -2,6 +2,8 @@
 
 A fun, easy-to-learn [collectible card game](https://en.wikipedia.org/wiki/Collectible_card_game) (CCG) that's free to collect for!
 
+---
+
 ## The Problem
 
 Many CCGs have high points. *Magic: the Gathering* (MTG), for example, provides a very  
@@ -14,6 +16,8 @@ enough cards to play. In YGO, games are often won and lost in but a few turns, w
 player has no time to prepare his or her defenses. Why is there not a card game that  
 combines the best aspects of these wildly popular games, while avoiding their pitfalls?  
 
+---
+
 ## Goals
 
 We aim to create a fast, engaging play style that is heavy on decision making, and which  
@@ -25,6 +29,8 @@ using a substantial amount of effects that allow players to draw cards.
 - Create a non-restrictive mana system
   - All cards will be usable for their effect, or as a resource.
 - Involve a lot of deck searching and card drawing mechanics
+
+---
 
 ## License
 
@@ -40,6 +46,32 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License  
 along with this program.  If not, see <http://www.gnu.org/licenses/>.  
+
+---
+
+## Building/Installation
+
+To build the program you must use gradle.
+
+Provided in the root directory is a script to execute a gradle wrapper that will download gradle and the projects dependencies.
+
+#### Getting gradle
+
+- Run the ``` gradlew.bat ``` provided in the root directory to install gradle to your project.
+
+#### Building and Running cardgame
+
+- Run the command ``` gradlew.bat run ``` to execute the program.
+
+- **Note: this will download all dependencies required, build, and run the project.**
+
+#### Running cardgame tests
+
+- Run the command ``` gradlew.bat test ``` to execute the unit tests.
+
+- A HTML report will be generated and can be viewed at [/build/reports/tests/test/index.html](./build/reports/tests/test/index.html)
+
+---
 
 ## Authors
 
