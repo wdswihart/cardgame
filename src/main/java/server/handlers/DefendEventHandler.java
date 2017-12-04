@@ -16,7 +16,7 @@ public class DefendEventHandler extends BaseGameplayEventHandler<DefendRequest> 
 
     @Override
     protected GameState.State getValidState() {
-        return GameState.State.Attack;
+        return GameState.State.Defend;
     }
 
     public static BaseEventHandler<?> getHandler() {

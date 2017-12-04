@@ -55,9 +55,14 @@ public class DiscoveryViewModel extends BaseViewModel {
             byte[] buf = new byte[1000];
 
             try {
-                DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("255.255.255.255"), 12000);
                 DatagramSocket socket = new DatagramSocket();
-                socket.send(packet);
+                DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("255.255.255.255"), 12000);
+
+                for (int i = 0; i < 5; i++) {
+                    System.out.println("[ADDRESS_DISCOVERY]: Broadcasting discover...");
+                    socket.send(packet);
+                    Thread.sleep(50);
+                }
 
                 for (int i = 0; i < 20; i++) {
                     socket.receive(packet);
@@ -73,10 +78,14 @@ public class DiscoveryViewModel extends BaseViewModel {
                             }
                         }
                     });
+
+                    Thread.sleep(100);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
                 mServersListProperty.add("127.0.0.1:8087");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }).start();
     }

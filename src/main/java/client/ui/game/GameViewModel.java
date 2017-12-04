@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -173,18 +174,24 @@ public class GameViewModel extends BaseViewModel {
         mPassTurnButtonDisabledProperty.setValue(isGameOver || !isMainState);
 
         if (isDefendState && isActivePlayer && !isGameOver) {
-            DefendDialog defendDialog;
+            System.out.println("Showing defend dialog.");
+            Platform.runLater(() -> {
+                DefendDialog defendDialog = null;
 
-            if (isPlayerOne) {
-                 defendDialog = new DefendDialog(gameState.getPlayerTwoField(), gameState.getPlayerOneField());
-            } else {
-                defendDialog = new DefendDialog(gameState.getPlayerOneField(), gameState.getPlayerTwoField());
-            }
+                if (isPlayerOne) {
+                    defendDialog = new DefendDialog(gameState.getPlayerTwoField(), gameState.getPlayerOneField());
+                } else {
+                    defendDialog = new DefendDialog(gameState.getPlayerOneField(), gameState.getPlayerTwoField());
+                }
 
-            defendDialog.resultProperty().addListener((obs, oldVal, newVal) -> {
-                mGameProvider.defend((DefendRequest)newVal);
+                DefendDialog finalDefendDialog = defendDialog;
+                defendDialog.resultProperty().addListener((obs, oldVal, newVal) -> {
+                    System.out.printf("Setting result property.");
+                    mGameProvider.defend((DefendRequest) newVal);
+                    finalDefendDialog.close();
+                });
+                defendDialog.show();
             });
-            defendDialog.show();
         }
 
         if (isGameOver) {

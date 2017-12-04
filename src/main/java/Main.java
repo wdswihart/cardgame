@@ -32,7 +32,7 @@ public class Main extends MvvmfxGuiceApplication {
                 System.out.printf("Server failed to start.");
                 e.printStackTrace();
             }
-        }).start();
+        }).run();
         launch(args);
     }
 
@@ -52,15 +52,5 @@ public class Main extends MvvmfxGuiceApplication {
 
         NavigationProvider.getInstance().navigateTo(DiscoveryView.class);
         stage.show();
-
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/game/DefendView.fxml"));
-//        try {
-//            Parent node = loader.load();
-//            stage.setScene(new Scene(node));
-//            stage.show();
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 }

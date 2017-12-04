@@ -134,7 +134,7 @@ public class GameProviderImpl implements GameProvider {
 
     @Override
     public void defend(DefendRequest request) {
-        mClientProvider.getClient().emit(Events.DAMAGE, JSONUtils.toJson(request));
+        mClientProvider.getClient().emit(Events.DEFEND, JSONUtils.toJson(request));
     }
 
     @Override

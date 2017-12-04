@@ -95,9 +95,9 @@ public class GameStateMachine {
                 .onEntry(this::enterAttack);
 
         config.configure(State.Defend)
-                .permit(Trigger.Damage, State.Main)
+                .permit(Trigger.Defend, State.Main)
                 .permit(Trigger.GameOver, State.EndGame)
-                .onEntry(this::enterDefend);
+                .onExit(this::exitDefend);
 
         config.configure(State.EndGame)
                 .onEntry(this::enterEndGame);
@@ -195,14 +195,15 @@ public class GameStateMachine {
     private void enterAttack() {
         System.out.println("ENTERING ATTACK PHASE");
 
+        mGameState.setStateEnum(GameState.State.Defend);
         // For now, change active player and let defending player choose defenders.
         swapActivePlayer();
-        broadcastToPlayers(Events.DEFEND, mGameState);
+        broadcastToPlayers(Events.UPDATE_GAME, mGameState);
         mStateMachine.fire(Trigger.Defend);
     }
 
-    private void enterDefend() {
-        System.out.println("ENTERING DEFEND PHASE");
+    private void exitDefend() {
+        System.out.println("EXITING DEFEND PHASE");
 
         for (DefendPair dp : ((DefendRequest)mTriggeredValue).getDefendPairs()) {
             if (dp.getDefender().isDefault()) {
@@ -225,6 +226,8 @@ public class GameStateMachine {
                 }
             }
         }
+
+        broadcastToPlayers(Events.UPDATE_GAME, mGameState);
     }
 
     private void dealDamage(Card card) {

@@ -67,7 +67,7 @@ public class GameServer {
         }
 
 
-        if (mDatagramSocket == null) {
+        if (mDatagramSocket != null) {
             new Thread(() -> {
 
                 while (true) {
@@ -83,7 +83,6 @@ public class GameServer {
                         new Thread(() -> {
                             sendAddress(dgp.getAddress().getHostAddress(), dgp.getPort());
                         }).start();
-                        ;
 
                     } catch (IOException e) {
                         e.printStackTrace();
