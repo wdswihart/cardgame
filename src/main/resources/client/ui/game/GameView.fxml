@@ -111,7 +111,7 @@
         </VBox>
 
         <!--Winning Text Display-->
-        <HBox fx:id="mWinningDisplayBox" GridPane.rowIndex="0" GridPane.rowSpan="2" GridPane.columnIndex="0" GridPane.columnSpan="3" style="-fx-background-color: #FFFFFF">
+        <HBox fx:id="mWinningDisplayBox" GridPane.rowIndex="0" GridPane.rowSpan="2" GridPane.columnIndex="1" GridPane.columnSpan="2" style="-fx-background-color: #FFFFFF">
             <Text styleClass="stats"  text="Winner: "/>
             <Text  styleClass="stats" fx:id="mWinnerText"/>
         </HBox>
