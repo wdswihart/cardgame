@@ -29,7 +29,7 @@ public class SocketIOServerProviderImpl implements SocketIOServerProvider {
 
     @Override
     public void broadcast(String event, Object obj) {
-        mServer.getBroadcastOperations().sendEvent(event, obj);
+        mServer.getRoomOperations("lobby").sendEvent(event, obj);
     }
 
     @Override
@@ -62,5 +62,10 @@ public class SocketIOServerProviderImpl implements SocketIOServerProvider {
         config.getSocketConfig().setReuseAddress(true);
 
         mServer = new SocketIOServer(config);
+    }
+
+    @Override
+    public void broadcastRoom(String room, String event, String message) {
+        mServer.getRoomOperations(room).sendEvent(event, message);
     }
 }

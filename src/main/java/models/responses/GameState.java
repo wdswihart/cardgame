@@ -1,5 +1,6 @@
 package models.responses;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import models.Card;
 import models.ModelBase;
 import models.Player;
@@ -8,13 +9,47 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameState extends ModelBase {
+
+    public enum State {
+        Waiting("Waiting"),
+        Draw("Draw"),
+        Main("Main"),
+        Attack("Attack"),
+        PlayingCard("PlayingCard"),
+        EndGame("EndGame"),
+        Defend("Defend"),
+        Damage("Damage");
+
+        private String mState = "";
+        State(String state) {
+            mState = state;
+        }
+
+        public String toString() {
+            return mState;
+        }
+    }
+
+    private State mState = State.Waiting;
+
     private Player mPlayerOne = new Player();
     private Player mPlayerTwo = new Player();
+
+    private int mPlayerOneHealth = 20;
+    private int mPlayerTwoHealth = 20;
 
     private Player mActivePlayer = new Player();
 
     private List<Card> mPlayerOneHand = new ArrayList<>();
     private List<Card> mPlayerTwoHand = new ArrayList<>();
+
+    private List<Card> mPlayerOneDeck = new ArrayList<>();
+    private List<Card> mPlayerTwoDeck = new ArrayList<>();
+
+    private List<Card> mPlayerOneField = new ArrayList<>();
+    private List<Card> mPlayerTwoField = new ArrayList<>();
+
+    private List<Player> mSpectatorList = new ArrayList<>();
 
     public GameState(Player playerOne, Player playerTwo) {
         mPlayerOne = playerOne;
@@ -27,8 +62,7 @@ public class GameState extends ModelBase {
 
     @Override
     public boolean isDefault() {
-        //TODO: Should this be &&?
-        return mPlayerOne.isDefault() || mPlayerTwo.isDefault();
+        return mPlayerOne.isDefault() && mPlayerTwo.isDefault();
     }
 
     //region Getters/Setters
@@ -53,7 +87,7 @@ public class GameState extends ModelBase {
     }
 
     public void setPlayerOneHand(List<Card> playerOneHand) {
-        this.mPlayerOneHand = mPlayerOneHand;
+        this.mPlayerOneHand = playerOneHand;
     }
 
     public List<Card> getPlayerTwoHand() {
@@ -61,7 +95,7 @@ public class GameState extends ModelBase {
     }
 
     public void setPlayerTwoHand(List<Card> playerTwoHand) {
-        this.mPlayerTwoHand = mPlayerTwoHand;
+        this.mPlayerTwoHand = playerTwoHand;
     }
 
     public Player getActivePlayer() {
@@ -71,5 +105,87 @@ public class GameState extends ModelBase {
     public void setActivePlayer(Player activePlayer) {
         this.mActivePlayer = activePlayer;
     }
+
+    public List<Card> getPlayerTwoDeck() {
+        return mPlayerTwoDeck;
+    }
+
+    public void setPlayerTwoDeck(List<Card> playerTwoDeck) {
+        this.mPlayerTwoDeck = playerTwoDeck;
+    }
+
+    public List<Card> getPlayerOneDeck() {
+        return mPlayerOneDeck;
+    }
+
+    public void setPlayerOneDeck(List<Card> playerOneDeck) {
+        this.mPlayerOneDeck = playerOneDeck;
+    }
+
+    public String getState() {
+        return mState.toString();
+    }
+
+    public void setState(String state) {
+        mState = State.valueOf(state);
+    }
+
+    @JsonIgnore
+    public void setStateEnum(State state) {
+        mState = state;
+    }
+
+    @JsonIgnore
+    public State getStateEnum() {
+        return mState;
+    }
+
+    public List<Card> getPlayerOneField() {
+        return mPlayerOneField;
+    }
+
+    public void setPlayerOneField(List<Card> playerOneField) {
+        this.mPlayerOneField = playerOneField;
+    }
+
+    public List<Card> getPlayerTwoField() {
+        return mPlayerTwoField;
+    }
+
+    public void setPlayerTwoField(List<Card> playerTwoField) {
+        this.mPlayerTwoField = playerTwoField;
+    }
+
+    public int getPlayerOneHealth() {
+        return mPlayerOneHealth;
+    }
+
+    public void setPlayerOneHealth(int playerOneHealth) {
+        this.mPlayerOneHealth = playerOneHealth;
+    }
+
+    public int getPlayerTwoHealth() {
+        return mPlayerTwoHealth;
+    }
+
+    public void setPlayerTwoHealth(int playerTwoHealth) {
+        this.mPlayerTwoHealth = playerTwoHealth;
+    }
+
+    public List<Player> getSpectatorList() {
+        return mSpectatorList;
+    }
+
+    public void setSpectatorList(List<Player> spectatorList) {
+        mSpectatorList = spectatorList;
+    }
     //endregion
+
+    public void addSpectator(Player player) {
+        mSpectatorList.add(player);
+    }
+
+    public void removeSpectator(Player player) {
+        mSpectatorList.remove(player);
+    }
 }

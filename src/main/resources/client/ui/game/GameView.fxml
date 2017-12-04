@@ -1,25 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-<GridPane xmlns="http://javafx.com/javafx"
-          xmlns:fx="http://javafx.com/fxml"
-          fx:controller="client.ui.game.GameView"
-          prefHeight="400.0" prefWidth="600.0">
-    <rowConstraints>
-        <RowConstraints percentHeight="50"/>
-        <RowConstraints percentHeight="50"/>
-    </rowConstraints>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
 
-    <ListView fx:id="mOpponentsHand" orientation="HORIZONTAL" GridPane.rowIndex="0">
+<?import javafx.scene.control.TextArea?>
+<?import java.net.URL?>
+<?import javafx.scene.control.TextField?>
+<GridPane fx:id="mRootPane" fx:controller="client.ui.game.GameView" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" styleClass="root">
 
-    </ListView>
-    <ListView fx:id="mPlayersHand" orientation="HORIZONTAL" GridPane.rowIndex="1">
+    <columnConstraints>
+        <ColumnConstraints percentWidth="10" hgrow="ALWAYS"/>
+        <ColumnConstraints percentWidth="70"/>
+        <ColumnConstraints percentWidth="20"/>
+    </columnConstraints>
 
-    </ListView>
+    <children>
+        <!--Opponent info-->
+        <VBox GridPane.rowIndex="0" GridPane.columnIndex="0">
+            <HBox>
+                <Text styleClass="stats" text="Opponent:"/>
+                <Text styleClass="stats" fx:id="mOpponentNameText" text="Opponent" />
+            </HBox>
+            <HBox>
+                <Text  styleClass="stats" text="Health:"/>
+                <Text  styleClass="stats" fx:id="mOpponentHealthText" text="20"/>
+            </HBox>
+            <HBox>
+                <Text styleClass="stats"  text="Deck Count:"/>
+                <Text styleClass="stats"  fx:id="mOpponentDeckCountText" text="0"/>
+            </HBox>
+        </VBox>
+
+        <!--Player info-->
+        <VBox GridPane.rowIndex="1" GridPane.columnIndex="0">
+            <HBox>
+                <Text styleClass="stats"  text="Player:"/>
+                <Text styleClass="stats"  fx:id="mPlayerNameText" text="Player"/>
+            </HBox>
+            <HBox>
+                <Text styleClass="stats"  text="Health:"/>
+                <Text styleClass="stats"  fx:id="mPlayerHealthText" text="20"/>
+            </HBox>
+            <HBox>
+                <Text styleClass="stats"  text="Deck Count:"/>
+                <Text styleClass="stats"  fx:id="mPlayerDeckCountText" text="0"/>
+            </HBox>
+            <VBox fx:id="mGameControlBox">
+                <Button fx:id="mDrawButton" onAction="#drawButtonAction" text="Draw" maxWidth="Infinity"/>
+                <Button fx:id="mPlayCardButton" onAction="#playCardButtonAction" text="Play Card" maxWidth="Infinity"/>
+                <Button fx:id="mAttackButton" onAction="#attackAction" text="Attack" maxWidth="Infinity"/>
+                <Button fx:id="mPassTurnButton" onAction="#passTurnAction" text="Pass Turn" maxWidth="Infinity"/>
+            </VBox>
+            <Button onAction="#quitGameAction" text="Quit Game" maxWidth="Infinity"/>
+            <HBox>
+                <Text styleClass="stats" text="Phase: "/>
+                <Text styleClass="stats" fx:id="mPhaseText"/>
+            </HBox>
+        </VBox>
+
+        <!--Opponent Hand & Field-->
+        <GridPane GridPane.rowIndex="0" GridPane.columnIndex="1">
+            <rowConstraints>
+                <RowConstraints percentHeight="20"/>
+                <RowConstraints percentHeight="80"/>
+            </rowConstraints>
+            <children>
+                <VBox GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                    <ListView fx:id="mOpponentsHandListView" GridPane.rowIndex="0" orientation="HORIZONTAL"/>
+                </VBox>
+
+                <VBox GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                    <ListView fx:id="mOpponentFieldListView" GridPane.rowIndex="1" orientation="HORIZONTAL"/>
+                </VBox>
+            </children>
+        </GridPane>
+
+        <!--Player Hand & Field-->
+        <GridPane GridPane.rowIndex="1" GridPane.columnIndex="1">
+            <rowConstraints>
+                <RowConstraints percentHeight="80"/>
+                <RowConstraints percentHeight="20"/>
+            </rowConstraints>
+            <children>
+                <VBox GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" alignment="CENTER">
+                    <ListView fx:id="mPlayerFieldListView" GridPane.rowIndex="0" orientation="HORIZONTAL"/>
+                </VBox>
+
+                <VBox GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" alignment="CENTER">
+                    <ListView fx:id="mPlayersHandListView" GridPane.rowIndex="1" orientation="HORIZONTAL"/>
+                </VBox>
+            </children>
+        </GridPane>
+
+        <!--Card Display & Chat-->
+        <VBox alignment="CENTER" fx:id="mCardDetailBox" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+        <VBox GridPane.rowIndex="1" GridPane.columnIndex="2">
+            <ListView fx:id="mGameChatList" style="-fx-fill: black"/>
+            <HBox>
+                <TextField fx:id="mMessageField" HBox.hgrow="ALWAYS"/>
+                <Button text="Send" onAction="#onMessageAction"/>
+            </HBox>
+        </VBox>
+
+        <!--Winning Text Display-->
+        <HBox fx:id="mWinningDisplayBox" GridPane.rowIndex="0" GridPane.rowSpan="2" GridPane.columnIndex="0" GridPane.columnSpan="3" style="-fx-background-color: #FFFFFF">
+            <Text styleClass="stats"  text="Winner: "/>
+            <Text  styleClass="stats" fx:id="mWinnerText"/>
+        </HBox>
+    </children>
+
+    <stylesheets>
+        <URL value="@/style.css"/>
+    </stylesheets>
 </GridPane>

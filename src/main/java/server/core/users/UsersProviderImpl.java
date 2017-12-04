@@ -15,23 +15,23 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Singleton
-public class ActiveUserProviderImpl implements ActiveUserProvider {
+public class UsersProviderImpl implements UsersProvider {
     @Inject
     private StorageProvider mStorageProvider;
 
     @Inject
     private SocketIOServerProvider mServerProvider;
 
-    private Map<String, GameServer.User> mActiveUsers = new HashMap<>();
+    private Map<String, GameServer.User> mUsers = new HashMap<>();
 
     @Override
-    public Map<String, GameServer.User> getActiveUsers() {
-        return mActiveUsers;
+    public Map<String, GameServer.User> getUsers() {
+        return mUsers;
     }
 
     @Override
     public GameServer.User getUserByUsername(String username) {
-        for (Map.Entry<String, GameServer.User> e : mActiveUsers.entrySet()) {
+        for (Map.Entry<String, GameServer.User> e : mUsers.entrySet()) {
             if (e.getValue().getPlayer().getUsername().equals(username)) {
                 return e.getValue();
             }
@@ -41,18 +41,18 @@ public class ActiveUserProviderImpl implements ActiveUserProvider {
 
     @Override
     public void addUser(GameServer.User user) {
-        if (!mActiveUsers.containsKey(user.getClient().getSessionId().toString())) {
+        if (!mUsers.containsKey(user.getClient().getSessionId().toString())) {
             Player playerWithoutPass = new Player(user.getPlayer().getUsername(), "");
 
-            mActiveUsers.put(user.getClient().getSessionId().toString(), new GameServer.User(user.getClient(), playerWithoutPass));
+            mUsers.put(user.getClient().getSessionId().toString(), new GameServer.User(user.getClient(), playerWithoutPass));
             broadcastPlayerList();
         }
     }
 
     @Override
     public void removeUser(GameServer.User user) {
-        if (mActiveUsers.containsKey(user.getClient().getSessionId().toString())) {
-            mActiveUsers.remove(user.getClient().getSessionId().toString());
+        if (mUsers.containsKey(user.getClient().getSessionId().toString())) {
+            mUsers.remove(user.getClient().getSessionId().toString());
             broadcastPlayerList();
         }
     }
@@ -62,7 +62,7 @@ public class ActiveUserProviderImpl implements ActiveUserProvider {
         PlayerList playerList = new PlayerList();
 
         //Get list of players from list of active users.
-        List<Player> players = getActiveUsers().entrySet().stream().map(x -> x.getValue().getPlayer()).collect(Collectors.toList());
+        List<Player> players = getUsers().entrySet().stream().map(x -> x.getValue().getPlayer()).collect(Collectors.toList());
 
         playerList.getPlayers().addAll(players);
         mServerProvider.broadcast(Events.PLAYER_LIST, playerList);

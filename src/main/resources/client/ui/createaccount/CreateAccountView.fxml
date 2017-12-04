@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Text?>
+<?import java.net.URL?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           alignment="CENTER"
@@ -19,13 +20,17 @@
         <Text text="Username"/>
         <TextField fx:id="mUsernameField"/>
         <Text text="Password"/>
-        <TextField fx:id="mPasswordField"/>
+        <PasswordField fx:id="mPasswordField"/>
         <Text text="Re-enter Password"/>
-        <TextField fx:id="mPasswordAgainField"/>
+        <PasswordField fx:id="mPasswordAgainField"/>
 
         <HBox>
             <Button onAction="#createAction" text="Create Account" prefWidth="200"/>
             <Button onAction="#cancelAction" text="Cancel" prefWidth="200"/>
         </HBox>
     </VBox>
+
+    <stylesheets>
+        <URL value="@/style.css"/>
+    </stylesheets>
 </GridPane>

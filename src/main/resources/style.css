@@ -1,7 +1,7 @@
 .button {
-    -fx-background-color: black;
+    -fx-background-color: #333333;
     -fx-text-fill: white;
-    -fx-border-color: black;
+    -fx-border-color: whitesmoke;
     -fx-border-width: 2;
 }
 
@@ -25,4 +25,24 @@
 
 .scroll-pane {
     -fx-pref-width: 100%;
+}
+
+.heading {
+    -fx-font-size: 4em;
+    -fx-fill: whitesmoke;
+}
+
+.stats {
+    -fx-fill: whitesmoke;
+}
+
+.card {
+    -fx-background-color: ghostwhite;
+    -fx-border-width: 5px;
+    -fx-border-color: grey;
+    -fx-background-color: chartreuse;
+}
+
+.card-back {
+    -fx-background-color: linear-gradient(blue, darkblue);
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<GridPane fx:id="gridPane"
+          xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="client.ui.discovery.DiscoveryView"
+          alignment="CENTER"
+          styleClass="root">
+
+    <VBox alignment="CENTER" prefHeight="400" prefWidth="600">
+        <Text styleClass="heading" text="Select Server"/>
+        <ListView fx:id="mServerList"/>
+        <Button onAction="#joinServerAction" text="Join Server"/>
+    </VBox>
+
+    <stylesheets>
+        <URL value="@/style.css"/>
+    </stylesheets>
+</GridPane>

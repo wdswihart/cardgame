@@ -9,22 +9,19 @@ public class Events {
     public static final String CHAT = "Chat";
 
     public static final String START_GAME = "StartGame";
+    public static final String UPDATE_GAME = "UpdateGame";
 
     //Used when someone invites you to a game.
     public static final String INVITE_REQUEST = "InviteRequest";
 
-    public static final String REFRESH_SERVER = "RefreshServer";
-    public static final String MAINTAIN_SERVER = "MaintainServer";
     public static final String DRAW = "Draw";
-
-    public static final String MAIN_SERVER = "MainServer";
-
-    public static final String ATTACK_CLIENT = "AttackClient";
-    public static final String DEFEND_CLIENT = "DefendClient";
-    public static final String DAMAGE_SERVER = "DamageClient";
-
-    public static final String PLAY_CLIENT = "PlayClient";
-
-    public static final String RESPOND_CLIENT = "RespondClient";
-    public static final String RESPOND_SERVER = "RespondServer";
+    public static final String PLAY_CARD = "PlayCard";
+    public static final String PASS_TURN = "PassTurn";
+    public static final String ATTACK = "Attack";
+    public static final String DEFEND = "Defend";
+    public static final String QUIT_GAME = "QuitGame";
+    public static final String ACTIVE_GAMES = "ActiveGames";
+    public static final String SPECTATE_GAME = "SpectateGame";
+    public static final String DAMAGE = "Damage";
+    public static final String GAME_CHAT = "GameChat";
 }

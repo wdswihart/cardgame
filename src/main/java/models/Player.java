@@ -35,4 +35,8 @@ public class Player extends ModelBase {
     public boolean isDefault() {
         return mUsername.isEmpty();
     }
+
+    public boolean equals(Player player) {
+        return player.getUsername().equals(mUsername);
+    }
 }
