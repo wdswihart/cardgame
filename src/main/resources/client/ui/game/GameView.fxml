@@ -105,14 +105,13 @@
         <VBox GridPane.rowIndex="1" GridPane.columnIndex="2">
             <ListView fx:id="mGameChatList" style="-fx-fill: black"/>
             <HBox>
-                <TextField fx:id="mMessageField" HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="mMessageField" onKeyReleased="#onKeyReleased" HBox.hgrow="ALWAYS"/>
                 <Button text="Send" onAction="#onMessageAction"/>
             </HBox>
         </VBox>
 
         <!--Winning Text Display-->
-        <HBox fx:id="mWinningDisplayBox" GridPane.rowIndex="0" GridPane.rowSpan="2" GridPane.columnIndex="1" GridPane.columnSpan="2" style="-fx-background-color: #FFFFFF">
-            <Text styleClass="stats"  text="Winner: "/>
+        <HBox fx:id="mWinningDisplayBox" styleClass="winningDisplayBox" GridPane.rowIndex="0" GridPane.rowSpan="2" GridPane.columnIndex="1" GridPane.columnSpan="1">
             <Text  styleClass="stats" fx:id="mWinnerText"/>
         </HBox>
     </children>

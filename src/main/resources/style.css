@@ -46,3 +46,14 @@
 .card-back {
     -fx-background-color: linear-gradient(blue, darkblue);
 }
+
+.error-text {
+    -fx-fill: red;
+}
+
+#mWinningDisplayBox {
+    -fx-background-color: grey;
+    -fx-text-fill: lime;
+    -fx-font-size: 5em;
+    -fx-alignment: center;
+}

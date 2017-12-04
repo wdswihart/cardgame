@@ -3,6 +3,8 @@ package client.ui.home;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import models.Card;
@@ -174,6 +176,7 @@ public class HomeView implements FxmlView<HomeViewModel> {
     @FXML
     public void sendAction() {
         mHomeViewModel.getSendCommand().execute();
+        mMessageField.setText("");
     }
 
     @FXML
@@ -183,4 +186,11 @@ public class HomeView implements FxmlView<HomeViewModel> {
 
     @FXML
     public void acceptInviteAction() { mHomeViewModel.getAcceptInviteCommand().execute(); }
+
+    @FXML
+    public void onKeyReleased(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ENTER) {
+            sendAction();
+        }
+    }
 }

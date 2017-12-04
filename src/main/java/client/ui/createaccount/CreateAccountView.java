@@ -4,6 +4,8 @@ import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 
 public class CreateAccountView implements FxmlView<CreateAccountViewModel> {
@@ -37,5 +39,12 @@ public class CreateAccountView implements FxmlView<CreateAccountViewModel> {
     @FXML
     private void createAction() {
         mViewModel.getCreateAccountCommand().execute();
+    }
+
+    @FXML
+    public void onKeyReleased(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ENTER) {
+            createAction();
+        }
     }
 }

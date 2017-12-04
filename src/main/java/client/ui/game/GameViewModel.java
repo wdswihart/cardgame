@@ -38,7 +38,7 @@ public class GameViewModel extends BaseViewModel {
     //Probably not going to expose this via a getter.
     private Property<GameState> mGameStateProperty = new SimpleObjectProperty<>(new GameState());
 
-    //region Player Infos
+    //region Player Info
 
     private Property<ObservableList<Card>> mPlayerDeckProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
     private Property<ObservableList<Card>> mOpponentDeckProperty = new SimpleObjectProperty<>(FXCollections.observableArrayList());
