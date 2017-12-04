@@ -5,21 +5,21 @@
       "name": "Fat Cat",
       "description": "Has lost a few of its nine lives in a battle against obesity.",
       "power": 1,
-      "toughness": 5
+      "toughness": 4
     },
     {
       "default": false,
       "name": "Fat Cat",
       "description": "Has lost a few of its nine lives in a battle against obesity.",
       "power": 1,
-      "toughness": 5
+      "toughness": 4
     },
     {
       "default": false,
       "name": "Fat Cat",
       "description": "Has lost a few of its nine lives in a battle against obesity.",
       "power": 1,
-      "toughness": 5
+      "toughness": 4
     },
     {
       "default": false,
@@ -109,21 +109,21 @@
       "name": "Cute Pup",
       "description": "Look at that tail wiggle!",
       "power": 1,
-      "toughness": 6
+      "toughness": 5
     },
     {
       "default": false,
       "name": "Cute Pup",
       "description": "Look at that tail wiggle!",
       "power": 1,
-      "toughness": 6
+      "toughness": 5
     },
     {
       "default": false,
       "name": "Cute Pup",
       "description": "Look at that tail wiggle!",
       "power": 1,
-      "toughness": 6
+      "toughness": 5
     },
     {
       "default": false,
