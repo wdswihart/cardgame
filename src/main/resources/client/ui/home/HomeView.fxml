@@ -61,7 +61,7 @@
                     <ColumnConstraints percentWidth="90" />
                     <ColumnConstraints percentWidth="10" />
                 </columnConstraints>
-                <TextField fx:id="mMessageField" GridPane.columnIndex="0" />
+                <TextField fx:id="mMessageField" onKeyReleased="#onKeyReleased" GridPane.columnIndex="0" />
                 <Button onAction="#sendAction" prefWidth="100" text="Send" GridPane.columnIndex="1" />
             <rowConstraints>
                <RowConstraints />
