@@ -1,6 +1,7 @@
 package di;
 
 import client.core.ConnectionProvider;
+import client.core.GameProvider;
 import client.core.navigation.INavigationProvider;
 import client.core.socketio.SocketIOClientProviderImpl;
 import com.google.inject.AbstractModule;
@@ -12,5 +13,7 @@ public class TestModule extends AbstractModule {
         bind(ConnectionProvider.class).toInstance(TestConnectionProviderImpl.getInstance());
         bind(SocketIOClientProvider.class).toInstance(SocketIOClientProviderImpl.getInstance());
         bind(INavigationProvider.class).toInstance(TestNavigationProvider.getInstance());
+        bind(GameProvider.class).toInstance(TestGameProviderImpl.getInstance());
+
     }
 }

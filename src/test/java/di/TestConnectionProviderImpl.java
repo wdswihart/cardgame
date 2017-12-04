@@ -28,4 +28,10 @@ public class TestConnectionProviderImpl {
     private static ObjectProperty<Player> mAuthenticatedUser = new SimpleObjectProperty<>();
     private static ObjectProperty<Player> mCreatedUser = new SimpleObjectProperty<>();
 
+
+    public static void resetInstance() {
+        sInstance = null;
+        mAuthenticatedUser = new SimpleObjectProperty<>();
+        mCreatedUser = new SimpleObjectProperty<>();
+    }
 }

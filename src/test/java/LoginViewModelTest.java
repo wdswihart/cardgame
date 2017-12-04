@@ -1,7 +1,7 @@
-import client.ui.DraggableView.DraggableView;
 import client.ui.home.HomeView;
 import client.ui.login.LoginViewModel;
 import models.Player;
+import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
@@ -11,9 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@Category(UnitTest.class)
 @RunWith(JUnitPlatform.class)
 public class LoginViewModelTest extends BaseTest {
     LoginViewModel loginViewModel;
@@ -21,8 +21,9 @@ public class LoginViewModelTest extends BaseTest {
     private final String errorMessage = "Invalid username or password.";
 
     @BeforeEach
-    public void setup() {
-        loginViewModel = TestDependencies.getInjector().getInstance(LoginViewModel.class);
+    protected void setup() {
+        super.setup();
+        loginViewModel = new LoginViewModel(connectionProvider, navigationProvider);
     }
 
     @Test
@@ -35,8 +36,8 @@ public class LoginViewModelTest extends BaseTest {
     @Test
     public void successfulLogin_navigatesToHomeView() {
         connectionProvider.getAuthenticatedUser().setValue(new Player("test", "test"));
-        verify(navigationProvider).navigateTo(DraggableView.class);
-        assertEquals(errorMessage, "");
+        verify(navigationProvider).navigateTo(HomeView.class);
+        assertEquals("", loginViewModel.getErrorProperty().getValue());
     }
 
 

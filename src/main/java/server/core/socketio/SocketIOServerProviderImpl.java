@@ -55,5 +55,12 @@ public class SocketIOServerProviderImpl implements SocketIOServerProvider {
     @Override
     public void stop() {
         mServer.stop();
+
+        Configuration config = new Configuration();
+        config.setHostname(mConfigurationProvider.getHost());
+        config.setPort(mConfigurationProvider.getPort());
+        config.getSocketConfig().setReuseAddress(true);
+
+        mServer = new SocketIOServer(config);
     }
 }

@@ -21,4 +21,8 @@ public class TestNavigationProvider {
         }
         return sTestNavigationProvider;
     }
+
+    public static void resetInstance() {
+        sTestNavigationProvider = null;
+    }
 }

@@ -1,5 +1,6 @@
-import di.TestNavigationProvider;
-import org.junit.jupiter.api.AfterEach;
+import di.TestGameProviderImpl;
+import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
@@ -11,15 +12,15 @@ import client.ui.home.HomeViewModel;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
+@Category(UnitTest.class)
 @RunWith(JUnitPlatform.class)
 class HomeViewModelTest extends BaseTest {
-    protected HomeViewModel homeViewModel = TestDependencies.getInjector().getInstance(HomeViewModel.class);
+    protected HomeViewModel homeViewModel;
 
-    @AfterEach
-    void tearDownEach() {
-        //Reset the navigation provider. Bad practices but we can refactor later.
-        //Tests shouldn't really affect the state of future tests.
-//        TestNavigationProvider.resetInstance();
+    @BeforeEach
+    protected void setup() {
+        super.setup();
+        homeViewModel = new HomeViewModel(connectionProvider, navigationProvider, TestGameProviderImpl.getInstance());
     }
 
     @Test
